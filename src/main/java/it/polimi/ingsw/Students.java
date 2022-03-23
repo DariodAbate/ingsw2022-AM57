@@ -2,115 +2,116 @@ package it.polimi.ingsw;
 
 import java.util.HashSet;
 import java.util.Set;
+// da rifare con gli int
+public class Students {
+    private int yellowStudents;
+    private int blueStudents;
+    private int redStudents;
+    private int greenStudents;
+    private int pinkStudents;
 
-public class Student {
-    private Set<Color> yellowStudents;
-    private Set<Color> blueStudents;
-    private Set<Color> redStudents;
-    private Set<Color> greenStudents;
-    private Set<Color> pinkStudents;
-
-    public Student() {
-        this.yellowStudents = new HashSet<>();
-        this.blueStudents = new HashSet<>();
-        this.redStudents = new HashSet<>();
-        this.greenStudents = new HashSet<>();
-        this.pinkStudents = new HashSet<>();
+    public Students() {
+        this.yellowStudents = 0;
+        this.blueStudents = 0;
+        this.redStudents = 0;
+        this.greenStudents = 0;
+        this.pinkStudents = 0;
     }
 
     public void add(Color color) {
         if(color.equals(Color.YELLOW)){
-            yellowStudents.add(color);
+            yellowStudents+=1;
         }
         if (color.equals(Color.RED)){
-            redStudents.add(color);
+            redStudents+=1;
         }
         if(color.equals(Color.BLUE)){
-            blueStudents.add(color);
+            blueStudents+=1;
         }
         if(color.equals(Color.GREEN)){
-            greenStudents.add(color);
+            greenStudents+=1;
         }
         if(color.equals(Color.PINK)){
-            pinkStudents.add(color);
+            pinkStudents+=1;
         }
     }
     public void add(Color color, int num){
-        for (int i=0; i<num; i++) {
+
             if (color.equals(Color.YELLOW)) {
-                yellowStudents.add(color);
+                yellowStudents+=num;
             }
             if (color.equals(Color.RED)) {
-                redStudents.add(color);
+                redStudents+=num;
             }
             if (color.equals(Color.BLUE)) {
-                blueStudents.add(color);
+                blueStudents+=num;
             }
             if (color.equals(Color.GREEN)) {
-                greenStudents.add(color);
+                greenStudents+=num;
             }
             if (color.equals(Color.PINK)) {
-                pinkStudents.add(color);
+                pinkStudents+=num;
             }
-        }
+
+
     }
     public void remove(Color color){
         if(color.equals(Color.YELLOW)){
-            yellowStudents.remove(color);
+                //throw exception
+            yellowStudents-=1;
         }
         if (color.equals(Color.RED)){
-            redStudents.remove(color);
+            redStudents-=1;
         }
         if(color.equals(Color.BLUE)){
-            blueStudents.remove(color);
+            blueStudents-=1;
         }
         if(color.equals(Color.GREEN)){
-            greenStudents.remove(color);
+            greenStudents-=1;
         }
         if(color.equals(Color.PINK)){
-            pinkStudents.remove(color);
+            pinkStudents-=1;
         }
 
     }
     public void remove(Color color, int num){
-        for(int i=0; i<num; i++) {
             if (color.equals(Color.YELLOW)) {
-                yellowStudents.remove(color);
+                yellowStudents-=num;
             }
             if (color.equals(Color.RED)) {
-                redStudents.remove(color);
+                redStudents-=num;
             }
             if (color.equals(Color.BLUE)) {
-                blueStudents.remove(color);
+                blueStudents-=num;
             }
             if (color.equals(Color.GREEN)) {
-                greenStudents.remove(color);
+                greenStudents-=num;
             }
             if (color.equals(Color.PINK)) {
-                pinkStudents.remove(color);
+                pinkStudents-=num;
             }
         }
 
 
-    }
+
     public int numStudents(){
-        return yellowStudents.size()+blueStudents.size()+ pinkStudents.size()+ redStudents.size()+ blueStudents.size();
+        return yellowStudents+blueStudents+ pinkStudents+ redStudents+ greenStudents;
     }
     public int numStudents(Color color){
         if (color.equals(Color.YELLOW)) {
-            return yellowStudents.size();
+            return yellowStudents;
         }
         if (color.equals(Color.RED)) {
-            return redStudents.size();
+            return redStudents;
         }
         if (color.equals(Color.BLUE)) {
-            return blueStudents.size();
+            return blueStudents;
         }
         if (color.equals(Color.GREEN)) {
-            return greenStudents.size();
+            return greenStudents;
         }
         if (color.equals(Color.PINK)) {
-            return pinkStudents.size();
+            return pinkStudents;
         }
         //fare exception per colori non validi!
         return -1;
