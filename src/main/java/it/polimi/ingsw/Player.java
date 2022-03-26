@@ -7,7 +7,7 @@ public class Player {
     private String nickname;
     private ArrayList<AssistantCard> hand = new ArrayList<>();
     private AssistantCard discardCard;
-    //private Board board
+    //private Board Playerboard
 
     public Player(int id) {
         this.id = id;
