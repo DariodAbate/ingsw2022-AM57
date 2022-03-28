@@ -11,7 +11,7 @@ public class Player {
     private Board board;
 
     public Player(int id) {
-        //this.board = new Board();
+        //this.board = new Board();  //check Player constructor
         this.id = id;
     }
 
