@@ -33,8 +33,10 @@ class BoardTest {
     void addProfessorNullArgument() {
         Board b = new Board(2);
         b.addProfessor(Color.BLUE);
-        b.addProfessor(null);
-        assertEquals(1, b.getProfessors().size());
+        assertThrows(NullPointerException.class,
+                () -> {
+                    b.addProfessor(null);
+                });
 
     }
 
@@ -62,59 +64,112 @@ class BoardTest {
     void removeNullProfessor() {
         Board b = new Board(2);
         assertEquals(0, b.getProfessors().size());
-        b.removeProfessor(null);
-        assertEquals(0, b.getProfessors().size());
+        assertThrows(NullPointerException.class,
+                () -> b.removeProfessor(null));
 
     }
 
-    /*
-    //TO RUN THESE TEST DELETE COMMENT TAG FOR getEntrance() and getHall()
+    //testing normal behaviour
+    @Test
+    void fillEntrance(){
+        Board b = new Board(2);
+        assertEquals(0, b.entranceSize());
+        assertEquals(0, b.hallSize());
+
+        b.fillEntrance(Color.RED);
+        assertEquals(1, b.entranceSize());
+        assertEquals(1, b.entranceSize(Color.RED));
+        assertEquals(0, b.hallSize());
+    }
+
+    //full entrance of a single color
+    @Test
+    void fillFullEntrance1(){
+        //for 2 player the maximum number of student in the entrance is 7
+        Board b = new Board(2);
+        assertEquals(0, b.entranceSize());
+        assertEquals(0, b.hallSize());
+        for(int j = 0 ; j < 10; j++)
+            b.fillEntrance(Color.RED);
+        assertEquals(7, b.entranceSize());
+        assertEquals(7, b.entranceSize(Color.RED));
+        assertEquals(0, b.hallSize());
+
+        b.fillEntrance(Color.RED);
+        assertEquals(7, b.entranceSize());
+        assertEquals(7, b.entranceSize(Color.RED));
+        assertEquals(0, b.hallSize());
+    }
+
+    //full entrance of variable color
+    @Test
+    void fillFullEntrance2(){
+        //for 2 player the maximum number of student in the entrance is 7
+        Board b = new Board(2);
+        assertEquals(0, b.entranceSize());
+        assertEquals(0, b.hallSize());
+        for(int j = 0 ; j < 10; j++) {
+            if (j < 3)
+                b.fillEntrance(Color.BLUE);
+            else
+                b.fillEntrance(Color.PINK);
+        }
+        assertEquals(7, b.entranceSize());
+        assertEquals(3, b.entranceSize(Color.BLUE));
+        assertEquals(4, b.entranceSize(Color.PINK));
+        assertEquals(0, b.hallSize());
+
+        b.fillEntrance(Color.RED);
+        assertEquals(7, b.entranceSize());
+        assertEquals(3, b.entranceSize(Color.BLUE));
+        assertEquals(4, b.entranceSize(Color.PINK));
+        assertEquals(0, b.hallSize());
+    }
+
+
 
     //testing normal behaviour
     @Test
     void entranceToHall() {
         Board b = new Board(2);
-        StudentsHandler e = b.getEntrance();
-        StudentsHandler h = b.getHall();
 
         for(Color i: Color.values()){
-            assertEquals(0, e.numStudents(i));
-            assertEquals(0, h.numStudents(i));
+            assertEquals(0, b.entranceSize(i));
+            assertEquals(0, b.hallSize(i));
 
         }
 
-        e.add(Color.GREEN);
+        b.fillEntrance(Color.GREEN);
         for(Color i: Color.values()){
             if(i.equals(Color.GREEN))
-                assertEquals(1, e.numStudents(i));
+                assertEquals(1, b.entranceSize(i));
             else
-                assertEquals(0, e.numStudents(i));
+                assertEquals(0, b.entranceSize(i));
         }
         for(Color i: Color.values()){
-            assertEquals(0, h.numStudents(i));
+            assertEquals(0, b.hallSize(i));
         }
 
         b.entranceToHall(Color.GREEN);
         for(Color i: Color.values()){
             if(i.equals(Color.GREEN))
-                assertEquals(1, h.numStudents(i));
+                assertEquals(1, b.hallSize(i));
             else
-                assertEquals(0, h.numStudents(i));
+                assertEquals(0, b.hallSize(i));
         }
         for(Color i: Color.values()) {
-            assertEquals(0, e.numStudents(i));
+            assertEquals(0, b.entranceSize(i));
         }
     }
 
     @Test
     void entranceToHallEmptyEntrance() {
         Board b = new Board(2);
-        StudentsHandler e = b.getEntrance();
-        StudentsHandler h = b.getHall();
+
 
         for(Color i: Color.values()){
-            assertEquals(0, e.numStudents(i));
-            assertEquals(0, h.numStudents(i));
+            assertEquals(0, b.entranceSize(i));
+            assertEquals(0, b.hallSize(i));
 
         }
 
@@ -123,33 +178,33 @@ class BoardTest {
         b.entranceToHall(Color.GREEN);
 
         for(Color i: Color.values()) {
-            assertEquals(0, e.numStudents(i));
-            assertEquals(0, h.numStudents(i));
+            assertEquals(0, b.entranceSize(i));
+            assertEquals(0, b.hallSize(i));
         }
     }
 
     @Test
     void entranceToHallFullHall() {
         Board b = new Board(2);
-        StudentsHandler e = b.getEntrance();
-        StudentsHandler h = b.getHall();
-
         for(Color i: Color.values()){
-            assertEquals(0, e.numStudents(i));
-            assertEquals(0, h.numStudents(i));
+            assertEquals(0, b.entranceSize(i));
+            assertEquals(0, b.hallSize(i));
 
         }
+        for(int j = 0; j < 10 ; j++) {//full green hall
+            b.fillEntrance(Color.GREEN);
+            b.entranceToHall(Color.GREEN);
+        }
+        b.fillEntrance(Color.GREEN);
 
-        e.add(Color.GREEN);
-        h.add(Color.GREEN, 10); //full green hall
         for(Color i: Color.values()){
             if(i.equals(Color.GREEN)) {
-                assertEquals(1, e.numStudents(i));
-                assertEquals(10, h.numStudents(i));
+                assertEquals(1, b.entranceSize(i));
+                assertEquals(10, b.hallSize(i));
             }
             else {
-                assertEquals(0, e.numStudents(i));
-                assertEquals(0, h.numStudents(i));
+                assertEquals(0, b.entranceSize(i));
+                assertEquals(0, b.hallSize(i));
             }
         }
 
@@ -157,12 +212,12 @@ class BoardTest {
 
         for(Color i: Color.values()) {
             if(i.equals(Color.GREEN)) {
-                assertEquals(1, e.numStudents(i));
-                assertEquals(10, h.numStudents(i));
+                assertEquals(1, b.entranceSize(i));
+                assertEquals(10, b.hallSize(i));
             }
             else {
-                assertEquals(0, e.numStudents(i));
-                assertEquals(0, h.numStudents(i));
+                assertEquals(0, b.entranceSize(i));
+                assertEquals(0, b.hallSize(i));
             }
 
         }
@@ -171,12 +226,10 @@ class BoardTest {
     @Test
     void entranceToHallNullColor() {
         Board b = new Board(2);
-        StudentsHandler e = b.getEntrance();
-        StudentsHandler h = b.getHall();
 
         for(Color i: Color.values()){
-            assertEquals(0, e.numStudents(i));
-            assertEquals(0, h.numStudents(i));
+            assertEquals(0, b.entranceSize(i));
+            assertEquals(0, b.hallSize(i));
 
         }
 
@@ -185,11 +238,11 @@ class BoardTest {
         b.entranceToHall(null);
 
         for(Color i: Color.values()) {
-            assertEquals(0, e.numStudents(i));
-            assertEquals(0, h.numStudents(i));
+            assertEquals(0, b.entranceSize(i));
+            assertEquals(0, b.hallSize(i));
         }
     }
 
 
-     */
+
 }
