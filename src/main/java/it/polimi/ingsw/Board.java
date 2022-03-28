@@ -47,7 +47,7 @@ public class Board {
 
     public int getNumTower(){ return numTower;}
 
-    public void decreaseNumTower(){
+    public void decNumTower(){
         if(this.numTower > 0)
             -- this.numTower;
     }
