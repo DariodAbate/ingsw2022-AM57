@@ -8,49 +8,49 @@ class CloudTileTest {
 
     //testing normal behaviour
     @Test
-    void fillCloudTile() {
+    void fill() {
         CloudTile c = new CloudTile(3);
-        assertEquals(0, c.getSize());
-        c.fillCloudTile(Color.YELLOW);
-        assertEquals(1, c.getSize(Color.YELLOW));
+        assertEquals(0, c.numStudOn());
+        c.fill(Color.YELLOW);
+        assertEquals(1, c.numStudOn(Color.YELLOW));
     }
 
     @Test
     void fillCloudNullColor() {
         CloudTile c = new CloudTile(3);
-        assertEquals(0, c.getSize());
-        assertThrows(NullPointerException.class, () -> c.fillCloudTile(null));
-        assertEquals(0, c.getSize());
+        assertEquals(0, c.numStudOn());
+        assertThrows(NullPointerException.class, () -> c.fill(null));
+        assertEquals(0, c.numStudOn());
     }
 
     //single color
     @Test
-    void fillCloudTileFull1() {
+    void fillFull1() {
         CloudTile c = new CloudTile(3); //for 3 players the maximum size is 4
-        assertEquals(0, c.getSize());
+        assertEquals(0, c.numStudOn());
         for (int i = 0; i < 4; i++)
-            c.fillCloudTile(Color.YELLOW);
-        assertEquals(4, c.getSize());
+            c.fill(Color.YELLOW);
+        assertEquals(4, c.numStudOn());
 
-        c.fillCloudTile(Color.YELLOW);
-        assertEquals(4, c.getSize(Color.YELLOW));
+        c.fill(Color.YELLOW);
+        assertEquals(4, c.numStudOn(Color.YELLOW));
     }
 
     //various color
     @Test
-    void fillCloudTileFull2() {
+    void fillFull2() {
         CloudTile c = new CloudTile(3); //for 3 players the maximum size is 4
-        assertEquals(0, c.getSize());
+        assertEquals(0, c.numStudOn());
         for (int i = 0; i < 4; i++) {
             if(i < 2)
-                c.fillCloudTile(Color.YELLOW);
+                c.fill(Color.YELLOW);
             else
-                c.fillCloudTile(Color.GREEN);
+                c.fill(Color.GREEN);
         }
-        assertEquals(4, c.getSize());
+        assertEquals(4, c.numStudOn());
 
-        c.fillCloudTile(Color.YELLOW);
-        assertEquals(4, c.getSize());
+        c.fill(Color.YELLOW);
+        assertEquals(4, c.numStudOn());
     }
 
 
@@ -60,33 +60,33 @@ class CloudTileTest {
         CloudTile c1 = new CloudTile(2);
         for (int i = 0; i < 3; i++) {
             if(i < 2)
-                c1.fillCloudTile(Color.YELLOW);
+                c1.fill(Color.YELLOW);
             else
-                c1.fillCloudTile(Color.GREEN);
+                c1.fill(Color.GREEN);
         }
-        assertEquals(3, c1.getSize());
+        assertEquals(3, c1.numStudOn());
 
         StudentsHandler s = c1.getTile();
         assertEquals(3, s.numStudents());
-        assertEquals(0, c1.getSize());
+        assertEquals(0, c1.numStudOn());
     }
 
     @Test
     void getNotFullTile(){
         CloudTile c = new CloudTile(2);
-        c.fillCloudTile(Color.GREEN);
+        c.fill(Color.GREEN);
 
-        assertEquals(1, c.getSize());
+        assertEquals(1, c.numStudOn());
         assertThrows(IllegalStateException.class, c::getTile);
-        assertEquals(1, c.getSize());
+        assertEquals(1, c.numStudOn());
     }
 
     @Test
     void getEmptyTile(){
         CloudTile c = new CloudTile(2);
 
-        assertEquals(0, c.getSize());
+        assertEquals(0, c.numStudOn());
         assertThrows(IllegalStateException.class, c::getTile);
-        assertEquals(0, c.getSize());
+        assertEquals(0, c.numStudOn());
     }
 }

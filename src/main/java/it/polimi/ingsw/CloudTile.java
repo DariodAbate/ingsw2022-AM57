@@ -24,11 +24,11 @@ public class CloudTile {
     }
 
 
-    public int getSize(){
+    public int numStudOn(){
         return cloudStud.numStudents();
     }
 
-    public int getSize(Color color){
+    public int numStudOn(Color color){
         if(color == null)
             throw new NullPointerException();
         return cloudStud.numStudents(color);
@@ -42,7 +42,7 @@ public class CloudTile {
 
     //drawing single student from bag
     //isAddable is a control over a single color, I have to check the total number of student on a tile
-    public void fillCloudTile(Color color){
+    public void fill(Color color){
         if(color == null)
             throw new NullPointerException();
         else if (isFillable() && cloudStud.isAddable(color))
