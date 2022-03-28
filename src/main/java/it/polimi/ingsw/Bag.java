@@ -27,7 +27,7 @@ public class Bag {
     public Color draw(){
         if(isEmpty())
         {
-            return null;
+            return null; //Need to add startgame() from Game class
         }
         //every time I need to draw, I calculate the probability of it;
         double prob;
@@ -65,11 +65,11 @@ public class Bag {
         }
     }
 
+    public int size(){
+        return token.numStudents();
+    }
 
     public boolean isEmpty(){
-        if(token.numStudents()==0){
-            return true;
-        }
-        return false;
+        return token.numStudents() == 0;
     }
 }
