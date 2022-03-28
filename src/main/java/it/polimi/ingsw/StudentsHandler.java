@@ -36,6 +36,10 @@ public class StudentsHandler {
     }
 
     public void add(Color color) {
+            if(color == null){
+                throw new NullPointerException("Colore null");
+            }
+
             Integer temp;
             temp = students.get(color);
             if(temp+1<=sizeMax) {
@@ -44,32 +48,42 @@ public class StudentsHandler {
     }
 
     public void add(Color color, int num){
+            if(color == null){
+                throw new NullPointerException("Colore null");
+            }
+
             Integer temp;
             temp = students.get(color);
             if (num<0){
                 throw new IllegalArgumentException("Il numero non può essere negativo");
             }
-            if(temp+num >= sizeMax){
-                students.put(color, sizeMax); //Careful, you can lose some tokens in the exchange process!
-            }
-            else{
-                students.put(color, temp+num);
-            }
+        students.put(color, Math.min(temp + num, sizeMax)); //Careful, you can lose some tokens in the exchange process!
     }
 
     public boolean isAddable(Color color){
-        if(students.get(color)+1<=sizeMax) return true;
-        return false;
+        if(color == null){
+            throw new NullPointerException("Colore null");
+        }
+
+        return students.get(color) + 1 <= sizeMax;
     }
 
     public boolean isAddable(Color color, int num){
-        if(students.get(color)+num<=sizeMax) return true;
-        return false;
+        if(color == null){
+            throw new NullPointerException("Colore null");
+        }
+
+        return students.get(color) + num <= sizeMax;
     }
     //if called in an already empty students, does nothing
     public void remove(Color color){
+            if(color == null){
+                throw new NullPointerException("Colore null");
+            }
+
             Integer temp;
             temp = students.get(color);
+
             if(temp>0){
                 students.put(color, temp-1);
             }
@@ -77,28 +91,34 @@ public class StudentsHandler {
                 students.put(color, 0);
             }
     }
-    public void remove(Color color, int num) throws IllegalArgumentException{
-            if (num<0){
-                throw new IllegalArgumentException();
+    public void remove(Color color, int num){
+            if(color == null){
+                throw new NullPointerException("Colore null");
             }
+
+            if (num<0){
+                throw new IllegalArgumentException("Il numero deve essere positivo");
+            }
+
             Integer temp;
             temp = students.get(color);
-            if(temp-num>0){
-                students.put(color, temp-num);
-            }
-            else{
-                students.put(color, 0);
-            }
+        students.put(color, Math.max(temp - num, 0));
 
     }
     public boolean isRemovable(Color color){
-        if(students.get(color)-1>=0) return true;
-        return false;
+        if(color == null){
+            throw new NullPointerException("Colore null");
+        }
+
+        return students.get(color) - 1 >= 0;
     }
 
     public boolean isRemovable(Color color, int num){
-        if(students.get(color)-num>=0) return true;
-        return false;
+        if(color == null){
+            throw new NullPointerException("Colore null");
+        }
+
+        return students.get(color) - num >= 0;
     }
 
     public int numStudents(){
@@ -110,7 +130,7 @@ public class StudentsHandler {
         return sum;
     }
     public int numStudents(Color color) {
-        if(color.equals(null)){
+        if(color == null){
             throw new NullPointerException("Colore null");
         }
         return students.get(color);

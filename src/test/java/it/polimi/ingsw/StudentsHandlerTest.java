@@ -70,7 +70,7 @@ class StudentsHandlerTest {
 
     @Test
     void testRemove() {
-        StudentsHandler stud1 = new StudentsHandler();
+
         int num = 10;
         int num1 = -1;
         int num2 = 40;
@@ -85,12 +85,18 @@ class StudentsHandlerTest {
             assertEquals(0, stud2.numStudents(color));
         }
     }
-
+    //Verify all NullPointerException
     @Test
-    void numStudents() {
+    void tryNull(){
+        StudentsHandler stud  = new StudentsHandler();
+        assertThrowsExactly(NullPointerException.class, () -> stud.remove(null, 0));
+        assertThrowsExactly(NullPointerException.class, () -> stud.add(null, 0));
+        assertThrowsExactly(NullPointerException.class, () -> stud.add(null));
+        assertThrowsExactly(NullPointerException.class, () -> stud.remove(null));
+        assertThrowsExactly(NullPointerException.class, () -> stud.isAddable(null));
+        assertThrowsExactly(NullPointerException.class, () -> stud.isAddable(null, 0));
+        assertThrowsExactly(NullPointerException.class, () -> stud.isRemovable(null, 0));
+        assertThrowsExactly(NullPointerException.class, () -> stud.isRemovable(null));
     }
 
-    @Test
-    void testNumStudents() {
-    }
 }
