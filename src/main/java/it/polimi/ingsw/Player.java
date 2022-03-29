@@ -2,7 +2,7 @@ package it.polimi.ingsw;
 
 import java.util.ArrayList;
 
-// testing method to be added
+
 public class Player {
     final private int id;
     private String nickname;
@@ -10,8 +10,8 @@ public class Player {
     private AssistantCard discardCard;
     private Board board;
 
-    public Player(int id) {
-        //this.board = new Board();  //check Player constructor
+    public Player(int id /*int numPlayer*/) {
+        //this.board = new Board(numPlayer);
         this.id = id;
         for (int i = 0; i < 10; i++) {
             hand.add(i, new AssistantCard(i + 1, (i + 1) / 2 + (i + 1) % 2));
@@ -50,6 +50,7 @@ public class Player {
         return discardCard;
     }
 
+    // Coin management to be implemented
 }
 
 
