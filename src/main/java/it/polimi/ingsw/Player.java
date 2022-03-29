@@ -13,6 +13,9 @@ public class Player {
     public Player(int id) {
         //this.board = new Board();  //check Player constructor
         this.id = id;
+        for (int i = 0; i < 10; i++) {
+            hand.add(i, new AssistantCard(i + 1, (i + 1) / 2 + (i + 1) % 2));
+        }
     }
 
     public void setNickname(String nickname) {
@@ -27,29 +30,26 @@ public class Player {
     }
 
     public void chooseBack(CardBack back) {
-        for (int i = 0; i < 10; i++) {
-            hand.add(i, new AssistantCard(i + 1, (i + 1) / 2 + (i + 1) % 2, back));
+        for (int i = 0; i < 10; i ++) {
+            hand.get(i).setCardBack(back);
         }
     }
 
-    public AssistantCard playCard(int chosenCard) throws AlreadyPlayedCard {
-        if (!hand.get(chosenCard).getHasBeenPlayed()) {
-            hand.get(chosenCard).setHasBeenPlayed();
-            discardCard = (hand.get(chosenCard));
-            return hand.get(chosenCard);
-        } else {
-            throw new AlreadyPlayedCard();
-        }
+    public ArrayList<AssistantCard> getPlayableCard() {
+        return new ArrayList<>(hand);
+    }
+
+    public AssistantCard playCard(int chosenCard) {
+        discardCard = hand.get(chosenCard);
+        AssistantCard temp = hand.get(chosenCard);
+        hand.remove(chosenCard);
+        return temp;
     }
 
     public AssistantCard viewLastCard() {
         return discardCard;
     }
 
-    // method added just for testing purpose
-    public ArrayList<AssistantCard> getHand() {
-        return hand;
-    }
 }
 
 
