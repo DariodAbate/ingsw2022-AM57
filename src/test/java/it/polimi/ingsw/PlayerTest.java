@@ -18,13 +18,6 @@ class PlayerTest {
     }
 
     @Test
-    void chooseBack() {
-        Player p = new Player(1);
-        p.chooseBack(CardBack.DRUID);
-        assertEquals("DRUID", p.getPlayableCard().get(6).getCardBack().toString());
-    }
-
-    @Test
     void cardBackInitializedNull() {
         Player p = new Player(1);
         assertNull(p.getPlayableCard().get(4).getCardBack());
@@ -49,4 +42,28 @@ class PlayerTest {
         assertNull(p.viewLastCard());
     }
 
+    @Test
+    void choosenCardIndexShouldBeBetween0And9() {
+        Player p = new Player(1);
+        assertThrows(IllegalArgumentException.class,
+                () -> {
+                    p.playCard(10);
+                });
+    }
+
+    @Test
+    void cardBackShouldNotBeNull() {
+        Player p = new Player(1);
+        assertThrows(NullPointerException.class,
+                () -> {
+                    p.chooseBack(null);
+                });
+    }
+
+    @Test
+    void playedCardBack() {
+        Player p = new Player(1);
+        p.chooseBack(CardBack.WITCH);
+        assertEquals("WITCH", p.playCard(4).getCardBack().toString());
+    }
 }

@@ -9,6 +9,7 @@ public class Player {
     private ArrayList<AssistantCard> hand = new ArrayList<>();
     private AssistantCard discardCard;
     private Board board;
+    private int coin;
 
     public Player(int id /*int numPlayer*/) {
         //this.board = new Board(numPlayer);
@@ -19,10 +20,10 @@ public class Player {
     }
 
     public void setNickname(String nickname) {
-        if (nickname != null)
-            this.nickname = nickname;
-        else
+        if (nickname == null)
             throw new NullPointerException();
+        else
+            this.nickname = nickname;
     }
 
     public String getNickname() {
@@ -30,9 +31,12 @@ public class Player {
     }
 
     public void chooseBack(CardBack back) {
-        for (int i = 0; i < 10; i ++) {
-            hand.get(i).setCardBack(back);
-        }
+        if (back == null)
+            throw new NullPointerException();
+        else
+            for (int i = 0; i < 10; i ++) {
+                hand.get(i).setCardBack(back);
+            }
     }
 
     public ArrayList<AssistantCard> getPlayableCard() {
@@ -40,9 +44,15 @@ public class Player {
     }
 
     public AssistantCard playCard(int chosenCard) {
-        discardCard = hand.get(chosenCard);
-        hand.remove(chosenCard);
-        return new AssistantCard(discardCard.getPriority(), discardCard.getMovement());
+        if (chosenCard < 0 || chosenCard > 9) {
+            throw new IllegalArgumentException("The card index should be between 0 and 9");
+        } else {
+            discardCard = hand.get(chosenCard);
+            AssistantCard playedCard = new AssistantCard(discardCard.getPriority(), discardCard.getMovement());
+            playedCard.setCardBack(discardCard.getCardBack());
+            hand.remove(chosenCard);
+            return playedCard;
+        }
     }
 
     public AssistantCard viewLastCard() {
