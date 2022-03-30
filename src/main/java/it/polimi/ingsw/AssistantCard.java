@@ -1,8 +1,8 @@
 package it.polimi.ingsw;
 
 public class AssistantCard {
-    private int movement;
-    private int priority;
+    private final int movement;
+    private final int priority;
     private CardBack back;
 
     public AssistantCard(int priority, int movement) {

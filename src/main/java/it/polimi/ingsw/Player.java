@@ -42,7 +42,7 @@ public class Player {
     public AssistantCard playCard(int chosenCard) {
         discardCard = hand.get(chosenCard);
         hand.remove(chosenCard);
-        return discardCard;
+        return new AssistantCard(discardCard.getPriority(), discardCard.getMovement());
     }
 
     public AssistantCard viewLastCard() {
