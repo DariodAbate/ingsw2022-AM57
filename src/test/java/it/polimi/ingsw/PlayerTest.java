@@ -43,7 +43,7 @@ class PlayerTest {
     }
 
     @Test
-    void choosenCardIndexShouldBeBetween0And9() {
+    void choosenCardIndexShouldBeBetween0AndTheLAstCard() {
         Player p = new Player(1);
         assertThrows(IllegalArgumentException.class,
                 () -> {

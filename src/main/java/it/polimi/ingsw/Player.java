@@ -19,6 +19,10 @@ public class Player {
         }
     }
 
+    public int getId() {
+        return id;
+    }
+
     public void setNickname(String nickname) {
         if (nickname == null)
             throw new NullPointerException();
@@ -39,13 +43,9 @@ public class Player {
             }
     }
 
-    public ArrayList<AssistantCard> getPlayableCard() {
-        return new ArrayList<>(hand);
-    }
-
     public AssistantCard playCard(int chosenCard) {
-        if (chosenCard < 0 || chosenCard > 9) {
-            throw new IllegalArgumentException("The card index should be between 0 and 9");
+        if (chosenCard < 0 || chosenCard > hand.size()-1) {
+            throw new IllegalArgumentException("The card index should be between 0 and the index of the last card");
         } else {
             discardCard = hand.get(chosenCard);
             AssistantCard playedCard = new AssistantCard(discardCard.getPriority(), discardCard.getMovement());
@@ -53,6 +53,10 @@ public class Player {
             hand.remove(chosenCard);
             return playedCard;
         }
+    }
+
+    public ArrayList<AssistantCard> getPlayableCard() {
+        return new ArrayList<>(hand);
     }
 
     public AssistantCard viewLastCard() {
