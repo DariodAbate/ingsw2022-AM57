@@ -1,12 +1,31 @@
 package it.polimi.ingsw;
 
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+/**
+ * Class BoardTest tests Board class
+ *
+ * @author Dario d'Abate
+ */
 class BoardTest {
+    Board b;
 
+    @BeforeEach
+    void setup() {
+        b = new Board(2);
+    }
+
+    /**
+     * Method that tests the constructor when is
+     * passed a number of player that's neither 2 nor 3
+     * @throws IllegalArgumentException when illegal number of players is passed
+     */
     @Test
+    @DisplayName("Constructor test with illegal number of players")
     void testConstructorException() {
 
         assertThrows(IllegalArgumentException.class,
@@ -15,9 +34,13 @@ class BoardTest {
                 });
     }
 
+    /**
+     *Method that tests addProfessor() trying to add
+     * to a set an already existing professor
+     */
     @Test
+    @DisplayName("Adding prof test with an already existing professor")
     void addProfessorDuplication() {
-        Board b = new Board(2);
         b.addProfessor(Color.BLUE);
         b.addProfessor(Color.PINK);
         b.addProfessor(Color.RED);
@@ -29,21 +52,27 @@ class BoardTest {
         assertEquals(5, b.getProfessors().size());
     }
 
+    /**
+     * Method that tests addProfessor() trying to pass
+     * a null color
+     * @throws NullPointerException if a null Color is passed
+     */
     @Test
+    @DisplayName("Adding prof test with null parameter")
     void addProfessorNullArgument() {
-        Board b = new Board(2);
         b.addProfessor(Color.BLUE);
         assertThrows(NullPointerException.class,
-                () -> {
-                    b.addProfessor(null);
-                });
+                () -> b.addProfessor(null));
 
     }
 
-
+    /**
+     *Method that tests removeProfessor() trying to remove an
+     * existing professor
+     */
     @Test
-    void removeProfessor() {
-        Board b = new Board(2);
+    @DisplayName("Deleting prof test with deletion of existing prof")
+    void rmvProfessor() {
         b.addProfessor(Color.BLUE);
         assertEquals(1, b.getProfessors().size());
         b.removeProfessor(Color.BLUE);
@@ -51,28 +80,41 @@ class BoardTest {
 
     }
 
+    /**
+     * removeNonExistentProfessor() tests removeProfessor() trying to remove
+     * a non-existent professor.
+     * The expected behavior is to have an unchanged set of professors
+     */
     @Test
-    void removeNonexistentProfessor() {
-        Board b = new Board(2);
+    @DisplayName("Removing prof test with deletion of non-existing prof")
+    void removeNonExistentProfessor() {
         assertEquals(0, b.getProfessors().size());
         b.removeProfessor(Color.BLUE);
         assertEquals(0, b.getProfessors().size());
 
     }
 
+    /**
+     * removeNullProfessor() tests removeProfessor() trying to pass
+     * a null color
+     * @throws NullPointerException if a null Color is passed
+     */
     @Test
+    @DisplayName("Removing prof test when passing null color")
     void removeNullProfessor() {
-        Board b = new Board(2);
         assertEquals(0, b.getProfessors().size());
         assertThrows(NullPointerException.class,
                 () -> b.removeProfessor(null));
 
     }
 
-    //testing normal behaviour
+    /**
+     * fillEntranceNormal() tests fillEntrance() when the entrance is
+     * initially empty and a single student is added
+     */
     @Test
-    void fillEntrance(){
-        Board b = new Board(2);
+    @DisplayName("Filling entrance test with single student and entrance initially empty")
+    void fillEntranceNormal(){
         assertEquals(0, b.entranceSize());
         assertEquals(0, b.hallSize());
 
@@ -82,11 +124,16 @@ class BoardTest {
         assertEquals(0, b.hallSize());
     }
 
-    //full entrance of a single color
+    /**
+     * fillFullEntrance1() tests fillEntrance() when the entrance contains the
+     * maximum number of students of a determined color, and we try to add a
+     * single student of that color.
+     * The set of entrance's students should be unchanged
+     */
     @Test
+    @DisplayName("Filling entrance test with single student and entrance initially full of single color")
     void fillFullEntrance1(){
         //for 2 player the maximum number of student in the entrance is 7
-        Board b = new Board(2);
         assertEquals(0, b.entranceSize());
         assertEquals(0, b.hallSize());
         for(int j = 0 ; j < 10; j++)
@@ -101,11 +148,17 @@ class BoardTest {
         assertEquals(0, b.hallSize());
     }
 
-    //full entrance of variable color
+    /**
+     *
+     *fillFullEntrance2() tests fillEntrance() when the entrance contains the
+     *maximum number of students of various color, and we try to add a
+     *single student of another color.
+     *The set of entrance's students should be unchanged
+     */
     @Test
+    @DisplayName("Filling entrance test with single student and entrance initially full of various color")
     void fillFullEntrance2(){
         //for 2 player the maximum number of student in the entrance is 7
-        Board b = new Board(2);
         assertEquals(0, b.entranceSize());
         assertEquals(0, b.hallSize());
         for(int j = 0 ; j < 10; j++) {
@@ -127,12 +180,13 @@ class BoardTest {
     }
 
 
-
-    //testing normal behaviour
+    /**
+     *This method tests entranceToHall() when it is possible to move a student
+     *from the entrance to the hall
+     */
     @Test
+    @DisplayName("Moving student inside the board test in normal condition")
     void entranceToHall() {
-        Board b = new Board(2);
-
         for(Color i: Color.values()){
             assertEquals(0, b.entranceSize(i));
             assertEquals(0, b.hallSize(i));
@@ -162,11 +216,14 @@ class BoardTest {
         }
     }
 
+    /**
+     *This method tests entranceToHall() trying to move a student of a determined
+     *color, but that student does not exist in the entrance.
+     *The entrance set of students should be unchanged
+     */
     @Test
-    void entranceToHallEmptyEntrance() {
-        Board b = new Board(2);
-
-
+    @DisplayName("Moving non-existing student inside the board test")
+    void emptyEntranceToHall() {
         for(Color i: Color.values()){
             assertEquals(0, b.entranceSize(i));
             assertEquals(0, b.hallSize(i));
@@ -183,9 +240,39 @@ class BoardTest {
         }
     }
 
+    /**
+     * This method tests entranceToHall() when it is passed a null color.
+     * The sets of students in entrance and in the hall should be unchanged
+     * @throws NullPointerException if the color passed is null
+     */
     @Test
+    @DisplayName("Moving a student of null color inside the board test")
+    void entranceToHallNullColor() {
+        for(Color i: Color.values()){
+            assertEquals(0, b.entranceSize(i));
+            assertEquals(0, b.hallSize(i));
+
+        }
+
+        //now "i" have an empty entrance
+
+        b.entranceToHall(null);
+
+        for(Color i: Color.values()) {
+            assertEquals(0, b.entranceSize(i));
+            assertEquals(0, b.hallSize(i));
+        }
+    }
+
+    /**
+     *This method tests entranceToHall() trying to move a student of a determined color
+     *from the entrance to the hall, when the hall of that color already contains
+     *the maximum number of students.
+     *The sets of students in the entrance and in the hall should be unchanged
+     */
+    @Test
+    @DisplayName("Moving a student from entrance to a full hall test")
     void entranceToHallFullHall() {
-        Board b = new Board(2);
         for(Color i: Color.values()){
             assertEquals(0, b.entranceSize(i));
             assertEquals(0, b.hallSize(i));
@@ -222,27 +309,5 @@ class BoardTest {
 
         }
     }
-
-    @Test
-    void entranceToHallNullColor() {
-        Board b = new Board(2);
-
-        for(Color i: Color.values()){
-            assertEquals(0, b.entranceSize(i));
-            assertEquals(0, b.hallSize(i));
-
-        }
-
-        //now "i" have an empty entrance
-
-        b.entranceToHall(null);
-
-        for(Color i: Color.values()) {
-            assertEquals(0, b.entranceSize(i));
-            assertEquals(0, b.hallSize(i));
-        }
-    }
-
-
 
 }
