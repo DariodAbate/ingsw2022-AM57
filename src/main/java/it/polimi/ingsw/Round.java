@@ -2,7 +2,6 @@ package it.polimi.ingsw;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Comparator;
 
 public class Round {
     private int roundNumber;
@@ -21,6 +20,7 @@ public class Round {
         roundNumber = 0;
         playersCopy = new ArrayList<>(players);
         actionOrder = new ArrayList<>(players);
+        pianificationOrder = new ArrayList<>(players);
         isPianification = true;
     }
 
@@ -43,7 +43,22 @@ public class Round {
     }
 
     public void setPianificationOrder() {
-
+        pianificationOrder.removeAll(playersCopy);
+        Player firstPlayer = Collections.min(playersCopy, (player1, player2) -> {
+            if (player1.viewLastCard().getPriority() < player2.viewLastCard().getPriority())
+                return -1;
+            else
+                return 1;
+        });
+        pianificationOrder.add(firstPlayer);
+        int firstPlayerIndex = playersCopy.indexOf(firstPlayer);
+        if (playersCopy.size() == 3) {
+            pianificationOrder.add(playersCopy.get((firstPlayerIndex +1)%3));
+            pianificationOrder.add(playersCopy.get((firstPlayerIndex +2)%3));
+        }
+        if(playersCopy.size() == 2) {
+            pianificationOrder.add(playersCopy.get((firstPlayerIndex +1)%2));
+        }
     }
 
     // Case of same priority card to be added
@@ -65,21 +80,22 @@ public class Round {
 
     public void nextTurn() {
         if (isPianification) {
-            currentTurn = pianificationOrder.iterator().next();  // Controllo sempre il fatto della lista circolare
+            if (pianificationOrder.iterator().hasNext())
+                currentTurn = pianificationOrder.iterator().next();
+            else
+                throw new IndexOutOfBoundsException("End of pianificationOrder list");
         } else {
-            // controllare che la lista non sia finita
-            currentTurn = actionOrder.iterator().next();
+            if (actionOrder.iterator().hasNext())
+                currentTurn = actionOrder.iterator().next();
+            else
+                throw new IndexOutOfBoundsException("End of actionOrder list");
+            isPianification = true;
         }
     }
 
     public void nextRound() {
         roundNumber += 1;
         isPianification = true;
-    }
-
-    public Player returnMinPrio() {
-        Player temp =  Collections.min(playersCopy, Comparator.comparing(Player::getId));
-        return temp;
     }
 }
 
