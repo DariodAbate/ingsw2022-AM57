@@ -4,30 +4,18 @@ import java.util.ArrayList;
 
 
 public class Player {
-    final private int id;
     private String nickname;
     private ArrayList<AssistantCard> hand = new ArrayList<>();
     private AssistantCard discardCard;
     private Board board;
     private int coin;
 
-    public Player(int id /*int numPlayer*/) {
-        //this.board = new Board(numPlayer);
-        this.id = id;
+    public Player(String nick, int numPlayer) {
+        this.board = new Board(numPlayer);
+        this.nickname = nick;
         for (int i = 0; i < 10; i++) {
             hand.add(i, new AssistantCard(i + 1, (i + 1) / 2 + (i + 1) % 2));
         }
-    }
-
-    public int getId() {
-        return id;
-    }
-
-    public void setNickname(String nickname) {
-        if (nickname == null)
-            throw new NullPointerException();
-        else
-            this.nickname = nickname;
     }
 
     public String getNickname() {
