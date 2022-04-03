@@ -1,8 +1,13 @@
 package it.polimi.ingsw;
 
 import java.util.ArrayList;
-
-
+/**
+ * The Class Player contains all the information about the player and the methods to actually play the game.
+ * In addition to the necessary methods to choose and play the assistant's card the class also contains methods
+ * to take new coins and use it as well.
+ *
+ * @author Luca Bresciani
+ */
 public class Player {
     private String nickname;
     private ArrayList<AssistantCard> hand = new ArrayList<>();
@@ -11,11 +16,15 @@ public class Player {
     private int coin;
 
     public Player(String nick, int numPlayer) {
-        this.board = new Board(numPlayer);
-        this.nickname = nick;
-        for (int i = 0; i < 10; i++) {
-            hand.add(i, new AssistantCard(i + 1, (i + 1) / 2 + (i + 1) % 2));
+        if(numPlayer == 2 || numPlayer == 3){
+            this.board = new Board(numPlayer);
+            this.nickname = nick;
+            for (int i = 0; i < 10; i++) {
+                hand.add(i, new AssistantCard(i + 1, (i + 1) / 2 + (i + 1) % 2));
+            }
         }
+        else
+            throw new IllegalArgumentException("Illegal number of players");
     }
 
     public String getNickname() {
@@ -51,7 +60,15 @@ public class Player {
         return discardCard;
     }
 
-    // Coin management to be implemented
+    public int getNumCoin() {
+        return coin;
+    }
+
+    public Board getBoard() {
+        return board;
+    }
+
+    //Coin management to be added
 }
 
 
