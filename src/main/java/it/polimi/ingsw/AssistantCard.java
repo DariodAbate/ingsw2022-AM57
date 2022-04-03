@@ -1,14 +1,13 @@
 package it.polimi.ingsw;
 
 public class AssistantCard {
-    private int movement;
-    private int priority;
+    private final int movement;
+    private final int priority;
     private CardBack back;
 
-    public AssistantCard(int priority, int movement, CardBack back) {
+    public AssistantCard(int priority, int movement) {
         this.movement = movement;
         this.priority = priority;
-        this.back = back;
     }
 
     public int getMovement() {
@@ -19,4 +18,11 @@ public class AssistantCard {
         return this.priority;
     }
 
+    public void setCardBack(CardBack back) {
+        this.back = back;
+    }
+
+    public CardBack getCardBack() {
+        return this.back;
+    }
 }
