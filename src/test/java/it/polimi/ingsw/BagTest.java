@@ -1,5 +1,8 @@
 package it.polimi.ingsw;
 
+import it.polimi.ingsw.Model.Bag;
+import it.polimi.ingsw.Model.Color;
+import it.polimi.ingsw.Model.StudentsHandler;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;

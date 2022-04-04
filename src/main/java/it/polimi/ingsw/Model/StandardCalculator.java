@@ -1,11 +1,13 @@
-package it.polimi.ingsw;
+package it.polimi.ingsw.Model;
+
+import it.polimi.ingsw.Model.*;
 
 /** The Standard checkInfluence calculator state
  * @author Lorenzo Corrado
  *
  */
 
-public class StandardCalculator implements InfluenceCalculator{
+public class StandardCalculator implements InfluenceCalculator {
     private IslandTile island;
 
     public StandardCalculator(){

@@ -1,5 +1,8 @@
 package it.polimi.ingsw;
 
+import it.polimi.ingsw.Model.CloudTile;
+import it.polimi.ingsw.Model.Color;
+import it.polimi.ingsw.Model.StudentsHandler;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 

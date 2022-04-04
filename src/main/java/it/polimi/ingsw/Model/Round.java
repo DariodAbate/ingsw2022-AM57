@@ -1,10 +1,12 @@
-package it.polimi.ingsw;
+package it.polimi.ingsw.Model;
+
+import it.polimi.ingsw.Model.Player;
 
 import java.util.ArrayList;
 import java.util.Collections;
 
 /**
- * The Round class incorporates the management of the different pianification and action
+ * The Round class incorporates the management of the different planning and action
  * phases. In particular, it provides the methods to manage the progress of the turns
  * and the tracking of the current player.
  *
@@ -12,17 +14,17 @@ import java.util.Collections;
  */
 public class Round {
     private int roundNumber;
-    private ArrayList<Player> pianificationOrder;
+    private ArrayList<Player> planningPhaseOrder;
     private ArrayList<Player> actionOrder;
     private ArrayList<Player> playersCopy;
     private Player currentTurn;
-    private boolean isPianification;
+    private boolean isPlanning;
 
     /**
      * Constructor of the class. Given the Arraylist of the players that are playing it
-     * initializes the actionOrder list and the pianificationOrder list equal to the given
-     * parameter list. The constructor also initialize the boolean value isPianification to true
-     * becasue each game will start from this phase.
+     * initializes the actionOrder list and the planningPhaseOrder list equal to the given
+     * parameter list. The constructor also initialize the boolean value isPlanning to true
+     * because each game will start from this phase.
      * @param players is the list of player that are actually playing the game
      * @throws NullPointerException if the list player is null
      * @throws IllegalArgumentException if there are more than 3 player or less than 2
@@ -35,8 +37,8 @@ public class Round {
         roundNumber = 0;
         playersCopy = new ArrayList<>(players);
         actionOrder = new ArrayList<>(players);
-        pianificationOrder = new ArrayList<>(players);
-        isPianification = true;
+        planningPhaseOrder = new ArrayList<>(players);
+        isPlanning = true;
     }
 
     /**
@@ -48,15 +50,15 @@ public class Round {
     }
 
     /**
-     * Gets the list of the players during the pianification phase calculated in accord
+     * Gets the list of the players during the planning phase calculated in accord
      * to the game's rules.
-     * @return the list of players during the pianification phase.
+     * @return the list of players during the planning phase.
      */
-    public ArrayList<Player> getPianificationOrder() {
-        if (pianificationOrder == null)
-            throw new NullPointerException("There is no pianification list yet");
+    public ArrayList<Player> getPlanningPhaseOrder() {
+        if (planningPhaseOrder == null)
+            throw new NullPointerException("There is no planning list yet");
         else
-            return pianificationOrder;
+            return planningPhaseOrder;
     }
 
     /**
@@ -72,34 +74,34 @@ public class Round {
     }
 
     /**
-     * This method set the pianification phase list of players. At the beginning all element of
-     * the previous pianification's list are removed. Then the variable firstPlayer is initialized
+     * This method set the planning phase list of players. At the beginning all element of
+     * the previous planning list are removed. Then the variable firstPlayer is initialized
      * with the player that has played the card with the lower priority and finally the other players
      * are added to the list simulating a clockwise lap as you would do in the physical game.
      */
-    public void setPianificationOrder() {
-        pianificationOrder.removeAll(playersCopy);
+    public void setPlanningPhaseOrder() {
+        planningPhaseOrder.removeAll(playersCopy);
         Player firstPlayer = Collections.min(playersCopy, (player1, player2) -> {
             if (player1.viewLastCard().getPriority() < player2.viewLastCard().getPriority())
                 return -1;
             else
                 return 1;
         });
-        pianificationOrder.add(firstPlayer);
+        planningPhaseOrder.add(firstPlayer);
         int firstPlayerIndex = playersCopy.indexOf(firstPlayer);
         if (playersCopy.size() == 3) {
-            pianificationOrder.add(playersCopy.get((firstPlayerIndex +1)%3));
-            pianificationOrder.add(playersCopy.get((firstPlayerIndex +2)%3));
+            planningPhaseOrder.add(playersCopy.get((firstPlayerIndex +1)%3));
+            planningPhaseOrder.add(playersCopy.get((firstPlayerIndex +2)%3));
         }
         if(playersCopy.size() == 2) {
-            pianificationOrder.add(playersCopy.get((firstPlayerIndex +1)%2));
+            planningPhaseOrder.add(playersCopy.get((firstPlayerIndex +1)%2));
         }
     }
 
     /**
      * This method set the action phase list of players. The list is sorted from the
      * player which as played the lower priority card to the player which as played the highest
-     * priority card. The method also set the boolean variable isPianification to false that
+     * priority card. The method also set the boolean variable isPlanning to false that
      * indicates the beginning of the action phase.
      */
     // Case of same priority card to be added
@@ -112,7 +114,7 @@ public class Round {
                     return 1;
             });
         }
-        isPianification = false;
+        isPlanning = false;
     }
 
     /**
@@ -128,11 +130,11 @@ public class Round {
      */
     // Tests still to be done
     public void nextTurn() {
-        if (isPianification) {
-            if (pianificationOrder.iterator().hasNext())
-                currentTurn = pianificationOrder.iterator().next();
+        if (isPlanning) {
+            if (planningPhaseOrder.iterator().hasNext())
+                currentTurn = planningPhaseOrder.iterator().next();
             else
-                throw new IndexOutOfBoundsException("End of pianificationOrder list");
+                throw new IndexOutOfBoundsException("End of planningPhaseOrder list");
         } else {
             if (actionOrder.iterator().hasNext())
                 currentTurn = actionOrder.iterator().next();
@@ -143,12 +145,12 @@ public class Round {
 
     /**
      * This method increase the round number and set the boolean value
-     * isPianification to true which indicates the beginning of a new
-     * pianification phase.
+     * isPlanning to true which indicates the beginning of a new
+     * planning phase.
      */
     public void nextRound() {
         roundNumber += 1;
-        isPianification = true;
+        isPlanning = true;
     }
 }
 
