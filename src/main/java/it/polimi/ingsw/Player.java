@@ -14,6 +14,7 @@ public class Player {
     private AssistantCard discardCard;
     private Board board;
     private int coin;
+    private int id;
 
     public Player(String nick, int numPlayer) {
         if(numPlayer == 2 || numPlayer == 3){
@@ -25,6 +26,23 @@ public class Player {
         }
         else
             throw new IllegalArgumentException("Illegal number of players");
+    }
+
+    // Constructor added for testing
+    public Player(int id, int numPlayer) {
+        if(numPlayer == 2 || numPlayer == 3){
+            this.board = new Board(numPlayer);
+            this.id = id;
+            for (int i = 0; i < 10; i++) {
+                hand.add(i, new AssistantCard(i + 1, (i + 1) / 2 + (i + 1) % 2));
+            }
+        }
+        else
+            throw new IllegalArgumentException("Illegal number of players");
+    }
+
+    public int getId() {
+        return id;
     }
 
     public String getNickname() {
