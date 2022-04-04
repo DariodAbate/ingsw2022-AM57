@@ -6,8 +6,17 @@ import java.util.ArrayList;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+/**
+ * Class RoundTest tests Round
+ *
+ * @author Luca Bresciani
+ */
 class RoundTest {
 
+    /**
+     * This method tests that an Exception is thrown if the list of players
+     * didn't contain exactly 2 or 3 players.
+     */
     @Test
     void illegalNumberOfPlayers() {
         ArrayList<Player> players = new ArrayList<>();
@@ -20,6 +29,10 @@ class RoundTest {
                 });
     }
 
+    /**
+     * This method tests that an Exception in thrown if the given list
+     * of plaers is null.
+     */
     @Test
     void nullListOfPlayers() {
         assertThrows(NullPointerException.class,
@@ -29,6 +42,10 @@ class RoundTest {
     }
 
 
+    /**
+     * This method tests the correct working of the method setActionOrder()
+     * when there is a game with 3 players.
+     */
     @Test
     void setActionOrederTest3Player() {
         ArrayList<Player> players = new ArrayList<>();
@@ -55,6 +72,10 @@ class RoundTest {
         assertEquals(3, r.getActionOrder().get(0).getId());
     }
 
+    /**
+     * This method tests the correct working of setActionOrder()
+     * when there is a game with 2 players.
+     */
     @Test
     void setActionOrederTest2Player() {
         ArrayList<Player> players = new ArrayList<>();
@@ -70,6 +91,10 @@ class RoundTest {
         assertEquals(2, r.getActionOrder().get(0).getId());
     }
 
+    /**
+     * This method tests the correct working of the method setPianificationOrder()
+     * when there is a game with 3 players.
+     */
     @Test
     void pianificationOrderTest3Player() {
         ArrayList<Player> players = new ArrayList<>();
@@ -86,8 +111,17 @@ class RoundTest {
         r = new Round(players);
         r.setPianificationOrder();
         assertEquals(3, r.getPianificationOrder().get(1).getId());
+        p1.playCard(8);
+        p2.playCard(1);
+        p3.playCard(0);
+        r.setPianificationOrder();
+        assertEquals(2, r.getPianificationOrder().get(2).getId());
     }
 
+    /**
+     * This method tests the correct working of the method setPianificationOrder()
+     * when there is a game with 2 players.
+     */
     @Test
     void pianificationOrderTest2Player() {
         ArrayList<Player> players = new ArrayList<>();

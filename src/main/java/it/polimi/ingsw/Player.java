@@ -2,7 +2,7 @@ package it.polimi.ingsw;
 
 import java.util.ArrayList;
 /**
- * The Class Player contains all the information about the player and the methods to actually play the game.
+ * The Player class contains all the information about the player and the methods to actually play the game.
  * In addition to the necessary methods to choose and play the assistant's card the class also contains methods
  * to take new coins and use it as well.
  *
@@ -16,6 +16,15 @@ public class Player {
     private int coin;
     private int id;
 
+    /**
+     * Constructor of the class. It initializes the player attributes and the
+     * 10 cards that each player have in their hand. The cards are initialized
+     * with a for loop where while the priority increases one by one the movement
+     * increases by one point every two cards.
+     * @param nick nickname of the player
+     * @param numPlayer number of player chosen by the first player
+     * @throws IllegalArgumentException if the number of player isn't 2 or 3
+     */
     public Player(String nick, int numPlayer) {
         if(numPlayer == 2 || numPlayer == 3){
             this.board = new Board(numPlayer);
@@ -28,7 +37,13 @@ public class Player {
             throw new IllegalArgumentException("Illegal number of players");
     }
 
-    // Constructor added for testing
+    /**
+     * Constructor added for testing that identifies each player with an id
+     * instead of the nickname.
+     * @param id integer that identifies each player
+     * @param numPlayer number of player chosen by the first player
+     * @throws IllegalArgumentException if the number of player isn't 2 or 3
+     */
     public Player(int id, int numPlayer) {
         if(numPlayer == 2 || numPlayer == 3){
             this.board = new Board(numPlayer);
@@ -41,14 +56,27 @@ public class Player {
             throw new IllegalArgumentException("Illegal number of players");
     }
 
+    /**
+     * Gets the player's id.
+     * @return the player's id
+     */
     public int getId() {
         return id;
     }
 
+    /**
+     * Gets the nickname of the player.
+     * @return the nickname of the player
+     */
     public String getNickname() {
         return nickname;
     }
 
+    /**
+     * Allow the player to choose his preferred card back between the 4
+     * present in the game.
+     * @param back is the chosen card back
+     */
     public void chooseBack(CardBack back) {
         if (back == null)
             throw new NullPointerException();
@@ -58,6 +86,13 @@ public class Player {
             }
     }
 
+    /**
+     * This method is called when the player have to play a card. The player
+     * should provide the index of the card he wants to play. Once played the card
+     * is removed from the hand of the player and is added to the discarded cards.
+     * @param chosenCard is the index of the card chosen by the player
+     * @return the played card
+     */
     public AssistantCard playCard(int chosenCard) {
         if (chosenCard < 0 || chosenCard > hand.size()-1) {
             throw new IllegalArgumentException("The card index should be between 0 and the index of the last card");
@@ -70,18 +105,34 @@ public class Player {
         }
     }
 
+    /**
+     * Gets the list of the cards that the player haven' t already played.
+     * @return the list of cards that the player haven't already played
+     */
     public ArrayList<AssistantCard> getPlayableCard() {
         return new ArrayList<>(hand);
     }
 
+    /**
+     * Gets the last discarded card.
+     * @return the last discarded card
+     */
     public AssistantCard viewLastCard() {
         return discardCard;
     }
 
+    /**
+     * Gets the number of coin that a player have
+     * @return the number of coin that a player have
+     */
     public int getNumCoin() {
         return coin;
     }
 
+    /**
+     * Gets the player's board.
+     * @return the player's board
+     */
     public Board getBoard() {
         return board;
     }
