@@ -3,15 +3,21 @@ package it.polimi.ingsw;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Set;
-//The control about the increment of the tokens is controlled by the methods isAddable and isRemovable.
-//The add function just
 
+/**
+ * This class utilizes a Hashmap to represent the tokens, and a MaxSize that is the maximum
+ * number of students for each color
+ * @author Lorenzo Corrado
+ */
 public class StudentsHandler {
     private static final int MAXSIZE = 26;
     private HashMap<Color, Integer> students;
     //maximum size that you can have for every single color, if not specified it is 26
     int sizeMax;
 
+    /**
+     * This constructor utilizes the default maximum size for EACH color
+     */
     public StudentsHandler() {
         students = new HashMap<>();
         for (Color color:
@@ -20,6 +26,12 @@ public class StudentsHandler {
         }
         this.sizeMax = MAXSIZE;
     }
+
+    /**
+     * This constructor utilizes a custom size
+     * @throws IllegalArgumentException if put an illegal size
+     * @param size
+     */
 
     public StudentsHandler(int size){
         students = new HashMap<>();
@@ -35,6 +47,11 @@ public class StudentsHandler {
         }
     }
 
+
+    /**
+     * This method adds one single student for the specified color
+     * @param color The color of the student
+     */
     public void add(Color color) {
             if(color == null){
                 throw new NullPointerException("Colore null");
@@ -47,6 +64,12 @@ public class StudentsHandler {
             }
     }
 
+    /**
+     * This method add a custom number of students for the specified color
+     * If you add more students than the maximum size it will set the number of students to sizeMax
+     * @param color The color of the students
+     * @param num The number of students to add
+     */
     public void add(Color color, int num){
             if(color == null){
                 throw new NullPointerException("Colore null");
@@ -60,6 +83,11 @@ public class StudentsHandler {
         students.put(color, Math.min(temp + num, sizeMax)); //Careful, you can lose some tokens in the exchange process!
     }
 
+    /**
+     * This method checks if an add would increment the number of students more than the maximum size
+     * @param color The color of the students to check
+     * @return
+     */
     public boolean isAddable(Color color){
         if(color == null){
             throw new NullPointerException("Colore null");
@@ -68,6 +96,12 @@ public class StudentsHandler {
         return students.get(color) + 1 <= sizeMax;
     }
 
+    /**
+     * This method checks if an add would increment the number of students more than the maximum size
+     * @param color The color of the students to check
+     * @param num The number of the increment
+     * @return
+     */
     public boolean isAddable(Color color, int num){
         if(color == null){
             throw new NullPointerException("Colore null");
@@ -75,7 +109,11 @@ public class StudentsHandler {
 
         return students.get(color) + num <= sizeMax;
     }
-    //if called in an already empty students, does nothing
+
+    /**
+     * This method remove one student token of the specified color
+     * @param color The specified color
+     */
     public void remove(Color color){
             if(color == null){
                 throw new NullPointerException("Colore null");
@@ -91,6 +129,13 @@ public class StudentsHandler {
                 students.put(color, 0);
             }
     }
+
+    /**
+     * This method remove a custom number of students of the specified color
+     * If you remove more students than the actual that are present it will set the number of students to 0
+     * @param color The specified color
+     * @param num The number of students to remove
+     */
     public void remove(Color color, int num){
             if(color == null){
                 throw new NullPointerException("Colore null");
@@ -105,6 +150,12 @@ public class StudentsHandler {
         students.put(color, Math.max(temp - num, 0));
 
     }
+
+    /**
+     * This method checks if is possible to remove one single student(i/e if is empty)
+     * @param color The specified color
+     * @return
+     */
     public boolean isRemovable(Color color){
         if(color == null){
             throw new NullPointerException("Colore null");
@@ -113,6 +164,12 @@ public class StudentsHandler {
         return students.get(color) - 1 >= 0;
     }
 
+    /**
+     * This method check if is possible to remove a custom number of students without losing tokens
+     * @param color The specified color
+     * @param num The number of students to remove
+     * @return
+     */
     public boolean isRemovable(Color color, int num){
         if(color == null){
             throw new NullPointerException("Colore null");
@@ -121,6 +178,9 @@ public class StudentsHandler {
         return students.get(color) - num >= 0;
     }
 
+    /**
+     * @return the TOTAL number of students
+     */
     public int numStudents(){
         int sum = 0;
         for (Color color :
@@ -129,6 +189,11 @@ public class StudentsHandler {
         }
         return sum;
     }
+
+    /**
+     * @param color The specified color
+     * @return The number of students of that specified color
+     */
     public int numStudents(Color color) {
         if(color == null){
             throw new NullPointerException("Colore null");

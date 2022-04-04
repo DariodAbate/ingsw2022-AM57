@@ -6,6 +6,10 @@ import static org.junit.jupiter.api.Assertions.*;
 //testati due metodi add, da finire
 class StudentsHandlerTest {
     //Test of constructor and add function
+
+    /**
+     * This method test the single add function with the two constructors, before and after reaching the maximum size
+     */
     @Test
     void add() {
         StudentsHandler stud2 = new StudentsHandler();
@@ -26,6 +30,11 @@ class StudentsHandlerTest {
         }
     }
     //test parameter add with the same two constructors
+
+    /**
+     * This method test the custom parameter add, testing the add before and after reaching the maximum
+     * It also tests invalid arguments
+     */
     @Test
     void numAdd() {
         StudentsHandler stud1 = new StudentsHandler();
@@ -44,6 +53,9 @@ class StudentsHandlerTest {
 
     }
 
+    /**
+     * This method tests the remove function before and after reaching the bottom limit (0) using both constructors
+     */
     @Test
     void remove() {
         StudentsHandler stud1 = new StudentsHandler(10);
@@ -68,6 +80,10 @@ class StudentsHandlerTest {
 
     }
 
+    /**
+     * This method tests the custom parameter remove, testing the remove before and after reaching the bottom limit(0)
+     * It also tests invalid arguments
+     */
     @Test
     void testRemove() {
 
@@ -86,6 +102,10 @@ class StudentsHandlerTest {
         }
     }
     //Verify all NullPointerException
+
+    /**
+     * This method tests ALL possible exceptions
+     */
     @Test
     void tryNull(){
         StudentsHandler stud  = new StudentsHandler();

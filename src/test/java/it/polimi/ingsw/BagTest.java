@@ -6,6 +6,9 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class BagTest {
 
+    /**
+     * This method tests all the constructors and tries to draw every single token from a bag filled with different tokens
+     */
     @Test
     void draw() {
         Bag bag1 = new Bag(10, 6, 9, 20, 29);
