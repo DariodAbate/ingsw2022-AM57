@@ -89,7 +89,7 @@ class IslandTileTest {
         //TEST FILL ISLAND
         island.add(Color.RED);
         island.conquer(players);
-        assertEquals(7, players.get(1).getBoard().getNumTower()); //TEST IF TOWER IS CORRECTLY REMOVED
+        assertEquals(5, players.get(1).getBoard().getNumTower()); //TEST IF TOWER IS CORRECTLY REMOVED
         assertEquals(1, island.getNumTowers());
         assertEquals(Tower.BLACK, island.getTowerColor());
         //TEST ALREADY FILLED ISLAND, NO CHANGE HOLDER
@@ -97,14 +97,14 @@ class IslandTileTest {
         island.add(Color.YELLOW);
         island.add(Color.YELLOW);
         island.conquer(players);
-        assertEquals(7, players.get(1).getBoard().getNumTower());
+        assertEquals(5, players.get(1).getBoard().getNumTower());
         assertEquals(1, island.getNumTowers());
         assertEquals(Tower.BLACK, island.getTowerColor());
         //TEST ALREADY FILLED ISLAND, CHANGE HOLDER
         island.add(Color.YELLOW);
         island.conquer(players);
-        assertEquals(8, players.get(1).getBoard().getNumTower());
-        assertEquals(7, players.get(0).getBoard().getNumTower());
+        assertEquals(6, players.get(1).getBoard().getNumTower());
+        assertEquals(5, players.get(0).getBoard().getNumTower());
         assertEquals(1, island.getNumTowers());
         assertEquals(Tower.WHITE, island.getTowerColor());
         //TEST CHANGE AGAIN HOLDER
@@ -113,8 +113,8 @@ class IslandTileTest {
         island.add(Color.RED);
         island.add(Color.GREEN);
         island.conquer(players);
-        assertEquals(7, players.get(1).getBoard().getNumTower());
-        assertEquals(8, players.get(0).getBoard().getNumTower());
+        assertEquals(5, players.get(1).getBoard().getNumTower());
+        assertEquals(6, players.get(0).getBoard().getNumTower());
         assertEquals(1, island.getNumTowers());
         assertEquals(Tower.BLACK, island.getTowerColor());
     }
