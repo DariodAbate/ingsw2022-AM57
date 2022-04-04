@@ -175,7 +175,6 @@ public class Board {
         else if (entranceIsFillable()){
             entrance.add(color);
         }
-
     }
 
     /**

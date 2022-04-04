@@ -1,6 +1,9 @@
 package it.polimi.ingsw;
 
-
+/**
+ * This class represents the bag of the game: the two constructors initialize the bag with the specified number of tokens
+ * @author Lorenzo Corrado
+ */
 public class Bag {
     private StudentsHandler token;
     //2 constructor: the first is very specific, the second is a generic one
@@ -24,10 +27,15 @@ public class Bag {
         }
     }
 
+    /**
+     * This method simulates a real draw calculating the probability of each color to be extracted, than he removes the
+     * extracted token from the bag
+     * @return The color of the extracted token, if the bag is empty return null
+     */
     public Color draw(){
         if(isEmpty())
         {
-            return null; //Need to add startgame() from Game class
+            return null; //Need to add endgame() from Game class
         }
         //every time I need to draw, I calculate the probability of it;
         double prob;
@@ -65,10 +73,17 @@ public class Bag {
         }
     }
 
+    /**
+     * @return The current size of the bag
+     */
     public int size(){
         return token.numStudents();
     }
 
+    /**
+     *
+     * @return If the bag is empty or not
+     */
     public boolean isEmpty(){
         return token.numStudents() == 0;
     }
