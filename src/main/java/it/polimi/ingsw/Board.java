@@ -17,11 +17,13 @@ public class Board {
     private StudentsHandler hall;
     private Set<Color> professors;
     private final int maxSizeEntr;
+    private final int numPlayer;
 
     private static final int HALLSIZE = 10; //maximum size for every color
     private static final int ENTRANCESIZE2PLAYER = 7; //maximum size of the entrance, not for the single color
     private static final int ENTRANCESIZE3PLAYER = 9; //maximum size of the hall, not for the single color
-    private static final int NUMTOWER = 8;
+    private static final int NUMTOWER2PLAYER = 8;
+    private static final int NUMTOWER3PLAYER = 6;
 
     /**
      * Constructor of the class. It can handle games for 2 or 3 players
@@ -29,16 +31,18 @@ public class Board {
      * @throws IllegalArgumentException if it is passed a number of player that's neither 2 nor 3
      */
     public Board(int numPlayer) {
-        numTower = NUMTOWER;
+        this.numPlayer = numPlayer;
         professors = new HashSet<>();
 
         if (numPlayer == 2) {
             entrance = new StudentsHandler(ENTRANCESIZE2PLAYER);
             maxSizeEntr = ENTRANCESIZE2PLAYER;
+            numTower = NUMTOWER2PLAYER;
         }
         else if (numPlayer == 3) {
             entrance = new StudentsHandler(ENTRANCESIZE3PLAYER);
             maxSizeEntr = ENTRANCESIZE3PLAYER;
+            numTower = NUMTOWER3PLAYER;
         }
         else
             throw new IllegalArgumentException("Illegal number of players");
@@ -86,7 +90,8 @@ public class Board {
      * otherwise the number is unchanged
      */
     public void incNumTower(){
-        if(this.numTower < NUMTOWER)
+        if(this.numTower < NUMTOWER2PLAYER && numPlayer == 2 ||
+                this.numTower < NUMTOWER3PLAYER && numPlayer == 3)
             ++ this.numTower;
     }
 

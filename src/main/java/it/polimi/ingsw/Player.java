@@ -1,7 +1,6 @@
 package it.polimi.ingsw;
 
 import java.util.ArrayList;
-
 /**
  * The Class Player contains all the information about the player and the methods to actually play the game.
  * In addition to the necessary methods to choose and play the assistant's card the class also contains methods
@@ -10,33 +9,40 @@ import java.util.ArrayList;
  * @author Luca Bresciani
  */
 public class Player {
-    final private int id;
     private String nickname;
     private ArrayList<AssistantCard> hand = new ArrayList<>();
     private AssistantCard discardCard;
     private Board board;
     private int coin;
+    private int id;
 
-
-    public Player(int id, int numPlayer) {
-        if (numPlayer < 2 || numPlayer > 3)
-            throw new IllegalArgumentException("The number of Player should be between 2 and 3");
-        board = new Board(numPlayer);
-        this.id = id;
-        for (int i = 0; i < 10; i++) {
-            hand.add(i, new AssistantCard(i + 1, (i + 1) / 2 + (i + 1) % 2));
+    public Player(String nick, int numPlayer) {
+        if(numPlayer == 2 || numPlayer == 3){
+            this.board = new Board(numPlayer);
+            this.nickname = nick;
+            for (int i = 0; i < 10; i++) {
+                hand.add(i, new AssistantCard(i + 1, (i + 1) / 2 + (i + 1) % 2));
+            }
         }
+        else
+            throw new IllegalArgumentException("Illegal number of players");
+    }
+
+    // Constructor added for testing
+    public Player(int id, int numPlayer) {
+        if(numPlayer == 2 || numPlayer == 3){
+            this.board = new Board(numPlayer);
+            this.id = id;
+            for (int i = 0; i < 10; i++) {
+                hand.add(i, new AssistantCard(i + 1, (i + 1) / 2 + (i + 1) % 2));
+            }
+        }
+        else
+            throw new IllegalArgumentException("Illegal number of players");
     }
 
     public int getId() {
         return id;
-    }
-
-    public void setNickname(String nickname) {
-        if (nickname == null)
-            throw new NullPointerException();
-        else
-            this.nickname = nickname;
     }
 
     public String getNickname() {
@@ -51,7 +57,6 @@ public class Player {
                 hand.get(i).setCardBack(back);
             }
     }
-
 
     public AssistantCard playCard(int chosenCard) {
         if (chosenCard < 0 || chosenCard > hand.size()-1) {
@@ -81,7 +86,7 @@ public class Player {
         return board;
     }
 
-     //Coin management to be added
+    //Coin management to be added
 }
 
 

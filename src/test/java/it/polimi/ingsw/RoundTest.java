@@ -28,31 +28,6 @@ class RoundTest {
                 });
     }
 
-    @Test
-    void noPianificationOrderYet() {
-        ArrayList<Player> players = new ArrayList<>();
-        for (int i = 0; i < 3; i ++) {
-            players.add(new Player(i,3));
-        }
-        Round r = new Round(new ArrayList<>(players));
-        assertThrows(NullPointerException.class,
-                () -> {
-                    r.getPianificationOrder();
-                });
-    }
-
-    @Test
-    void noActionOrderYet() {
-        ArrayList<Player> players = new ArrayList<>();
-        for (int i = 0; i < 5; i ++) {
-            players.add(new Player(i,3));
-        }
-        Round r = new Round(players);
-        assertThrows(NullPointerException.class,
-                () -> {
-                    r.getActionOrder();
-                });
-    }
 
     @Test
     void setActionOrederTest3Player() {
@@ -127,4 +102,5 @@ class RoundTest {
         r.setPianificationOrder();
         assertEquals(27, r.getPianificationOrder().get(1).getId());
     }
+
 }

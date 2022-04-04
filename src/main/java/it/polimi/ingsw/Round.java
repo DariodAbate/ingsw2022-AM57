@@ -89,7 +89,6 @@ public class Round {
                 currentTurn = actionOrder.iterator().next();
             else
                 throw new IndexOutOfBoundsException("End of actionOrder list");
-            isPianification = true;
         }
     }
 
