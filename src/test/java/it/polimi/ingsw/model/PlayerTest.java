@@ -1,7 +1,7 @@
-package it.polimi.ingsw;
+package it.polimi.ingsw.model;
 
-import it.polimi.ingsw.Model.CardBack;
-import it.polimi.ingsw.Model.Player;
+import it.polimi.ingsw.model.CardBack;
+import it.polimi.ingsw.model.Player;
 import org.junit.jupiter.api.Test;
 
 import org.junit.jupiter.api.BeforeEach;

@@ -1,6 +1,4 @@
-package it.polimi.ingsw.Model;
-
-import it.polimi.ingsw.Model.Color;
+package it.polimi.ingsw.model;
 
 import java.util.HashMap;
 

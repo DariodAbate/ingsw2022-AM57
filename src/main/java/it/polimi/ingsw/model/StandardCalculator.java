@@ -1,6 +1,4 @@
-package it.polimi.ingsw.Model;
-
-import it.polimi.ingsw.Model.*;
+package it.polimi.ingsw.model;
 
 /** The Standard checkInfluence calculator state
  * @author Lorenzo Corrado

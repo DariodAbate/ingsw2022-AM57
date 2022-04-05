@@ -1,7 +1,7 @@
-package it.polimi.ingsw;
+package it.polimi.ingsw.model;
 
-import it.polimi.ingsw.Model.Color;
-import it.polimi.ingsw.Model.StudentsHandler;
+import it.polimi.ingsw.model.Color;
+import it.polimi.ingsw.model.StudentsHandler;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;

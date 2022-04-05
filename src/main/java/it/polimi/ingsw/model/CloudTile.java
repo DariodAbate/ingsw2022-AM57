@@ -1,4 +1,4 @@
-package it.polimi.ingsw.Model;
+package it.polimi.ingsw.model;
 
 /**
  * This class represent the cloud tile, shared by every player.

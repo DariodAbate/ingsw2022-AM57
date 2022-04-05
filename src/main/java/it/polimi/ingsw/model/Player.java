@@ -1,8 +1,4 @@
-package it.polimi.ingsw.Model;
-
-import it.polimi.ingsw.Model.AssistantCard;
-import it.polimi.ingsw.Model.Board;
-import it.polimi.ingsw.Model.CardBack;
+package it.polimi.ingsw.model;
 
 import java.util.ArrayList;
 /**
