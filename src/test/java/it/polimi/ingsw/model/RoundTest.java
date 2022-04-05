@@ -1,5 +1,7 @@
-package it.polimi.ingsw;
+package it.polimi.ingsw.model;
 
+import it.polimi.ingsw.model.Player;
+import it.polimi.ingsw.model.Round;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
@@ -31,7 +33,7 @@ class RoundTest {
 
     /**
      * This method tests that an Exception in thrown if the given list
-     * of plaers is null.
+     * of players is null.
      */
     @Test
     void nullListOfPlayers() {
@@ -47,7 +49,7 @@ class RoundTest {
      * when there is a game with 3 players.
      */
     @Test
-    void setActionOrederTest3Player() {
+    void setActionOrderTest3Player() {
         ArrayList<Player> players = new ArrayList<>();
         Round r;
         Player p1 = new Player(1, 3);
@@ -77,7 +79,7 @@ class RoundTest {
      * when there is a game with 2 players.
      */
     @Test
-    void setActionOrederTest2Player() {
+    void setActionOrderTest2Player() {
         ArrayList<Player> players = new ArrayList<>();
         Round r;
         Player p1 = new Player(1, 2);
@@ -92,11 +94,11 @@ class RoundTest {
     }
 
     /**
-     * This method tests the correct working of the method setPianificationOrder()
+     * This method tests the correct working of the method setPlanningPhaseOrder()
      * when there is a game with 3 players.
      */
     @Test
-    void pianificationOrderTest3Player() {
+    void planningPhaseOrderTest3Player() {
         ArrayList<Player> players = new ArrayList<>();
         Round r;
         Player p1 = new Player(1, 3);
@@ -109,21 +111,21 @@ class RoundTest {
         players.add(p2);
         players.add(p3);
         r = new Round(players);
-        r.setPianificationOrder();
-        assertEquals(3, r.getPianificationOrder().get(1).getId());
+        r.setPlanningPhaseOrder();
+        assertEquals(3, r.getPlanningPhaseOrder().get(1).getId());
         p1.playCard(8);
         p2.playCard(1);
         p3.playCard(0);
-        r.setPianificationOrder();
-        assertEquals(2, r.getPianificationOrder().get(2).getId());
+        r.setPlanningPhaseOrder();
+        assertEquals(2, r.getPlanningPhaseOrder().get(2).getId());
     }
 
     /**
-     * This method tests the correct working of the method setPianificationOrder()
+     * This method tests the correct working of the method setPlanningPhaseOrder()
      * when there is a game with 2 players.
      */
     @Test
-    void pianificationOrderTest2Player() {
+    void planningPhaseOrderTest2Player() {
         ArrayList<Player> players = new ArrayList<>();
         Round r;
         Player p1 = new Player(27, 3);
@@ -133,8 +135,8 @@ class RoundTest {
         players.add(p1);
         players.add(p2);
         r = new Round(players);
-        r.setPianificationOrder();
-        assertEquals(27, r.getPianificationOrder().get(1).getId());
+        r.setPlanningPhaseOrder();
+        assertEquals(27, r.getPlanningPhaseOrder().get(1).getId());
     }
 
 }

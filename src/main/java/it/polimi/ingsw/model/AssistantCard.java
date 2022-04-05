@@ -1,4 +1,4 @@
-package it.polimi.ingsw;
+package it.polimi.ingsw.model;
 
 /**
  * The AssistantCard class represent the card of the game.

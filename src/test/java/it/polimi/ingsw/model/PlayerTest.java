@@ -1,10 +1,10 @@
-package it.polimi.ingsw;
+package it.polimi.ingsw.model;
 
+import it.polimi.ingsw.model.CardBack;
+import it.polimi.ingsw.model.Player;
 import org.junit.jupiter.api.Test;
 
 import org.junit.jupiter.api.BeforeEach;
-
-import java.util.ArrayList;
 
 import static org.junit.jupiter.api.Assertions.*;
 

@@ -1,8 +1,6 @@
-package it.polimi.ingsw;
+package it.polimi.ingsw.model;
 
 import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Set;
 
 /**
  * This class utilizes a Hashmap to represent the tokens, and a MaxSize that is the maximum

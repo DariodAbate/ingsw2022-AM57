@@ -1,4 +1,4 @@
-package it.polimi.ingsw;
+package it.polimi.ingsw.model;
 
 /**
  * This class represents the bag of the game: the two constructors initialize the bag with the specified number of tokens
