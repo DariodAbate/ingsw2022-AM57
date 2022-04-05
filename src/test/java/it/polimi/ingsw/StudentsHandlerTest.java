@@ -8,7 +8,9 @@ class StudentsHandlerTest {
     //Test of constructor and add function
 
     /**
-     * This method test the single add function with the two constructors, before and after reaching the maximum size
+     * This method tests the single add function with the two constructors:
+     * using two different size for the StudentsHandler and it verifies the correct increment of the value (for each color)
+     *
      */
     @Test
     void add() {
