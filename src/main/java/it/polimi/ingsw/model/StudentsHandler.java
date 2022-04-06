@@ -1,6 +1,7 @@
 package it.polimi.ingsw.model;
 
 import java.util.HashMap;
+import java.util.Map;
 
 /**
  * This class utilizes a Hashmap to represent the tokens, and a MaxSize that is the maximum
@@ -9,7 +10,7 @@ import java.util.HashMap;
  */
 public class StudentsHandler {
     private static final int MAXSIZE = 26;
-    private HashMap<Color, Integer> students;
+    private Map<Color, Integer> students;
     //maximum size that you can have for every single color, if not specified it is 26
     int sizeMax;
 

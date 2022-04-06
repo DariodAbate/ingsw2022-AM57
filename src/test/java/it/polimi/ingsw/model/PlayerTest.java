@@ -2,6 +2,9 @@ package it.polimi.ingsw.model;
 
 import it.polimi.ingsw.model.CardBack;
 import it.polimi.ingsw.model.Player;
+import it.polimi.ingsw.model.constantFactory.GameConstants;
+import it.polimi.ingsw.model.constantFactory.GameConstantsCreator;
+import it.polimi.ingsw.model.constantFactory.GameConstantsCreatorTwoPlayers;
 import org.junit.jupiter.api.Test;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -15,20 +18,13 @@ import static org.junit.jupiter.api.Assertions.*;
  */
 class PlayerTest {
     Player p;
+    GameConstantsCreator gameConstantsCreator;
 
     @BeforeEach
     void setup(){
-         p = new Player("foo", 2);
-    }
-
-    /**
-     * This method tests that an Exception is thrown if an illegal number
-     * of player is given as a parameter to the Player constructor.
-     */
-    @Test
-    void illegalNumberOfPlayer() {
-        assertThrows(IllegalArgumentException.class,
-                () -> p = new Player("foo", 4));
+        gameConstantsCreator = new GameConstantsCreatorTwoPlayers();
+        GameConstants constants = gameConstantsCreator.create();
+        p = new Player("Luca", constants);
     }
 
     /**

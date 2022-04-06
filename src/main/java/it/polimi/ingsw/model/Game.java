@@ -185,7 +185,7 @@ public class Game {
     private void initClouds(){
         cloudTiles = new ArrayList<>();
         for(int i = 0; i < gameConstants.getNumClouds(); ++i)
-            cloudTiles.add(new CloudTile(numGamePlayers));
+            cloudTiles.add(new CloudTile(gameConstants));
     }
 
     //in later version a player will be able to choose his own tower's color

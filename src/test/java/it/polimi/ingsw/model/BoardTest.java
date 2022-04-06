@@ -1,7 +1,8 @@
 package it.polimi.ingsw.model;
 
-import it.polimi.ingsw.model.Board;
-import it.polimi.ingsw.model.Color;
+import it.polimi.ingsw.model.constantFactory.GameConstants;
+import it.polimi.ingsw.model.constantFactory.GameConstantsCreator;
+import it.polimi.ingsw.model.constantFactory.GameConstantsCreatorTwoPlayers;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -15,26 +16,15 @@ import static org.junit.jupiter.api.Assertions.*;
  */
 class BoardTest {
     Board b;
+    GameConstantsCreator g;
 
     @BeforeEach
     void setup() {
-        b = new Board(2);
+        g = new GameConstantsCreatorTwoPlayers();
+        GameConstants gc = g.create();
+        b = new Board(gc);
     }
 
-    /**
-     * Method that tests the constructor when is
-     * passed a number of player that's neither 2 nor 3
-     * @throws IllegalArgumentException when illegal number of players is passed
-     */
-    @Test
-    @DisplayName("Constructor test with illegal number of players")
-    void testConstructorException() {
-
-        assertThrows(IllegalArgumentException.class,
-                () -> {
-                    Board b = new Board(5);
-                });
-    }
 
     /**
      *Method that tests addProfessor() trying to add
