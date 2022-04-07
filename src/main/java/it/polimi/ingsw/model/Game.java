@@ -294,7 +294,9 @@ public class Game {
         //check merge condition TODO
     }
 
-    public void mergeIslandTile(){}//TODO
+    public void mergeIslandTile(){
+
+    }//TODO
 
     /**
      * @return the references to the island with mother nature on it
