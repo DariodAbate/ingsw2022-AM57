@@ -3,6 +3,10 @@ package it.polimi.ingsw.model;
 import it.polimi.ingsw.model.CloudTile;
 import it.polimi.ingsw.model.Color;
 import it.polimi.ingsw.model.StudentsHandler;
+import it.polimi.ingsw.model.constantFactory.GameConstants;
+import it.polimi.ingsw.model.constantFactory.GameConstantsCreator;
+import it.polimi.ingsw.model.constantFactory.GameConstantsCreatorThreePlayers;
+import it.polimi.ingsw.model.constantFactory.GameConstantsCreatorTwoPlayers;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -14,6 +18,7 @@ import static org.junit.jupiter.api.Assertions.*;
  * @author Dario d'Abate
  */
 class CloudTileTest {
+    GameConstantsCreator g;
 
     /**
      * Method that tests fill() when the cloud tile is initially empty.
@@ -22,7 +27,9 @@ class CloudTileTest {
     @Test
     @DisplayName("Filling an initially empty cloud test")
     void fill() {
-        CloudTile c = new CloudTile(3);
+        g = new GameConstantsCreatorThreePlayers();
+        GameConstants gc = g.create();
+        CloudTile c = new CloudTile(gc);
         assertEquals(0, c.numStudOn());
         c.fill(Color.YELLOW);
         assertEquals(1, c.numStudOn(Color.YELLOW));
@@ -35,7 +42,9 @@ class CloudTileTest {
      */
     @Test
     void fillCloudNullColor() {
-        CloudTile c = new CloudTile(3);
+        g = new GameConstantsCreatorThreePlayers();
+        GameConstants gc = g.create();
+        CloudTile c = new CloudTile(gc);
         assertEquals(0, c.numStudOn());
         assertThrows(NullPointerException.class, () -> c.fill(null));
         assertEquals(0, c.numStudOn());
@@ -50,7 +59,9 @@ class CloudTileTest {
     @Test
     @DisplayName("Filling a tile with single student and tile initially full of single color test")
     void fillFull1() {
-        CloudTile c = new CloudTile(3); //for 3 players the maximum size is 4
+        g = new GameConstantsCreatorThreePlayers();
+        GameConstants gc = g.create();
+        CloudTile c = new CloudTile(gc); //for 3 players the maximum size is 4
         assertEquals(0, c.numStudOn());
         for (int i = 0; i < 4; i++)
             c.fill(Color.YELLOW);
@@ -68,7 +79,9 @@ class CloudTileTest {
     @Test
     @DisplayName("Filling a tile with single student and tile initially full of various color test")
     void fillFull2() {
-        CloudTile c = new CloudTile(3); //for 3 players the maximum size is 4
+        g = new GameConstantsCreatorThreePlayers();
+        GameConstants gc = g.create();
+        CloudTile c = new CloudTile(gc); //for 3 players the maximum size is 4
         assertEquals(0, c.numStudOn());
         for (int i = 0; i < 4; i++) {
             if(i < 2)
@@ -91,7 +104,9 @@ class CloudTileTest {
     @Test
     @DisplayName("Getting a full tile test")
     void getTile(){
-        CloudTile c1 = new CloudTile(2);
+        g = new GameConstantsCreatorTwoPlayers();
+        GameConstants gc = g.create();
+        CloudTile c1 = new CloudTile(gc);
         for (int i = 0; i < 3; i++) {
             if(i < 2)
                 c1.fill(Color.YELLOW);
@@ -114,7 +129,9 @@ class CloudTileTest {
     @Test
     @DisplayName("Getting a tile whe it is not full test")
     void getNotFullTile(){
-        CloudTile c = new CloudTile(2);
+        g = new GameConstantsCreatorTwoPlayers();
+        GameConstants gc = g.create();
+        CloudTile c = new CloudTile(gc);
         c.fill(Color.GREEN);
 
         assertEquals(1, c.numStudOn());
@@ -129,7 +146,9 @@ class CloudTileTest {
      */
     @Test
     void getEmptyTile(){
-        CloudTile c = new CloudTile(2);
+        g = new GameConstantsCreatorTwoPlayers();
+        GameConstants gc = g.create();
+        CloudTile c = new CloudTile(gc);
 
         assertEquals(0, c.numStudOn());
         assertThrows(IllegalStateException.class, c::getTile);

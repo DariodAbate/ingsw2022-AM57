@@ -2,6 +2,10 @@ package it.polimi.ingsw.model;
 
 import it.polimi.ingsw.model.Player;
 import it.polimi.ingsw.model.Round;
+import it.polimi.ingsw.model.constantFactory.GameConstants;
+import it.polimi.ingsw.model.constantFactory.GameConstantsCreator;
+import it.polimi.ingsw.model.constantFactory.GameConstantsCreatorThreePlayers;
+import it.polimi.ingsw.model.constantFactory.GameConstantsCreatorTwoPlayers;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
@@ -14,16 +18,18 @@ import static org.junit.jupiter.api.Assertions.*;
  * @author Luca Bresciani
  */
 class RoundTest {
-
+    GameConstantsCreator g;
     /**
      * This method tests that an Exception is thrown if the list of players
      * didn't contain exactly 2 or 3 players.
      */
     @Test
     void illegalNumberOfPlayers() {
+        g = new GameConstantsCreatorThreePlayers();
+        GameConstants gc = g.create();
         ArrayList<Player> players = new ArrayList<>();
         for (int i = 0; i < 5; i ++) {
-            players.add(new Player(i,3));
+            players.add(new Player(i,gc));
         }
         assertThrows(IllegalArgumentException.class,
                 () -> {
@@ -50,11 +56,13 @@ class RoundTest {
      */
     @Test
     void setActionOrderTest3Player() {
+        g = new GameConstantsCreatorThreePlayers();
+        GameConstants gc = g.create();
         ArrayList<Player> players = new ArrayList<>();
         Round r;
-        Player p1 = new Player(1, 3);
-        Player p2 = new Player(2, 3);
-        Player p3 = new Player(3, 3);
+        Player p1 = new Player(1, gc);
+        Player p2 = new Player(2, gc);
+        Player p3 = new Player(3, gc);
         p1.playCard(8);
         p2.playCard(0);
         p3.playCard(5);
@@ -80,10 +88,12 @@ class RoundTest {
      */
     @Test
     void setActionOrderTest2Player() {
+        g = new GameConstantsCreatorTwoPlayers();
+        GameConstants gc = g.create();
         ArrayList<Player> players = new ArrayList<>();
         Round r;
-        Player p1 = new Player(1, 2);
-        Player p2 = new Player(2, 2);
+        Player p1 = new Player(1, gc);
+        Player p2 = new Player(2, gc);
         p1.playCard(8);
         p2.playCard(0);
         players.add(p1);
@@ -99,11 +109,13 @@ class RoundTest {
      */
     @Test
     void planningPhaseOrderTest3Player() {
+        g = new GameConstantsCreatorThreePlayers();
+        GameConstants gc = g.create();
         ArrayList<Player> players = new ArrayList<>();
         Round r;
-        Player p1 = new Player(1, 3);
-        Player p2 = new Player(2, 3);
-        Player p3 = new Player(3, 3);
+        Player p1 = new Player(1, gc);
+        Player p2 = new Player(2, gc);
+        Player p3 = new Player(3, gc);
         p1.playCard(4);
         p2.playCard(0);
         p3.playCard(9);
@@ -126,10 +138,12 @@ class RoundTest {
      */
     @Test
     void planningPhaseOrderTest2Player() {
+        g = new GameConstantsCreatorTwoPlayers();
+        GameConstants gc = g.create();
         ArrayList<Player> players = new ArrayList<>();
         Round r;
-        Player p1 = new Player(27, 3);
-        Player p2 = new Player(10, 3);
+        Player p1 = new Player(27, gc);
+        Player p2 = new Player(10, gc);
         p1.playCard(4);
         p2.playCard(0);
         players.add(p1);

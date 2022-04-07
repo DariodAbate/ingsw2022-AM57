@@ -1,6 +1,10 @@
 package it.polimi.ingsw.model;
 
 import it.polimi.ingsw.model.*;
+import it.polimi.ingsw.model.constantFactory.GameConstants;
+import it.polimi.ingsw.model.constantFactory.GameConstantsCreator;
+import it.polimi.ingsw.model.constantFactory.GameConstantsCreatorThreePlayers;
+import it.polimi.ingsw.model.constantFactory.GameConstantsCreatorTwoPlayers;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -14,11 +18,14 @@ class IslandTileTest {
     ArrayList<Player> players = new ArrayList<>();
     StandardCalculator calc = new StandardCalculator();
     IslandTile island = new IslandTile(calc);
+    GameConstantsCreator g;
 
     @BeforeEach
     void setup(){
+        g = new GameConstantsCreatorThreePlayers();
+        GameConstants gc = g.create();
         for (int i = 0; i < 3; i++) {
-            players.add(new Player(i,3));
+            players.add(new Player(i,gc));
         }
         players.get(0).getBoard().addProfessor(Color.BLUE);
         players.get(0).getBoard().addProfessor(Color.YELLOW);
@@ -41,7 +48,9 @@ class IslandTileTest {
      */
     @Test
     void checkInfluence() {
-        Player player1 = new Player(0, 3);
+        g = new GameConstantsCreatorThreePlayers();
+        GameConstants gc = g.create();
+        Player player1 = new Player(0, gc);
         island.add(Color.GREEN);
         island.add(Color.PINK);
         island.add(Color.YELLOW);

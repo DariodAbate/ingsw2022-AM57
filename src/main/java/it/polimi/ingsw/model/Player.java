@@ -1,5 +1,7 @@
 package it.polimi.ingsw.model;
 
+import it.polimi.ingsw.model.constantFactory.GameConstants;
+
 import java.util.ArrayList;
 /**
  * The Player class contains all the information about the player and the methods to actually play the game.
@@ -9,6 +11,7 @@ import java.util.ArrayList;
  * @author Luca Bresciani
  */
 public class Player {
+    private GameConstants gameConstants;
     private String nickname;
     private ArrayList<AssistantCard> hand = new ArrayList<>();
     private AssistantCard discardCard;
@@ -22,38 +25,31 @@ public class Player {
      * with a for loop where while the priority increases one by one the movement
      * increases by one point every two cards.
      * @param nick nickname of the player
-     * @param numPlayer number of player chosen by the first player
+     * @param gameConstants is the object with all the constants in the game
      * @throws IllegalArgumentException if the number of player isn't 2 or 3
      */
-    public Player(String nick, int numPlayer) {
-        if(numPlayer == 2 || numPlayer == 3){
-            this.board = new Board(numPlayer);
-            this.nickname = nick;
-            for (int i = 0; i < 10; i++) {
-                hand.add(i, new AssistantCard(i + 1, (i + 1) / 2 + (i + 1) % 2));
-            }
+    public Player(String nick, GameConstants gameConstants) {
+        this.gameConstants = gameConstants;
+        this.board = new Board(gameConstants);
+        this.nickname = nick;
+        for (int i = 0; i < gameConstants.NUM_ASSISTANT_CARD; i++) {
+            hand.add(i, new AssistantCard(i + 1, (i + 1) / 2 + (i + 1) % 2));
         }
-        else
-            throw new IllegalArgumentException("Illegal number of players");
     }
 
     /**
      * Constructor added for testing that identifies each player with an id
      * instead of the nickname.
      * @param id integer that identifies each player
-     * @param numPlayer number of player chosen by the first player
+     * @param gameConstants is the object with all the constants in the game
      * @throws IllegalArgumentException if the number of player isn't 2 or 3
      */
-    public Player(int id, int numPlayer) {
-        if(numPlayer == 2 || numPlayer == 3){
-            this.board = new Board(numPlayer);
-            this.id = id;
-            for (int i = 0; i < 10; i++) {
-                hand.add(i, new AssistantCard(i + 1, (i + 1) / 2 + (i + 1) % 2));
-            }
+    public Player(int id, GameConstants gameConstants) {
+        this.board = new Board(gameConstants);
+        this.id = id;
+        for (int i = 0; i < gameConstants.NUM_ASSISTANT_CARD; i++) {
+            hand.add(i, new AssistantCard(i + 1, (i + 1) / 2 + (i + 1) % 2));
         }
-        else
-            throw new IllegalArgumentException("Illegal number of players");
     }
 
     /**
@@ -81,7 +77,7 @@ public class Player {
         if (back == null)
             throw new NullPointerException();
         else
-            for (int i = 0; i < 10; i ++) {
+            for (int i = 0; i < gameConstants.NUM_ASSISTANT_CARD; i ++) {
                 hand.get(i).setCardBack(back);
             }
     }

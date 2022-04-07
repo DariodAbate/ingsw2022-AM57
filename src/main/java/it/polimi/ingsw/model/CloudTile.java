@@ -1,5 +1,7 @@
 package it.polimi.ingsw.model;
 
+import it.polimi.ingsw.model.constantFactory.GameConstants;
+
 /**
  * This class represent the cloud tile, shared by every player.
  * It contains an attribute that represent the sets of students and the maximum size
@@ -8,29 +10,17 @@ package it.polimi.ingsw.model;
  */
 public class CloudTile {
     private StudentsHandler cloudStud;
-    private final int maxSize;
+    GameConstants gameConstants;
 
-
-    private static final int SIZE2PLAYER = 3;
-    private static final int SIZE3PLAYER = 4;
 
     /**
      * Constructor of the class. It can handle games for 2 or 3 players
-     * @param numPlayer Number of player
+     * @param gameConstants is the object with all the constants in the game
      *@throws IllegalArgumentException if it is passed a number of player that's neither 2 nor 3
      */
-    public CloudTile(int numPlayer){
-        if (numPlayer == 2) {
-            cloudStud = new StudentsHandler(SIZE2PLAYER);
-            maxSize = SIZE2PLAYER;
-        }
-        else if (numPlayer == 3){
-            cloudStud = new StudentsHandler(SIZE3PLAYER);
-            maxSize = SIZE3PLAYER;
-        }
-        else
-            throw new IllegalArgumentException("Illegal number of players");
-
+    public CloudTile(GameConstants gameConstants){
+        this.gameConstants = gameConstants;
+        cloudStud = new StudentsHandler(gameConstants.getNumStudentsOnCloud());
     }
 
     /**
@@ -63,7 +53,7 @@ public class CloudTile {
      * It indicates that the cloud tile can be filled with another student
      * @return True if the tile can be filled with one more student, false otherwise
      */
-    public boolean isFillable(){ return cloudStud.numStudents() < maxSize; }
+    public boolean isFillable(){ return cloudStud.numStudents() < gameConstants.getNumStudentsOnCloud(); }
 
     /**
      *This method put a single student on a tile as long as the cloud can contain it
@@ -89,7 +79,7 @@ public class CloudTile {
         if(isEmpty() || isFillable())
             throw new IllegalStateException();
 
-        StudentsHandler temp = new StudentsHandler(maxSize);
+        StudentsHandler temp = new StudentsHandler(gameConstants.getNumStudentsOnCloud());
         for(Color color: Color.values()){
             while(cloudStud.numStudents(color) > 0){
                 temp.add(color);
