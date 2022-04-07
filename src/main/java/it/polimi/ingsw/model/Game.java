@@ -23,7 +23,8 @@ public class Game {
     private ArrayList<IslandTile> archipelago;
     private int motherNature; //motherNature as an index corresponding to an island
     private int maxMovement; //maxMovement that mother nature can do
-    private Round round;
+    private RoundStub round; //FIXME
+    //using a stub for round
 
     /*
     Game creation rules, as indicated by specifications:
@@ -134,7 +135,7 @@ public class Game {
     }
 
     //initialize  a round through which the current player can be selected
-    private void initRound(){round = new Round(players);}
+    private void initRound(){round = new RoundStub(players);} //FIXME
 
     //initialize an archipelago with a standard influence's calculator for each islandTile
     private void initArchipelago(){
@@ -213,40 +214,45 @@ public class Game {
         }
     }
 
-    //TO BE TESTED
+
     /**
-     * This method is invoked whenever a cloud tile needs to be filled, after the current
-     * player has chosen it.
-     * @param idxEmptyCLoud is the index of the cloudTile to be filled
-     * @throws IllegalArgumentException when it is passed an index which does not have a
-     * corresponding cloud in the cloud arrayList
+     * This method is invoked whenever the set of cloud tiles needs to be filled
+     * with students.
+     * @throws IllegalStateException when there's at least one cloud tile that's not empty
      */
-    public void bagToClouds(int idxEmptyCLoud){
-        if(idxEmptyCLoud < 0 || idxEmptyCLoud > gameConstants.getNumClouds())
-            throw new IllegalArgumentException("The specified cloud tile does not exist");
-        CloudTile cloudTile = cloudTiles.get(idxEmptyCLoud);
-        while(cloudTile.isFillable()){
-            Color colorDrawn = actionBag.draw();
-            //check for end game condition TODO
-            cloudTile.fill(colorDrawn);
+    public void bagToClouds() {
+        for (CloudTile cloudTile : cloudTiles) {
+            if (!cloudTile.isEmpty())
+                throw new IllegalStateException("Cloud tiles need to be empty");
+        }
+        for (CloudTile cloudTile : cloudTiles){
+            while (cloudTile.isFillable()) {
+                Color colorDrawn = actionBag.draw();
+                //check for end game condition TODO
+                cloudTile.fill(colorDrawn);
+            }
         }
     }
 
-    //TO BE TESTED
     /**
      * This method is invoked when the current player need to move students from a cloud tile
      * to its board's entrance
      * @param idxChosenCloud is the index of the cloudTile to be emptied
-     * @throws IllegalArgumentException when it is passed an index which does not have a
+     * @throws IndexOutOfBoundsException when it is passed an index which does not have a
      * corresponding cloud in the cloud arrayList
+     * @throws IllegalStateException when a player has not moved all the students that has to move
+     * from the entrance
      */
     public void cloudToBoard(int idxChosenCloud){
         if(idxChosenCloud < 0 || idxChosenCloud > gameConstants.getNumClouds())
-            throw new IllegalArgumentException("The specified cloud tile does not exist");
+            throw new IndexOutOfBoundsException("The specified cloud tile does not exist");
 
         CloudTile cloudTile = cloudTiles.get(idxChosenCloud);
         StudentsHandler tempCloud = cloudTile.getTile();
         Board currentPlayerBoard = getCurrentPlayer().getBoard();
+
+        if(currentPlayerBoard.entranceSize() != gameConstants.getEntranceSize()- gameConstants.getNumStudentsOnCloud())
+            throw new IllegalStateException("The current player can still moves students");
 
         while(currentPlayerBoard.entranceIsFillable()){
             for(Color color: Color.values()){
@@ -259,14 +265,15 @@ public class Game {
 
     }
 
-    //TO BE TESTED
+    //TO BE TESTED TODO
+    //Chang javadoc TODO
     /**
      * This method is invoked by the current player to move a single student from its board to an
      * island tile
      */
     public void entranceToIsland(int idxChosenIsland, Color colorStudentToBeMoved){
         if(idxChosenIsland < 0 || idxChosenIsland > archipelago.size())
-            throw new IllegalArgumentException("The specified island tile does not exist");
+            throw new IndexOutOfBoundsException("The specified island tile does not exist");
 
         Board currentPlayerBoard = getCurrentPlayer().getBoard();
         if( ! currentPlayerBoard.studentInEntrance(colorStudentToBeMoved))
@@ -278,7 +285,7 @@ public class Game {
 
     }
 
-    //TO BE TESTED
+    //TO BE TESTED TODO
     //change this javadoc for conquering and merging TODO
     /**
      * causes mother nature to move by as many positions as indicated by the parameter

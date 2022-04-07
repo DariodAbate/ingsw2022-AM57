@@ -88,6 +88,11 @@ public class Board {
     public int entranceSize(){ return entrance.numStudents(); }
 
     /**
+     * @return true if there are no students in the entrance, false otherwise
+     */
+    public boolean entranceIsEmpty(){ return entrance.numStudents() == 0;}
+
+    /**
      *Gets the number of students in the entrance of the color specified as parameter
      * @param color Color of the students in the entrance
      * @return Number of  students of a determined color in the entrance
