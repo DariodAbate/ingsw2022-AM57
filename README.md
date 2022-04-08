@@ -11,9 +11,10 @@
 | Socket                          | 🔴 |
 | GUI                             | 🔴 |
 | CLI                             | 🔴 |
+| Character cards                 | 🔴 |
+| 4-players game                  | 🔴 |
 | Multiple games                  | 🔴 |
 | Persistence                     | 🔴 |
-| Advanced cards                  | 🔴 |
 | Resilience to disconnections    | 🔴 |
 
 #### Legend
