@@ -11,6 +11,7 @@ import java.util.Random;
  * the sets of islands and clouds.
  *
  * @author Dario d'Abate
+ * @author Lorenzo Corrado
  */
 public class Game {
     private GameConstants gameConstants;//contains all the game's constants
@@ -25,6 +26,7 @@ public class Game {
     private int maxMovement; //maxMovement that mother nature can do
     private RoundStub round; //FIXME
     //using a stub for round
+    private InfluenceCalculator calc; //calculator for the influence
 
     /*
     Game creation rules, as indicated by specifications:
@@ -145,6 +147,7 @@ public class Game {
             StandardCalculator influenceCalculator = new StandardCalculator();
             archipelago.add(new IslandTile(influenceCalculator));
         }
+        calc = new StandardCalculator();
     }
 
     //initializes two bags, one for filling the archipelago and another one
@@ -163,7 +166,7 @@ public class Game {
         Random random = new Random();
         return random.nextInt(max - min + 1) + min;
     }
-
+    public void setMotherNature(int i){motherNature = i; }
     private void putMotherNature(){
         motherNature = randomNumber();
     }
@@ -286,9 +289,10 @@ public class Game {
     }
 
     //TO BE TESTED TODO
-    //change this javadoc for conquering and merging TODO
     /**
-     * causes mother nature to move by as many positions as indicated by the parameter
+     * Causes mother nature to move by as many positions as indicated by the parameter.
+     * It also changes the InfluenceCalculator on the island, then it try to conquer the island if possible, and checks
+     * if it needs to merge the current island with the adjacent ones.
      * @param moves indicates the number of island mother nature has to travel
      * @throws IllegalArgumentException if the parameter is not greater than zero
      */
@@ -296,14 +300,99 @@ public class Game {
         if(moves <= 0 || moves > maxMovement)
             throw  new IllegalArgumentException("Illegal moves for mother nature");
         motherNature = (motherNature + moves) % archipelago.size();
-        //change method to calculate influence TODO
-        //check conquer TODO
-        //check merge condition TODO
+        archipelago.get(motherNature).changeCalculator(calc);
+        archipelago.get(motherNature).conquer(players);
+        mergeIslandTile();
     }
 
+    /**
+     * This method merge two or three adjacent islands with the same towers' color, it starts from the currentIsland
+     * and check if it is possible to merge first with the right and then the left island.
+     * If there are less than 3 islands in the archipelago it calls endgame()
+     */
     public void mergeIslandTile(){
+        IslandTile rightIsland = archipelago.get((cyclicNumber(motherNature+1)));
+        IslandTile currentIsland = getCurrentIsland();
+        if (currentIsland.getTowerColor() == null ){ return;}//First checks if there is a tower on the island
+        mergeTwoIsland(rightIsland, currentIsland, AdjacentIslands.RIGHT);//Check the matching color for the right island
+        currentIsland = getCurrentIsland();
+        if(archipelago.size()<=3){
+            //call endgame
+            return;
+        }
+        IslandTile leftIsland = archipelago.get((cyclicNumber(motherNature-1)));
+        mergeTwoIsland(leftIsland, currentIsland, AdjacentIslands.LEFT);//Check the matching color for the left island
+        if(archipelago.size()<=3){
+            //call endgame
+        }
+    }//TODO endgame call
 
-    }//TODO
+    /**
+     * This is an helper method, it helps to merge two adjacent islands with the same towers' color together
+     * reducing the size of the archipelago
+     * @param adjacentIsland The island adjacent to the first one
+     * @param currentIsland The island with the mother nature on it
+     * @param direction The direction where you check the merge
+     */
+    private void mergeTwoIsland(IslandTile adjacentIsland, IslandTile currentIsland, AdjacentIslands direction) {
+        int temp = direction==AdjacentIslands.RIGHT?1:-1;
+        if(currentIsland.getTowerColor() == adjacentIsland.getTowerColor()){
+            ArrayList<IslandTile> newArchipelago = new ArrayList<>();
+            IslandTile newIsland = sumOfTwoIsland(currentIsland, adjacentIsland);
+            Boolean isNewIslandAdded = false;
+            //create the new archipelago
+            for (int i=0; i< archipelago.size(); i++){
+                if((motherNature != i && cyclicNumber(motherNature+temp) != i)){
+                    newArchipelago.add(archipelago.get(i));
+                }
+                else if(!isNewIslandAdded)
+                {
+                    newArchipelago.add(newIsland);
+                    isNewIslandAdded = true;
+                }
+            }
+            motherNature = newArchipelago.indexOf(newIsland);
+            this.archipelago = newArchipelago;
+        }
+    }
+
+    /**
+     * This method add two islands together creating a new island with the same number of towers and students of the
+     * previous two islands
+     * @param islandOne first island to be summed
+     * @param islandTwo second island to be summed
+     * @return The island as a result of the sum
+     */
+    private IslandTile sumOfTwoIsland(IslandTile islandOne, IslandTile islandTwo){
+        IslandTile newIsland = new IslandTile(new StandardCalculator());
+        //The new Island has the sum of the towers of the previous two islands
+        for (int i=0; i< islandTwo.getNumTowers()+ islandOne.getNumTowers(); i++){
+            newIsland.addTower();
+        }
+        newIsland.changeTowerColor(islandOne.getTowerColor());
+        //the new island has the total of all students of the previous two islands
+        for(Color color : Color.values()){
+            for(int i=0; i< islandOne.getInfluenceColor(color)+islandTwo.getInfluenceColor(color); i++){
+                newIsland.add(color);
+            }
+        }
+        return newIsland;
+    }
+
+    /**
+     * This method is an helper method that transforms an index in an appropriate index for out cyclic array
+     * @param number the number of the index
+     * @return the transformed number
+     * */
+    private int cyclicNumber(int number){
+        if(number>=0){
+            number = number % archipelago.size();
+        }
+        else{
+            number = archipelago.size() + number;
+        }
+        return number;
+    }
 
     /**
      * @return the references to the island with mother nature on it

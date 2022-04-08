@@ -10,6 +10,7 @@ import static org.junit.jupiter.api.Assertions.*;
  * This class tests Game class using getter method provided by Game class.
  *
  * @author Dario d'Abate
+ * @author Lorenzo Corrado
  */
 
 class GameTest {
@@ -253,5 +254,76 @@ class GameTest {
         assertThrows(IndexOutOfBoundsException.class, () -> g.cloudToBoard(3));
 
 
+    }
+
+    /**
+     * This method tests all the corner case for the merging:
+     * -two adjacent islands with the same color (right and left merge)
+     * -three adjacent islands with the same color
+     * -two adjacent islands with the same color and one adjacent island with a different color
+     * -some merge cases to test also the correct behaviour of the cyclic array (using the first or last index in the array)
+     */
+    @DisplayName("Merging specific cases of islands")
+    @Test
+    void mergingIslands(){
+        setupFullPlayer();
+        g.startGame();
+        int temp;
+        temp = g.getArchipelago().get(0).getIslandStudents().numStudents() + g.getArchipelago().get(11).getIslandStudents().numStudents();
+        //Test right merging
+        g.getArchipelago().get(0).addTower();
+        g.getArchipelago().get(0).changeTowerColor(Tower.WHITE);
+        g.getArchipelago().get(11).addTower();
+        g.getArchipelago().get(11).changeTowerColor(Tower.WHITE);
+        g.setMotherNature(11);
+        g.mergeIslandTile();
+        assertEquals(11, g.getArchipelago().size());
+        assertEquals(2, g.getArchipelago().get(0).getNumTowers());
+        assertEquals(temp, g.getArchipelago().get(0).getIslandStudents().numStudents());
+        assertEquals(0, g.getMotherNature());
+        //Test not merging (current island no towers)
+        g.setMotherNature(5);
+        g.mergeIslandTile();
+        assertEquals(11, g.getArchipelago().size());
+        //Test not merging (right and left islands no towers)
+        g.setMotherNature(0);
+        g.mergeIslandTile();
+        assertEquals(11, g.getArchipelago().size());
+        //Test left merging
+        g.getArchipelago().get(10).addTower();
+        g.getArchipelago().get(10).changeTowerColor(Tower.WHITE);
+        g.setMotherNature(0);
+        temp = g.getArchipelago().get(0).getIslandStudents().numStudents() + g.getArchipelago().get(10).getIslandStudents().numStudents();
+        g.mergeIslandTile();
+        assertEquals(10, g.getArchipelago().size());
+        assertEquals(3, g.getArchipelago().get(0).getNumTowers());
+        assertEquals(temp, g.getArchipelago().get(0).getIslandStudents().numStudents());
+        //Test no merging adjacent islands no towers
+        g.mergeIslandTile();
+        assertEquals(10, g.getArchipelago().size());
+        //Test triple merging
+        temp = g.getArchipelago().get(0).getIslandStudents().numStudents() + g.getArchipelago().get(9).getIslandStudents().numStudents()+g.getArchipelago().get(1).getIslandStudents().numStudents();
+        g.getArchipelago().get(9).addTower();
+        g.getArchipelago().get(9).changeTowerColor(Tower.WHITE);
+        g.getArchipelago().get(1).addTower();
+        g.getArchipelago().get(1).changeTowerColor(Tower.WHITE);
+        g.setMotherNature(0);
+        g.mergeIslandTile();
+        assertEquals(8, g.getArchipelago().size());
+        assertEquals(5, g.getArchipelago().get(0).getNumTowers());
+        assertEquals(temp, g.getArchipelago().get(0).getIslandStudents().numStudents());
+        //Test no merge (different tower color)
+        g.getArchipelago().get(1).addTower();
+        g.getArchipelago().get(1).changeTowerColor(Tower.BLACK);
+        g.setMotherNature(0);
+        g.mergeIslandTile();
+        assertEquals(8, g.getArchipelago().size());
+        //Test merge with different color
+        g.getArchipelago().get(2).addTower();
+        g.getArchipelago().get(2).changeTowerColor(Tower.BLACK);
+        g.setMotherNature(1);
+        g.mergeIslandTile();
+        assertEquals(7, g.getArchipelago().size());
+        assertEquals(2, g.getArchipelago().get(1).getNumTowers());
     }
 }

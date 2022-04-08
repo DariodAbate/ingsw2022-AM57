@@ -94,7 +94,7 @@ class IslandTileTest {
         island.add(Color.PINK);
         island.conquer(players);
         assertEquals(0, island.getNumTowers());
-        assertThrows(IllegalStateException.class, ()-> island.getTowerColor());
+        assertNull(island.getTowerColor());
         assertThrows(IllegalStateException.class, ()-> island.changeTowerColor(Tower.BLACK));
         //TEST FILL ISLAND
         island.add(Color.RED);
