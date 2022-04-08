@@ -121,6 +121,10 @@ class RoundTest {
         assertEquals(27, r.getPlanningPhaseOrder().get(1).getId());
     }
 
+    /**
+     * This method tests the correct working of the method nextTurn.
+     */
+    // method nextTurn to be finished
     @Test
     void nextTurnTest() {
         g = new GameConstantsCreatorThreePlayers();
