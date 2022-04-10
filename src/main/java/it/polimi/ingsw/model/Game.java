@@ -265,11 +265,15 @@ public class Game {
 
     }
 
-    //TO BE TESTED TODO
-    //Chang javadoc TODO
     /**
      * This method is invoked by the current player to move a single student from its board to an
      * island tile
+     * @param colorStudentToBeMoved color of the student to be moved
+     * @param idxChosenIsland index of the island to which the student will be moved
+     * @throws IndexOutOfBoundsException when it is passed an index which does not have a
+     * corresponding island tile in the archipelago arrayList
+     * @throws IllegalStateException when a player does not have a student of the specified color
+     * in his board's entrance
      */
     public void entranceToIsland(int idxChosenIsland, Color colorStudentToBeMoved){
         if(idxChosenIsland < 0 || idxChosenIsland > archipelago.size())
@@ -278,6 +282,7 @@ public class Game {
         Board currentPlayerBoard = getCurrentPlayer().getBoard();
         if( ! currentPlayerBoard.studentInEntrance(colorStudentToBeMoved))
             throw new IllegalStateException("The current player does not have a student for the specified color");
+
         currentPlayerBoard.removeStudentFromEntrance(colorStudentToBeMoved);
         archipelago.get(idxChosenIsland).add(colorStudentToBeMoved);
         //check conquering condition TODO

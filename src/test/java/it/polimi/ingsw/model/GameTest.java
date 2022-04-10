@@ -254,4 +254,77 @@ class GameTest {
 
 
     }
+    //This test involves moving a student to an island tile where there is no mother nature
+    //I consider cases where there are only students due to initialization
+
+    /**
+     * This test involves moving a student to an island tile where there is no mother nature.
+     * In this test there are only students on the archipelago due to initialization, so after a movement
+     * an island tile has to contain exactly 2 students
+     */
+    @Test
+    @DisplayName("Moving an existing student from entrance to an existing island tile")
+    void entranceToIsland1() {
+        setupFullPlayer();
+        g.startGame();
+
+        Board boardCurrentPlayer = g.getCurrentPlayer().getBoard();
+        assertFalse(boardCurrentPlayer.entranceIsFillable());
+
+        int idxTest = g.getMotherNature();
+        int idxToBeTested = (idxTest + 1) % g.getArchipelago().size();
+        assertEquals(1, g.getArchipelago().get(idxToBeTested).getIslandStudents().numStudents());
+
+        if (boardCurrentPlayer.studentInEntrance(Color.YELLOW)) {
+            g.entranceToIsland(idxToBeTested, Color.YELLOW);
+            assertEquals(2, g.getArchipelago().get(idxToBeTested).getIslandStudents().numStudents());
+        } else if (boardCurrentPlayer.studentInEntrance(Color.RED)) {
+            g.entranceToIsland(idxToBeTested, Color.RED);
+            assertEquals(2, g.getArchipelago().get(idxToBeTested).getIslandStudents().numStudents());
+        } else if (boardCurrentPlayer.studentInEntrance(Color.GREEN)) {
+            g.entranceToIsland(idxToBeTested, Color.GREEN);
+            assertEquals(2, g.getArchipelago().get(idxToBeTested).getIslandStudents().numStudents());
+        } else if (boardCurrentPlayer.studentInEntrance(Color.BLUE)) {
+            g.entranceToIsland(idxToBeTested, Color.BLUE);
+            assertEquals(2, g.getArchipelago().get(idxToBeTested).getIslandStudents().numStudents());
+        } else {
+            g.entranceToIsland(idxToBeTested, Color.PINK);
+            assertEquals(2, g.getArchipelago().get(idxToBeTested).getIslandStudents().numStudents());
+        }
+    }
+
+    /**
+     * This method tests moving a student to a not existing island tile
+     * @throws IndexOutOfBoundsException when is passed adn index that does not correspond to an existing island
+     */
+    @Test
+    @DisplayName("Moving a student from entrance to a not existing island tile")
+    void entranceToIsland2(){
+        setupFullPlayer();
+        g.startGame();
+        Board boardCurrentPlayer = g.getCurrentPlayer().getBoard();
+        assertFalse(boardCurrentPlayer.entranceIsFillable());
+
+        assertThrows(IndexOutOfBoundsException.class, () ->
+                g.entranceToIsland(13, Color.YELLOW));
+    }
+
+    /**
+     * This method tests moving a not existing student to an island tile
+     */
+    @Test
+    @DisplayName("Moving a not existing student from entrance to an existing island tile")
+    void entranceToIsland3(){
+        setupFullPlayer();
+        g.startGame();
+        Board boardCurrentPlayer = g.getCurrentPlayer().getBoard();
+        assertFalse(boardCurrentPlayer.entranceIsFillable());
+        while(boardCurrentPlayer.studentInEntrance(Color.YELLOW))
+            boardCurrentPlayer.removeStudentFromEntrance(Color.YELLOW);
+        assertFalse(boardCurrentPlayer.studentInEntrance(Color.YELLOW));
+
+        assertThrows(IllegalStateException.class, () ->
+                g.entranceToIsland(0, Color.YELLOW));
+    }
+
 }
