@@ -342,7 +342,7 @@ public class Game {
         if(currentIsland.getTowerColor() == adjacentIsland.getTowerColor()){
             ArrayList<IslandTile> newArchipelago = new ArrayList<>();
             IslandTile newIsland = sumOfTwoIsland(currentIsland, adjacentIsland);
-            Boolean isNewIslandAdded = false;
+            boolean isNewIslandAdded = false;
             //create the new archipelago
             for (int i=0; i< archipelago.size(); i++){
                 if((motherNature != i && cyclicNumber(motherNature+temp) != i)){
@@ -383,7 +383,7 @@ public class Game {
     }
 
     /**
-     * This method is an helper method that transforms an index in an appropriate index for out cyclic array
+     * This method is a helper method that transforms an index in an appropriate index for out cyclic array
      * @param number the number of the index
      * @return the transformed number
      * */
@@ -407,7 +407,7 @@ public class Game {
     }
 
     /**
-     * This methods checks the winner of the game due to an alternative endgame condition
+     * This method checks the winner of the game due to an alternative endgame condition
      * It returns the name of the winning player
      */
     public void endGame(){//in this method its needed to check the winner TODO CHANGE TYPE OF METHOD

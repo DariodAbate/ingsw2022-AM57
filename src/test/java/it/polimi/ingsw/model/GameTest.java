@@ -326,7 +326,8 @@ class GameTest {
         assertEquals(7, g.getArchipelago().size());
         assertEquals(2, g.getArchipelago().get(1).getNumTowers());
     }
-    //This test involves moving a student to an island tile where there is no mother nature
+
+    //The following tests involve moving a student to an island tile where there is no mother nature
     //I consider cases where there are only students due to initialization
 
     /**
