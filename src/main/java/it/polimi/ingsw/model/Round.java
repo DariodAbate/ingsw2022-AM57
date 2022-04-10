@@ -2,6 +2,7 @@ package it.polimi.ingsw.model;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Iterator;
 
 /**
  * The Round class incorporates the management of the different planning and action
@@ -13,30 +14,26 @@ import java.util.Collections;
 public class Round {
     private int roundNumber;
     private ArrayList<Player> planningPhaseOrder;
-    private ArrayList<Player> actionOrder;
-    private ArrayList<Player> playersCopy;
+    private ArrayList<Player> actionPhaseOrder;
+    private final ArrayList<Player> playersCopy;
     private Player currentTurn;
     private boolean isPlanning;
-
+    private boolean isEnding;
     /**
      * Constructor of the class. Given the Arraylist of the players that are playing it
-     * initializes the actionOrder list and the planningPhaseOrder list equal to the given
+     * initializes the actionPhaseOrder list and the planningPhaseOrder list equal to the given
      * parameter list. The constructor also initialize the boolean value isPlanning to true
      * because each game will start from this phase.
      * @param players is the list of player that are actually playing the game
-     * @throws NullPointerException if the list player is null
-     * @throws IllegalArgumentException if there are more than 3 player or less than 2
      */
     public Round(ArrayList<Player> players) {
-        if (players == null)
-            throw new NullPointerException();
-        if (players.size() < 2 || players.size() > 3)
-            throw new IllegalArgumentException("You need between 2 and 3 players");
         roundNumber = 0;
-        playersCopy = new ArrayList<>(players);
-        actionOrder = new ArrayList<>(players);
+        playersCopy = players;
+        actionPhaseOrder = new ArrayList<>(players);
         planningPhaseOrder = new ArrayList<>(players);
         isPlanning = true;
+        // Add RNG to pick the first player TODO
+        currentTurn = players.get(0);
     }
 
     /**
@@ -64,11 +61,11 @@ public class Round {
      * to the game's rules.
      * @return the list of the players during the action phase.
      */
-    public ArrayList<Player> getActionOrder() {
-        if (actionOrder == null)
+    public ArrayList<Player> getActionPhaseOrder() {
+        if (actionPhaseOrder == null)
             throw new NullPointerException("There is no action list yet");
         else
-            return actionOrder;
+            return actionPhaseOrder;
     }
 
     /**
@@ -88,12 +85,13 @@ public class Round {
         planningPhaseOrder.add(firstPlayer);
         int firstPlayerIndex = playersCopy.indexOf(firstPlayer);
         if (playersCopy.size() == 3) {
-            planningPhaseOrder.add(playersCopy.get((firstPlayerIndex +1)%3));
-            planningPhaseOrder.add(playersCopy.get((firstPlayerIndex +2)%3));
+            planningPhaseOrder.add(playersCopy.get((firstPlayerIndex + 1) % 3));
+            planningPhaseOrder.add(playersCopy.get((firstPlayerIndex + 2) % 3));
         }
         if(playersCopy.size() == 2) {
-            planningPhaseOrder.add(playersCopy.get((firstPlayerIndex +1)%2));
+            planningPhaseOrder.add(playersCopy.get((firstPlayerIndex + 1) % 2));
         }
+        currentTurn = planningPhaseOrder.get(0);
     }
 
     /**
@@ -103,15 +101,16 @@ public class Round {
      * indicates the beginning of the action phase.
      */
     // Case of same priority card to be added
-    public void setActionOrder() {
+    public void setActionPhaseOrder() {
         for (Player player : playersCopy) {
-            Collections.sort(actionOrder, (player1, player2) -> {
+            actionPhaseOrder.sort((player1, player2) -> {
                 if (player1.viewLastCard().getPriority() < player2.viewLastCard().getPriority())
                     return -1;
                 else
                     return 1;
             });
         }
+        currentTurn = actionPhaseOrder.get(0);
         isPlanning = false;
     }
 
@@ -124,20 +123,35 @@ public class Round {
     }
 
     /**
+     * Private method that calculate the currentTurn player index inside the
+     * planning phase list or inside the action phase list depending on which phase
+     * the game is.
+     * @return the index of the currentTurn player inside the planningPhaseOrder list
+     * or actionPhaseOrder list
+     */
+    private int getCurrentPlayerIndex(){
+     if (isPlanning)
+         return planningPhaseOrder.indexOf(currentTurn);
+     else
+         return actionPhaseOrder.indexOf(currentTurn);
+    }
+
+    /**
      * This method modify the current player and indicates the start of a new turn.
      */
-    // Tests still to be done
     public void nextTurn() {
+        /*
+         if (!planningIterator.hasNext())
+             setActionPhaseOrder();
+         if (!actionIterator.hasNext())
+             nextRound();
+         planningIterator.next();
+         actionIterator.next();
+        */
         if (isPlanning) {
-            if (planningPhaseOrder.iterator().hasNext())
-                currentTurn = planningPhaseOrder.iterator().next();
-            else
-                throw new IndexOutOfBoundsException("End of planningPhaseOrder list");
+            currentTurn = planningPhaseOrder.get(getCurrentPlayerIndex() + 1);
         } else {
-            if (actionOrder.iterator().hasNext())
-                currentTurn = actionOrder.iterator().next();
-            else
-                throw new IndexOutOfBoundsException("End of actionOrder list");
+            currentTurn = actionPhaseOrder.get(getCurrentPlayerIndex() + 1);
         }
     }
 
@@ -147,8 +161,18 @@ public class Round {
      * planning phase.
      */
     public void nextRound() {
+        if(isEnding){ //if isEnding is true, calls the end of the game
+            //endgame();
+            return;
+        }
         roundNumber += 1;
         isPlanning = true;
+        setPlanningPhaseOrder();
+    }
+
+    //@author Lorenzo Corrado
+    public void setIsEnding(boolean isEnding) { //this method sets a condition for the endgame
+         this.isEnding = isEnding;
     }
 }
 

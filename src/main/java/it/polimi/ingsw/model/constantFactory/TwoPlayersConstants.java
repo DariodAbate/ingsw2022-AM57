@@ -26,4 +26,9 @@ public class TwoPlayersConstants implements GameConstants{
     public int getNumStudentsOnCloud() {
         return 3;
     }
+
+    @Override
+    public int getMaxCoinSize(){ return 18;}
+
+
 }

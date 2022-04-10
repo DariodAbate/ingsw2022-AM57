@@ -32,7 +32,7 @@ public class IslandTile {
 
     public Tower getTowerColor() {
         if(numTowers <= 0){
-            throw new IllegalStateException("Need to be at least one tower to call this method");
+            return null;
         }
         return towerColor;
     }

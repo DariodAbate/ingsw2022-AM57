@@ -25,4 +25,7 @@ public class ThreePlayersConstants implements GameConstants{
     public int getNumStudentsOnCloud() {
         return 4;
     }
+
+    @Override
+    public int getMaxCoinSize(){ return 17;}
 }

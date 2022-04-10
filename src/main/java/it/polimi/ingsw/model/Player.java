@@ -16,7 +16,7 @@ public class Player {
     private ArrayList<AssistantCard> hand = new ArrayList<>();
     private AssistantCard discardCard;
     private Board board;
-    private int coin;
+    private int coin; //TODO initialize 1 coin for each player
     private int id;
 
     /**

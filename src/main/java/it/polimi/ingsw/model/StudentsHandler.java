@@ -110,7 +110,7 @@ public class StudentsHandler {
     }
 
     /**
-     * This method remove one student token of the specified color
+     * This method removes one student token of the specified color
      * @param color The specified color
      */
     public void remove(Color color){
@@ -130,7 +130,7 @@ public class StudentsHandler {
     }
 
     /**
-     * This method remove a custom number of students of the specified color
+     * This method removes a custom number of students of the specified color
      * If you remove more students than the actual that are present it will set the number of students to 0
      * @param color The specified color
      * @param num The number of students to remove
