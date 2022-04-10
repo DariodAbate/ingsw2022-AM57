@@ -14,19 +14,19 @@ import java.util.Random;
  * @author Lorenzo Corrado
  */
 public class Game {
-    private GameConstants gameConstants;//contains all the game's constants
-    private ArrayList<Player> players;
-    private final int numGamePlayers; //number of players for a particular game
-    private Bag startBag; //bag used only for the initial distribution of students on the islands
-    private Bag actionBag;//bag used during the game
-    private ArrayList<CloudTile> cloudTiles;
+    protected GameConstants gameConstants;//contains all the game's constants
+    protected ArrayList<Player> players;
+    protected final int numGamePlayers; //number of players for a particular game
+    protected Bag startBag; //bag used only for the initial distribution of students on the islands
+    protected Bag actionBag;//bag used during the game
+    protected ArrayList<CloudTile> cloudTiles;
     //private ArrayList<Tower> availableTowerColor; //a player can choose his own tower's color TODO
-    private ArrayList<IslandTile> archipelago;
-    private int motherNature; //motherNature as an index corresponding to an island
-    private int maxMovement; //maxMovement that mother nature can do
-    private RoundStub round; //FIXME
+    protected ArrayList<IslandTile> archipelago;
+    protected int motherNature; //motherNature as an index corresponding to an island
+    protected int maxMovement; //maxMovement that mother nature can do
+    protected RoundStub round; //FIXME
     //using a stub for round
-    private InfluenceCalculator calc; //calculator for the influence
+    protected InfluenceCalculator calc; //calculator for the influence
 
     /*
     Game creation rules, as indicated by specifications:
@@ -59,7 +59,7 @@ public class Game {
     }
 
     //helper method for initializing game constants with a factory pattern
-    private void initGameConstants(int numPlayer){
+    protected void initGameConstants(int numPlayer){
         GameConstantsCreator gameConstantsCreator;
         if(numPlayer == 2)
             gameConstantsCreator = new GameConstantsCreatorTwoPlayers();
@@ -137,10 +137,10 @@ public class Game {
     }
 
     //initialize  a round through which the current player can be selected
-    private void initRound(){round = new RoundStub(players);} //FIXME
+    protected void initRound(){round = new RoundStub(players);} //FIXME
 
     //initialize an archipelago with a standard influence's calculator for each islandTile
-    private void initArchipelago(){
+    protected void initArchipelago(){
         archipelago = new ArrayList<>();
         for(int i = 0; i < gameConstants.INITIAL_ARCHIPELAGO_SIZE ; i++) {
             //standard calculator for influence
@@ -160,20 +160,20 @@ public class Game {
     //returns a pseudorandom, uniformly distributed int value between min (inclusive)
     // and max value (inclusive)
     //Used only for mother nature
-    private int randomNumber(){
+    protected int randomNumber(){
         int min = 0;
         int max = 11;
         Random random = new Random();
         return random.nextInt(max - min + 1) + min;
     }
     public void setMotherNature(int i){motherNature = i; }
-    private void putMotherNature(){
+    protected void putMotherNature(){
         motherNature = randomNumber();
     }
 
     //putting one student on each island Tile, except for that one containing mother nature
     //and the one at its opposite
-    private void initIslandWithStudent(){
+    protected void initIslandWithStudent(){
         //Index of the island opposite to the one with mother nature
         int idxEmptyIsland = (motherNature + gameConstants.INITIAL_ARCHIPELAGO_SIZE/2) % gameConstants.INITIAL_ARCHIPELAGO_SIZE;
         for(int i = 0; i < gameConstants.INITIAL_ARCHIPELAGO_SIZE ; i++){
@@ -186,28 +186,28 @@ public class Game {
     }
 
     //initializes the clouds without students
-    private void initClouds(){
+    protected void initClouds(){
         cloudTiles = new ArrayList<>();
         for(int i = 0; i < gameConstants.getNumClouds(); ++i)
             cloudTiles.add(new CloudTile(gameConstants));
     }
 
     //in later version a player will be able to choose his own tower's color
-    private void associatePlayerToTower(){
+    protected void associatePlayerToTower(){
         players.get(0).getBoard().chooseTower(Tower.BLACK);
         players.get(1).getBoard().chooseTower(Tower.WHITE);
         if(numGamePlayers == 3)
             players.get(2).getBoard().chooseTower(Tower.GRAY);
     }
     //in later version a player will be able to choose his own card's back
-    private void associatePlayerToCardBack(){
+    protected void associatePlayerToCardBack(){
         players.get(0).chooseBack(CardBack.DRUID);
         players.get(1).chooseBack(CardBack.WITCH);
         if(numGamePlayers == 3)
             players.get(2).chooseBack(CardBack.SAGE);
     }
 
-    private void initEntrancePlayers(){
+    protected void initEntrancePlayers(){
         for(Player player: players){
             while(player.getBoard().entranceIsFillable()){
                 Color colorDrawn = actionBag.draw();
@@ -284,8 +284,6 @@ public class Game {
         currentPlayerBoard.removeStudentFromEntrance(colorStudentToBeMoved);
         archipelago.get(idxChosenIsland).add(colorStudentToBeMoved);
         //check conquering condition TODO
-
-
     }
 
     //TO BE TESTED TODO
@@ -301,7 +299,7 @@ public class Game {
             throw  new IllegalArgumentException("Illegal moves for mother nature");
         motherNature = (motherNature + moves) % archipelago.size();
         archipelago.get(motherNature).changeCalculator(calc);
-        archipelago.get(motherNature).conquer(players);
+        archipelago.get(motherNature).conquer(players); //this is the only method that calls conquer()
         mergeIslandTile();
     }
 
@@ -334,7 +332,7 @@ public class Game {
      * @param currentIsland The island with the mother nature on it
      * @param direction The direction where you check the merge
      */
-    private void mergeTwoIsland(IslandTile adjacentIsland, IslandTile currentIsland, AdjacentIslands direction) {
+    protected void mergeTwoIsland(IslandTile adjacentIsland, IslandTile currentIsland, AdjacentIslands direction) {
         int temp = direction==AdjacentIslands.RIGHT?1:-1;
         if(currentIsland.getTowerColor() == adjacentIsland.getTowerColor()){
             ArrayList<IslandTile> newArchipelago = new ArrayList<>();
@@ -363,7 +361,7 @@ public class Game {
      * @param islandTwo second island to be summed
      * @return The island as a result of the sum
      */
-    private IslandTile sumOfTwoIsland(IslandTile islandOne, IslandTile islandTwo){
+    protected IslandTile sumOfTwoIsland(IslandTile islandOne, IslandTile islandTwo){
         IslandTile newIsland = new IslandTile(new StandardCalculator());
         //The new Island has the sum of the towers of the previous two islands
         for (int i=0; i< islandTwo.getNumTowers()+ islandOne.getNumTowers(); i++){
@@ -384,7 +382,7 @@ public class Game {
      * @param number the number of the index
      * @return the transformed number
      * */
-    private int cyclicNumber(int number){
+    protected int cyclicNumber(int number){
         if(number>=0){
             number = number % archipelago.size();
         }
@@ -394,6 +392,46 @@ public class Game {
         return number;
     }
 
+    /**
+     * This method calls the end of the game due to the finished placement of towers.
+     * It returns the name of the winning player
+     * @param namePlayer The name of the winning player
+     */
+    public void endGame(String namePlayer){ //this method ends the game with the winner namePlayer
+        //message to controller
+    }
+
+    /**
+     * This methods checks the winner of the game due to an alternative endgame condition
+     * It returns the name of the winning player
+     */
+    public void endGame(){//in this method its needed to check the winner TODO CHANGE TYPE OF METHOD
+        int minTowers=players.get(0).getBoard().getNumTower();
+        int index=0;
+        int maxProfessors=0;
+        ArrayList<Player> tempPlayers = new ArrayList<>();
+        for(Player player:players){
+            if(minTowers>player.getBoard().getNumTower()){
+                minTowers=player.getBoard().getNumTower();
+                index= players.indexOf(player);
+            }
+        }
+        tempPlayers.add(players.get(index));
+        for(Player player:players){
+            if(minTowers==player.getBoard().getNumTower() && index != players.indexOf(player)){
+                tempPlayers.add(player);
+            }
+        }
+        if(tempPlayers.size()>1){
+            for(Player player: tempPlayers){
+                if(maxProfessors < player.getBoard().getProfessors().size()){
+                    maxProfessors = player.getBoard().getProfessors().size();
+                    index = tempPlayers.indexOf(player);
+                }
+            }
+        }
+        //message to controller
+    }
     /**
      * @return the references to the island with mother nature on it
      */

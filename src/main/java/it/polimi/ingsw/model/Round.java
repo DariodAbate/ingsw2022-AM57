@@ -18,7 +18,7 @@ public class Round {
     private final ArrayList<Player> playersCopy;
     private Player currentTurn;
     private boolean isPlanning;
-
+    private boolean isEnding;
     /**
      * Constructor of the class. Given the Arraylist of the players that are playing it
      * initializes the actionPhaseOrder list and the planningPhaseOrder list equal to the given
@@ -161,9 +161,18 @@ public class Round {
      * planning phase.
      */
     public void nextRound() {
+        if(isEnding){ //if isEnding is true, calls the end of the game
+            //endgame();
+            return;
+        }
         roundNumber += 1;
         isPlanning = true;
         setPlanningPhaseOrder();
+    }
+
+    //@author Lorenzo Corrado
+    public void setIsEnding(boolean isEnding) { //this method sets a condition for the endgame
+         this.isEnding = isEnding;
     }
 }
 

@@ -33,4 +33,10 @@ public interface GameConstants {
       */
      int getNumStudentsOnCloud();
 
+     /**
+      *
+      * @return number of initial coins in the bank
+      */
+     int getMaxCoinSize();
+
 }
