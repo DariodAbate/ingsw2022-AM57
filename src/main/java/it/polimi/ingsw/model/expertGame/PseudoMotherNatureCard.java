@@ -11,7 +11,7 @@ public class PseudoMotherNatureCard extends ExpertCard {
     /**
      * This constructor creates a card with the default price of 3 and the starting index.
      * The reference to game is handled with the interface PseudoMotherNature
-     * @param islandIndex default index of the island where the effect is gonna be activated
+     * @param islandIndex default index of the island where the effect is going to be activated
      * @param game reference to the instance of game
      */
     public PseudoMotherNatureCard(int islandIndex, PseudoMotherNature game){
