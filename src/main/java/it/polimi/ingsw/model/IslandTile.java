@@ -1,5 +1,7 @@
 package it.polimi.ingsw.model;
 
+import it.polimi.ingsw.model.statePattern.InfluenceCalculator;
+
 import java.util.ArrayList;
 
 /**
@@ -90,6 +92,7 @@ public class IslandTile {
      * @param calc new state
      */
     public void changeCalculator(InfluenceCalculator calc){
+        calc.setContext(this);
         this.calc = calc;
     }
 

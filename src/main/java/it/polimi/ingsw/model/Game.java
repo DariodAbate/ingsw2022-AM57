@@ -1,5 +1,7 @@
 package it.polimi.ingsw.model;
 
+import it.polimi.ingsw.model.statePattern.InfluenceCalculator;
+import it.polimi.ingsw.model.statePattern.StandardCalculator;
 import it.polimi.ingsw.model.constantFactory.*;
 
 import java.util.ArrayList;
@@ -139,6 +141,8 @@ public class Game {
     //initialize  a round through which the current player can be selected
     protected void initRound(){round = new RoundStub(players);} //FIXME
 
+
+
     //initialize an archipelago with a standard influence's calculator for each islandTile
     protected void initArchipelago(){
         archipelago = new ArrayList<>();
@@ -146,6 +150,7 @@ public class Game {
             //standard calculator for influence
             StandardCalculator influenceCalculator = new StandardCalculator();
             archipelago.add(new IslandTile(influenceCalculator));
+            influenceCalculator.setContext(archipelago.get(i));
         }
         calc = new StandardCalculator();
     }
@@ -302,6 +307,9 @@ public class Game {
         archipelago.get(motherNature).conquer(players); //this is the only method that calls conquer()
         mergeIslandTile();
     }
+
+
+
 
     /**
      * This method merge two or three adjacent islands with the same towers' color, it starts from the currentIsland
