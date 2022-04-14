@@ -191,9 +191,21 @@ public class Board {
      * @param studentColor It is the color of the student to be moved from entrance to hall
      */
     public void entranceToHall(Color studentColor){
-        if(studentColor != null && entrance.isRemovable(studentColor) && hall.isAddable(studentColor) ){
+        if(studentColor != null && entrance.isRemovable(studentColor) && hall.isAddable(studentColor)){
             entrance.remove(studentColor);
             hall.add(studentColor);
+        }
+    }
+
+    /**
+     * This method moves a student from hall to entrance if the movement can be done, otherwise
+     * entrance and hall are unchanged. this method is used in the expert game mode.
+     * @param studentColor It is the color of the student to be moved from hall to entrance
+     */
+    public void hallToEntrance(Color studentColor){
+        if(studentColor != null && hall.isRemovable(studentColor) && entrance.isAddable(studentColor)){
+            hall.remove(studentColor);
+            entrance.add(studentColor);
         }
     }
 }
