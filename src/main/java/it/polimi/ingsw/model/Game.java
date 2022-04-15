@@ -139,6 +139,8 @@ public class Game {
     //initialize  a round through which the current player can be selected
     protected void initRound(){round = new RoundStub(players);} //FIXME
 
+
+
     //initialize an archipelago with a standard influence's calculator for each islandTile
     protected void initArchipelago(){
         archipelago = new ArrayList<>();
@@ -146,6 +148,7 @@ public class Game {
             //standard calculator for influence
             StandardCalculator influenceCalculator = new StandardCalculator();
             archipelago.add(new IslandTile(influenceCalculator));
+            influenceCalculator.setContext(archipelago.get(i));
         }
         calc = new StandardCalculator();
     }

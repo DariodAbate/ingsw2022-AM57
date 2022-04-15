@@ -16,8 +16,9 @@ public class Player {
     private ArrayList<AssistantCard> hand = new ArrayList<>();
     private AssistantCard discardCard;
     private Board board;
-    private int coin; //TODO initialize 1 coin for each player
+    private int coin;
     private int id;
+    private boolean addCoinChecker[];
 
     /**
      * Constructor of the class. It initializes the player attributes and the
@@ -35,6 +36,8 @@ public class Player {
         for (int i = 0; i < gameConstants.NUM_ASSISTANT_CARD; i++) {
             hand.add(i, new AssistantCard(i + 1, (i + 1) / 2 + (i + 1) % 2));
         }
+        addCoinChecker = new boolean[15];
+        coin = 1;
     }
 
     /**
@@ -50,6 +53,8 @@ public class Player {
         for (int i = 0; i < gameConstants.NUM_ASSISTANT_CARD; i++) {
             hand.add(i, new AssistantCard(i + 1, (i + 1) / 2 + (i + 1) % 2));
         }
+        addCoinChecker = new boolean[15];
+        coin = 1;
     }
 
     /**
@@ -133,7 +138,83 @@ public class Player {
         return board;
     }
 
-    //Coin management to be added
+    /**
+     * Check if the condition for adding a coin to the pLayer's reserve is verified.
+     * If yes a coin is added to the player's reserve otherwise nothing happen.
+     */
+    public void addCoin() {
+        if ((!addCoinChecker[0]) && ((board.hallSize(Color.YELLOW) == 3))) {
+            coin += 1;
+            addCoinChecker[0] = true;
+        }
+        if ((!addCoinChecker[1]) && ((board.hallSize(Color.GREEN) == 3))) {
+            coin += 1;
+            addCoinChecker[1] = true;
+        }
+        if ((!addCoinChecker[2]) && ((board.hallSize(Color.BLUE) == 3))) {
+            coin += 1;
+            addCoinChecker[2] = true;
+        }
+        if ((!addCoinChecker[3]) && ((board.hallSize(Color.RED) == 3))) {
+            coin += 1;
+            addCoinChecker[3] = true;
+        }
+        if ((!addCoinChecker[4]) && ((board.hallSize(Color.PINK) == 3))) {
+            coin += 1;
+            addCoinChecker[4] = true;
+        }
+        if ((!addCoinChecker[5]) && ((board.hallSize(Color.YELLOW) == 6))) {
+            coin += 1;
+            addCoinChecker[5] = true;
+        }
+        if ((!addCoinChecker[6]) && ((board.hallSize(Color.GREEN) == 6))) {
+            coin += 1;
+            addCoinChecker[6] = true;
+        }
+        if ((!addCoinChecker[7]) && ((board.hallSize(Color.BLUE) == 6))) {
+            coin += 1;
+            addCoinChecker[7] = true;
+        }
+        if ((!addCoinChecker[8]) && ((board.hallSize(Color.RED) == 6))) {
+            coin += 1;
+            addCoinChecker[8] = true;
+        }
+        if ((!addCoinChecker[9]) && ((board.hallSize(Color.PINK) == 6))) {
+            coin += 1;
+            addCoinChecker[9] = true;
+        }
+        if ((!addCoinChecker[10]) && ((board.hallSize(Color.YELLOW) == 9))) {
+            coin += 1;
+            addCoinChecker[10] = true;
+        }
+        if ((!addCoinChecker[11]) && ((board.hallSize(Color.GREEN) == 9))) {
+            coin += 1;
+            addCoinChecker[11] = true;
+        }
+        if ((!addCoinChecker[12]) && ((board.hallSize(Color.BLUE) == 9))) {
+            coin += 1;
+            addCoinChecker[12] = true;
+        }
+        if ((!addCoinChecker[13]) && ((board.hallSize(Color.RED) == 9))) {
+            coin += 1;
+            addCoinChecker[13] = true;
+        }
+        if ((!addCoinChecker[14]) && ((board.hallSize(Color.PINK) == 9))) {
+            coin += 1;
+            addCoinChecker[14] = true;
+       }
+    }
+
+    /**
+     * Remove a coin from the player's reserve
+     * @throws IllegalStateException if the number of player's coin is 0
+     */
+    public void removeCoin() {
+        if (coin - 1 >= 0)
+            coin -= 1;
+        else
+            throw new IllegalStateException("You didn't have enough coins");
+    }
 }
 
 

@@ -283,6 +283,7 @@ class GameTest {
         assertEquals(0, g.getMotherNature());
         //Test not merging (current island no towers)
         g.setMotherNature(5);
+        IslandTile tempIsland = g.getCurrentIsland();
         g.mergeIslandTile();
         assertEquals(11, g.getArchipelago().size());
         //Test not merging (right and left islands no towers)
@@ -325,7 +326,10 @@ class GameTest {
         g.mergeIslandTile();
         assertEquals(7, g.getArchipelago().size());
         assertEquals(2, g.getArchipelago().get(1).getNumTowers());
+        assertTrue(g.getArchipelago().contains(tempIsland));
+        assertEquals(3, g.getArchipelago().indexOf(tempIsland));
     }
+
 
     //The following tests involve moving a student to an island tile where there is no mother nature
     //I consider cases where there are only students due to initialization

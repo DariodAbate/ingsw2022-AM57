@@ -1,10 +1,9 @@
 package it.polimi.ingsw.model;
 
-import it.polimi.ingsw.model.*;
+import it.polimi.ingsw.model.statePattern.StandardCalculator;
 import it.polimi.ingsw.model.constantFactory.GameConstants;
 import it.polimi.ingsw.model.constantFactory.GameConstantsCreator;
 import it.polimi.ingsw.model.constantFactory.GameConstantsCreatorThreePlayers;
-import it.polimi.ingsw.model.constantFactory.GameConstantsCreatorTwoPlayers;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 

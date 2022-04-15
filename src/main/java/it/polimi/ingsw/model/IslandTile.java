@@ -90,6 +90,7 @@ public class IslandTile {
      * @param calc new state
      */
     public void changeCalculator(InfluenceCalculator calc){
+        calc.setContext(this);
         this.calc = calc;
     }
 
