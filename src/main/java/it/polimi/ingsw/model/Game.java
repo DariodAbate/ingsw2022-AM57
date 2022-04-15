@@ -1,5 +1,7 @@
 package it.polimi.ingsw.model;
 
+import it.polimi.ingsw.model.statePattern.InfluenceCalculator;
+import it.polimi.ingsw.model.statePattern.StandardCalculator;
 import it.polimi.ingsw.model.constantFactory.*;
 
 import java.util.ArrayList;
