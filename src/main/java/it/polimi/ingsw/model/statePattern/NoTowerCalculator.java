@@ -5,40 +5,42 @@ import it.polimi.ingsw.model.Color;
 import it.polimi.ingsw.model.IslandTile;
 import it.polimi.ingsw.model.Player;
 
-/** The Standard checkInfluence calculator state
+/**
+ * This class implements the influence calculator that ignores towers
  * @author Lorenzo Corrado
- *
  */
 
-public class StandardCalculator implements InfluenceCalculator {
-    protected IslandTile island;
+public class NoTowerCalculator implements InfluenceCalculator{
+    private IslandTile island;
 
-    public StandardCalculator(){
+    public NoTowerCalculator(){
     }
-    public void setContext(IslandTile island){
+
+    /**
+     * Set the island where he needs to calculate the influence
+     * @param island where the influence will be calculated
+     */
+    @Override
+    public void setContext(IslandTile island) {
         this.island = island;
     }
 
     /**
-     * This is the standard checkInfluence, calculates either towers and students
-     * @param player Calculate influence of that player
+     * Method that check how much influence has one player
+     * This variant ignores the towers
+     * @param player Calculate the influence of this player
      * @return The value of the influence
      */
     @Override
     public int checkInfluence(Player player) {
         int sum = 0;
         Board board = player.getBoard();
-        if(island.getNumTowers()==0){
-            sum+=0;
-        }
-        else{
-            if(island.getTowerColor() == board.getTowerColor()) sum += island.getInfluenceTower();
-        }
         for (Color color:Color.values()) {
             if (board.getProfessors().contains(color)){
                 sum+= island.getInfluenceColor(color);
             }
         }
         return sum;
+
     }
 }

@@ -11,7 +11,7 @@ public class IncrementMaxMovementCard extends ExpertCard {
      * This constructor has the default price, and uses a reference to IncrementMaxMovement
      * @param game reference to game
      */
-    public IncrementMaxMovementCard(IncrementMaxMovement game){
+    public IncrementMaxMovementCard(ExpertGame game){
         super(1);
         this.game = game;
     }
@@ -22,7 +22,7 @@ public class IncrementMaxMovementCard extends ExpertCard {
      */
     @Override
     public void effect() {
-        if(isPlayed()){
+        if(!isPlayed()){
             played = true;
             price += 1;
         }

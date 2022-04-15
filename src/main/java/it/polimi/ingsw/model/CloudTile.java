@@ -12,7 +12,6 @@ public class CloudTile {
     private StudentsHandler cloudStud;
     GameConstants gameConstants;
 
-
     /**
      * Constructor of the class. It can handle games for 2 or 3 players
      * @param gameConstants is the object with all the constants in the game
