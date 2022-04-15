@@ -58,7 +58,7 @@ public class ExpertGame extends Game implements PseudoMotherNature, IncrementMax
 
     /**
      * This method merges create a pseudo mother nature for the purpose of conquering and merging the islands
-     * @param i The island where is gonna be placed the pseudo mother nature
+     * @param i The island where is going to be placed the pseudo mother nature
      */
     @Override
     public void independentMerge(int i){

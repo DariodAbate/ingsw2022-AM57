@@ -56,7 +56,7 @@ public class Game {
 
         }
         else
-            throw new IllegalArgumentException("Illegal parameter for first player");
+            throw new IllegalArgumentException("Illegal parameter for first player");//FIXME change with a checked custom exception
 
     }
 
@@ -88,7 +88,7 @@ public class Game {
         if(nickPlayer == null)
             throw new NullPointerException();
         if(nickPlayer.equals(""))
-            throw new IllegalArgumentException("Illegal player's nickname");
+            throw new IllegalArgumentException("Illegal player's nickname"); //FIXME change with a checked custom exception
         if(playerCanJoin()) //redundant check, it has to be inserted in the server class
             players.add(new Player(nickPlayer, gameConstants));
 
@@ -123,11 +123,11 @@ public class Game {
         //initialize clouds
         initClouds();
 
-        //choose tower color for each player FIXME
+        // FIXME choose tower color for each player
         //Now a player cannot choose
         associatePlayerToTower();
 
-        //choose cardBack for each player FIXME
+        /* FIXME choose cardBack for each player */
         // Now a player cannot choose
         associatePlayerToCardBack();
 
@@ -236,7 +236,8 @@ public class Game {
         for (CloudTile cloudTile : cloudTiles){
             while (cloudTile.isFillable()) {
                 Color colorDrawn = actionBag.draw();
-                //check for end game condition TODO
+                //TODO check for end game condition
+                // call alternativeWinner by the controller if condition as satisfied
                 cloudTile.fill(colorDrawn);
             }
         }
@@ -296,7 +297,7 @@ public class Game {
         //check conquering condition TODO
     }
 
-    //TO BE TESTED TODO
+    //TODO TO BE TESTED
     /**
      * Causes mother nature to move by as many positions as indicated by the parameter.
      * It also changes the InfluenceCalculator on the island, then it tries to conquer the island if possible, and checks
@@ -310,13 +311,14 @@ public class Game {
         motherNature = (motherNature + moves) % archipelago.size();
         archipelago.get(motherNature).changeCalculator(calc);
         archipelago.get(motherNature).conquer(players); //this is the only method that calls conquer()
+        //TODO add call for end game due to no towers remaining
         mergeIslandTile();
     }
 
     /**
      * This method merge two or three adjacent islands with the same towers' color, it starts from the currentIsland
      * and check if it is possible to merge first with the right and then the left island.
-     * If there are less than 3 islands in the archipelago it calls endgame()
+     * If there are 3 unified islands group in the archipelago, the game ends without a winner
      */
     public void mergeIslandTile(){
         IslandTile rightIsland = archipelago.get((cyclicNumber(motherNature+1)));
@@ -325,15 +327,15 @@ public class Game {
         mergeTwoIsland(rightIsland, currentIsland, AdjacentIslands.RIGHT);//Check the matching color for the right island
         currentIsland = getCurrentIsland();
         if(archipelago.size()<=3){
-            //call endgame
+            //TODO notify controller for end game
             return;
         }
         IslandTile leftIsland = archipelago.get((cyclicNumber(motherNature-1)));
         mergeTwoIsland(leftIsland, currentIsland, AdjacentIslands.LEFT);//Check the matching color for the left island
         if(archipelago.size()<=3){
-            //call endgame
+            //TODO notify controller for end game
         }
-    }//TODO endgame call
+    }
 
     /**
      * This is a helper method, it helps to merge two adjacent islands with the same towers' color together
@@ -402,33 +404,36 @@ public class Game {
         return number;
     }
 
-    /**
-     * This method calls the end of the game due to the finished placement of towers.
-     * It returns the name of the winning player
-     * @param namePlayer The name of the winning player
-     */
-    public void endGame(String namePlayer){ //this method ends the game with the winner namePlayer
-        //message to controller
-    }
+    //TODO add observer method called in mother movement for end game due to no towers remaining, it has to notify the observer
 
     /**
-     * This method checks the winner of the game due to an alternative endgame condition
-     * It returns the name of the winning player
+     * This method checks the winner of the game due to an alternative endgame condition.
+     * Called at the end of the round in which the last student was drawn from the bag or
+     * if a player runs out of assistant cards in his hand
+     * @return the name of the winning player
      */
-    public void endGame(){//in this method its needed to check the winner TODO CHANGE TYPE OF METHOD
+    public String alternativeWinner(){
+        /*
+        The player who built the most towers on the islands wins the game.
+        In case of a tie, the player who controls the most professors wins
+         */
+
         int minTowers=players.get(0).getBoard().getNumTower();
-        int index=0;
-        int maxProfessors=0;
+        int index = 0;
+        int maxProfessors = 0;
+        String winner;
         ArrayList<Player> tempPlayers = new ArrayList<>();
         for(Player player:players){
-            if(minTowers>player.getBoard().getNumTower()){
-                minTowers=player.getBoard().getNumTower();
-                index= players.indexOf(player);
+            if(minTowers > player.getBoard().getNumTower()){
+                minTowers = player.getBoard().getNumTower();
+                index = players.indexOf(player);
             }
         }
         tempPlayers.add(players.get(index));
+        winner = tempPlayers.get(0).getNickname();
+
         for(Player player:players){
-            if(minTowers==player.getBoard().getNumTower() && index != players.indexOf(player)){
+            if(minTowers == player.getBoard().getNumTower() && index != players.indexOf(player)){
                 tempPlayers.add(player);
             }
         }
@@ -436,12 +441,13 @@ public class Game {
             for(Player player: tempPlayers){
                 if(maxProfessors < player.getBoard().getProfessors().size()){
                     maxProfessors = player.getBoard().getProfessors().size();
-                    index = tempPlayers.indexOf(player);
+                    winner = player.getNickname();
                 }
             }
         }
-        //message to controller
+        return winner;
     }
+
     /**
      * @return the references to the island with mother nature on it
      */
