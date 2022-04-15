@@ -40,6 +40,14 @@ public class ExpertGame extends Game implements PseudoMotherNature, IncrementMax
     }
 
     /**
+     * This method is called by the controller to activate the effect of a card, identified by an index
+     * @param indexCard represent a character card if the effect to activate
+     */
+        public void playEffect(int indexCard){
+        expertCards.get(indexCard).effect();
+    }
+
+    /**
      * This method increments the max movement possible for the player by 2
      * Is utilized from Increment Max Movement Card
      */
