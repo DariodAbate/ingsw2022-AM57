@@ -294,7 +294,7 @@ public class Game {
     //TO BE TESTED TODO
     /**
      * Causes mother nature to move by as many positions as indicated by the parameter.
-     * It also changes the InfluenceCalculator on the island, then it try to conquer the island if possible, and checks
+     * It also changes the InfluenceCalculator on the island, then it tries to conquer the island if possible, and checks
      * if it needs to merge the current island with the adjacent ones.
      * @param moves indicates the number of island mother nature has to travel
      * @throws IllegalArgumentException if the parameter is not greater than zero
@@ -331,7 +331,7 @@ public class Game {
     }//TODO endgame call
 
     /**
-     * This is an helper method, it helps to merge two adjacent islands with the same towers' color together
+     * This is a helper method, it helps to merge two adjacent islands with the same towers' color together
      * reducing the size of the archipelago
      * @param adjacentIsland The island adjacent to the first one
      * @param currentIsland The island with the mother nature on it
