@@ -86,8 +86,12 @@ class ExpertGameTest {
         SwapStudentsCard card = new SwapStudentsCard(2, Color.YELLOW, Color.RED, Color.PINK, Color.BLUE, g);
         setupFullPlayer();
         g.startGame();
-        g.getCurrentPlayer().getBoard().entranceToHall(Color.BLUE);
-        g.getCurrentPlayer().getBoard().entranceToHall(Color.PINK);
+        if(g.getCurrentPlayer().getBoard().studentInEntrance(Color.BLUE))
+            g.getCurrentPlayer().getBoard().entranceToHall(Color.BLUE);
+        else return;
+        if(g.getCurrentPlayer().getBoard().studentInEntrance(Color.PINK))
+            g.getCurrentPlayer().getBoard().entranceToHall(Color.PINK);
+        else return;
         card.effect();
         assertEquals(1 ,g.getCurrentPlayer().getBoard().hallSize(Color.RED));
         assertEquals(1,g.getCurrentPlayer().getBoard().hallSize(Color.YELLOW));
@@ -105,7 +109,9 @@ class ExpertGameTest {
         SwapStudentsCard card = new SwapStudentsCard(1, Color.BLUE, Color.RED, g);
         setupFullPlayer();
         g.startGame();
-        g.getCurrentPlayer().getBoard().entranceToHall(Color.RED);
+        if(g.getCurrentPlayer().getBoard().studentInEntrance(Color.RED))
+            g.getCurrentPlayer().getBoard().entranceToHall(Color.RED);
+        else return;
         card.effect();
         assertEquals(1, g.getCurrentPlayer().getBoard().hallSize(Color.BLUE));
         assertEquals(0, g.getCurrentPlayer().getBoard().hallSize(Color.RED));
@@ -121,7 +127,6 @@ class ExpertGameTest {
         SwapStudentsCard card = new SwapStudentsCard(1, Color.YELLOW, Color.GREEN, g);
         setupFullPlayer();
         g.startGame();
-        g.getCurrentPlayer().getBoard().entranceToHall(Color.RED);
         assertThrows(IllegalArgumentException.class,
                 card::effect);
 
