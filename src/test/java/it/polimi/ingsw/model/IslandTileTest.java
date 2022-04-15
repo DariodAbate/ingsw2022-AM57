@@ -1,10 +1,13 @@
 package it.polimi.ingsw.model;
 
+import it.polimi.ingsw.model.expertGame.ExpertGame;
+import it.polimi.ingsw.model.expertGame.InfluenceCardsCluster;
 import it.polimi.ingsw.model.statePattern.StandardCalculator;
 import it.polimi.ingsw.model.constantFactory.GameConstants;
 import it.polimi.ingsw.model.constantFactory.GameConstantsCreator;
 import it.polimi.ingsw.model.constantFactory.GameConstantsCreatorThreePlayers;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
@@ -14,9 +17,9 @@ import static org.junit.jupiter.api.Assertions.*;
 //STUDENT 1 has RED, GREEN
 //STUDENT 2 has PINK
 class IslandTileTest {
-    ArrayList<Player> players = new ArrayList<>();
+    ArrayList<Player> playerArrayList = new ArrayList<>();
     StandardCalculator calc = new StandardCalculator();
-    IslandTile island = new IslandTile(calc);
+    IslandTile tempIsland = new IslandTile(calc);
     GameConstantsCreator g;
 
     @BeforeEach
@@ -24,17 +27,17 @@ class IslandTileTest {
         g = new GameConstantsCreatorThreePlayers();
         GameConstants gc = g.create();
         for (int i = 0; i < 3; i++) {
-            players.add(new Player(i,gc));
+            playerArrayList.add(new Player(i,gc));
         }
-        players.get(0).getBoard().addProfessor(Color.BLUE);
-        players.get(0).getBoard().addProfessor(Color.YELLOW);
-        players.get(1).getBoard().addProfessor(Color.RED);
-        players.get(1).getBoard().addProfessor(Color.GREEN);
-        players.get(2).getBoard().addProfessor(Color.PINK);
-        players.get(0).getBoard().chooseTower(Tower.WHITE);
-        players.get(1).getBoard().chooseTower(Tower.BLACK);
-        players.get(2).getBoard().chooseTower(Tower.GRAY);
-        calc.setContext(island);
+        playerArrayList.get(0).getBoard().addProfessor(Color.BLUE);
+        playerArrayList.get(0).getBoard().addProfessor(Color.YELLOW);
+        playerArrayList.get(1).getBoard().addProfessor(Color.RED);
+        playerArrayList.get(1).getBoard().addProfessor(Color.GREEN);
+        playerArrayList.get(2).getBoard().addProfessor(Color.PINK);
+        playerArrayList.get(0).getBoard().chooseTower(Tower.WHITE);
+        playerArrayList.get(1).getBoard().chooseTower(Tower.BLACK);
+        playerArrayList.get(2).getBoard().chooseTower(Tower.GRAY);
+        calc.setContext(tempIsland);
     }
 
     /**
@@ -50,28 +53,28 @@ class IslandTileTest {
         g = new GameConstantsCreatorThreePlayers();
         GameConstants gc = g.create();
         Player player1 = new Player(0, gc);
-        island.add(Color.GREEN);
-        island.add(Color.PINK);
-        island.add(Color.YELLOW);
+        tempIsland.add(Color.GREEN);
+        tempIsland.add(Color.PINK);
+        tempIsland.add(Color.YELLOW);
         //TEST NO PROFESSOR PLAYER
-        assertEquals(0, island.checkInfluence(player1));
+        assertEquals(0, tempIsland.checkInfluence(player1));
         //TEST PROFESSOR PLAYERS
-        for (Player player:players) {
+        for (Player player: playerArrayList) {
             assertEquals(1, calc.checkInfluence(player));
         }
-        island.add(Color.RED);
-        island.add(Color.RED);
-        island.add(Color.RED);
+        tempIsland.add(Color.RED);
+        tempIsland.add(Color.RED);
+        tempIsland.add(Color.RED);
         //TEST MORE THAN ONE TOKEN PLAYER
-        assertEquals(4, calc.checkInfluence(players.get(1)));
-        island.addTower();
-        island.changeTowerColor(Tower.WHITE);
+        assertEquals(4, calc.checkInfluence(playerArrayList.get(1)));
+        tempIsland.addTower();
+        tempIsland.changeTowerColor(Tower.WHITE);
         //TEST ADD TOWER
-        assertEquals(2,calc.checkInfluence(players.get(0)));
+        assertEquals(2,calc.checkInfluence(playerArrayList.get(0)));
         //TEST CHANGE TOWER
-        island.changeTowerColor(Tower.BLACK);
-        assertEquals(1,calc.checkInfluence(players.get(0)));
-        assertEquals(5,calc.checkInfluence(players.get(1)));
+        tempIsland.changeTowerColor(Tower.BLACK);
+        assertEquals(1,calc.checkInfluence(playerArrayList.get(0)));
+        assertEquals(5,calc.checkInfluence(playerArrayList.get(1)));
     }
 
     /**
@@ -86,46 +89,102 @@ class IslandTileTest {
     @Test
     void conquer() {
         //TEST EMPTY ISLAND
-        island.conquer(players);
-        assertEquals(0, island.getNumTowers());
+        tempIsland.conquer(playerArrayList);
+        assertEquals(0, tempIsland.getNumTowers());
         //TEST NO EMPTY ISLAND (EVEN TOKENS)
-        island.add(Color.RED);
-        island.add(Color.PINK);
-        island.conquer(players);
-        assertEquals(0, island.getNumTowers());
-        assertNull(island.getTowerColor());
-        assertThrows(IllegalStateException.class, ()-> island.changeTowerColor(Tower.BLACK));
+        tempIsland.add(Color.RED);
+        tempIsland.add(Color.PINK);
+        tempIsland.conquer(playerArrayList);
+        assertEquals(0, tempIsland.getNumTowers());
+        assertNull(tempIsland.getTowerColor());
+        assertThrows(IllegalStateException.class, ()-> tempIsland.changeTowerColor(Tower.BLACK));
         //TEST FILL ISLAND
-        island.add(Color.RED);
-        island.conquer(players);
-        assertEquals(5, players.get(1).getBoard().getNumTower()); //TEST IF TOWER IS CORRECTLY REMOVED
-        assertEquals(1, island.getNumTowers());
-        assertEquals(Tower.BLACK, island.getTowerColor());
+        tempIsland.add(Color.RED);
+        tempIsland.conquer(playerArrayList);
+        assertEquals(5, playerArrayList.get(1).getBoard().getNumTower()); //TEST IF TOWER IS CORRECTLY REMOVED
+        assertEquals(1, tempIsland.getNumTowers());
+        assertEquals(Tower.BLACK, tempIsland.getTowerColor());
         //TEST ALREADY FILLED ISLAND, NO CHANGE HOLDER
-        island.add(Color.YELLOW);
-        island.add(Color.YELLOW);
-        island.add(Color.YELLOW);
-        island.conquer(players);
-        assertEquals(5, players.get(1).getBoard().getNumTower());
-        assertEquals(1, island.getNumTowers());
-        assertEquals(Tower.BLACK, island.getTowerColor());
+        tempIsland.add(Color.YELLOW);
+        tempIsland.add(Color.YELLOW);
+        tempIsland.add(Color.YELLOW);
+        tempIsland.conquer(playerArrayList);
+        assertEquals(5, playerArrayList.get(1).getBoard().getNumTower());
+        assertEquals(1, tempIsland.getNumTowers());
+        assertEquals(Tower.BLACK, tempIsland.getTowerColor());
         //TEST ALREADY FILLED ISLAND, CHANGE HOLDER
-        island.add(Color.YELLOW);
-        island.conquer(players);
-        assertEquals(6, players.get(1).getBoard().getNumTower());
-        assertEquals(5, players.get(0).getBoard().getNumTower());
-        assertEquals(1, island.getNumTowers());
-        assertEquals(Tower.WHITE, island.getTowerColor());
+        tempIsland.add(Color.YELLOW);
+        tempIsland.conquer(playerArrayList);
+        assertEquals(6, playerArrayList.get(1).getBoard().getNumTower());
+        assertEquals(5, playerArrayList.get(0).getBoard().getNumTower());
+        assertEquals(1, tempIsland.getNumTowers());
+        assertEquals(Tower.WHITE, tempIsland.getTowerColor());
         //TEST CHANGE AGAIN HOLDER
-        island.add(Color.RED);
-        island.add(Color.RED);
-        island.add(Color.RED);
-        island.add(Color.GREEN);
-        island.conquer(players);
-        assertEquals(5, players.get(1).getBoard().getNumTower());
-        assertEquals(6, players.get(0).getBoard().getNumTower());
-        assertEquals(1, island.getNumTowers());
-        assertEquals(Tower.BLACK, island.getTowerColor());
+        tempIsland.add(Color.RED);
+        tempIsland.add(Color.RED);
+        tempIsland.add(Color.RED);
+        tempIsland.add(Color.GREEN);
+        tempIsland.conquer(playerArrayList);
+        assertEquals(5, playerArrayList.get(1).getBoard().getNumTower());
+        assertEquals(6, playerArrayList.get(0).getBoard().getNumTower());
+        assertEquals(1, tempIsland.getNumTowers());
+        assertEquals(Tower.BLACK, tempIsland.getTowerColor());
+    }
+
+    /**
+     * This is an helper method
+     * @param game ExpertGame
+     */
+     void setup_influencePattern(ExpertGame game){
+         game.addPlayer("Dario");
+         game.addPlayer("Luca");
+         game.startGame();
+         game.getPlayers().get(0).getBoard().addProfessor(Color.BLUE);
+         game.getPlayers().get(0).getBoard().addProfessor(Color.YELLOW);
+         game.getPlayers().get(1).getBoard().addProfessor(Color.RED);
+         game.getPlayers().get(1).getBoard().addProfessor(Color.GREEN);
+         game.getPlayers().get(2).getBoard().addProfessor(Color.PINK);
+         game.getPlayers().get(0).getBoard().chooseTower(Tower.WHITE);
+         game.getPlayers().get(1).getBoard().chooseTower(Tower.BLACK);
+         game.getPlayers().get(2).getBoard().chooseTower(Tower.GRAY);
+     }
+    /**
+     * This method test all changes to the InfluenceCalculator pattern and also test the correct behavior of the states
+     */
+    @DisplayName("Test state pattern")
+    @Test
+    public void InfluencePattern(){
+        //SETUP OF THE GAME
+        ExpertGame game = new ExpertGame("Lorenzo", 3);
+        InfluenceCardsCluster card = new InfluenceCardsCluster(0,game);
+        card.changeColor(Color.YELLOW);
+        setup_influencePattern(game);
+        IslandTile tempIsland = game.getCurrentIsland();
+        tempIsland.add(Color.GREEN);
+        tempIsland.add(Color.PINK);
+        tempIsland.add(Color.YELLOW);
+        tempIsland.add(Color.YELLOW);
+        tempIsland.add(Color.BLUE);
+        tempIsland.addTower();
+        tempIsland.changeTowerColor(Tower.WHITE);
+        //STANDARD CALCULATOR
+        assertEquals(4, tempIsland.checkInfluence(game.getPlayers().get(0)));
+        //NO TOWER CALCULATOR
+        card.effect();
+        game.getCurrentIsland().changeCalculator(game.calc);
+        assertEquals(3, tempIsland.checkInfluence(game.getPlayers().get(0)));
+        InfluenceCardsCluster card1 = new InfluenceCardsCluster(1,game);
+        //TWO MORE CALCULATOR
+        card1.effect();
+        game.getCurrentIsland().changeCalculator(game.calc);
+        assertEquals(6, tempIsland.checkInfluence(game.getPlayers().get(0)));
+        InfluenceCardsCluster card2 = new InfluenceCardsCluster(2,game);
+        //COLOR EXCEPTION CALCULATOR
+        assertThrows(IllegalStateException.class, card2::effect);
+        card2.changeColor(Color.YELLOW);
+        card2.effect();
+        game.getCurrentIsland().changeCalculator(game.calc);
+        assertEquals(2, tempIsland.checkInfluence(game.getPlayers().get(0)));
     }
 
 }

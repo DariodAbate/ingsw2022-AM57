@@ -6,26 +6,29 @@ package it.polimi.ingsw.model.constantFactory;
  * @author Dario d'Abate
  */
 public class ThreePlayersConstants implements GameConstants{
+    private final static int ENTRANCE_SIZE = 9;
+    private final static int NUM_TOWERS = 6;
+    private final static int NUM_CLOUDS = 3;
+    private final static int NUM_STUDENTS_CLOUD = 4;
+    private final static int MAX_COIN_SIZE = 17;
     @Override
     public int getEntranceSize() {
-        return 9;
+        return ENTRANCE_SIZE;
     }
 
     @Override
     public int getNumTowersOnBoard() {
-        return 6;
+        return NUM_TOWERS;
     }
 
     @Override
-    public int getNumClouds() {
-        return 3;
-    }
+    public int getNumClouds() {return NUM_CLOUDS;}
 
     @Override
     public int getNumStudentsOnCloud() {
-        return 4;
+        return NUM_STUDENTS_CLOUD;
     }
 
     @Override
-    public int getMaxCoinSize(){ return 17;}
+    public int getMaxCoinSize(){ return MAX_COIN_SIZE;}
 }

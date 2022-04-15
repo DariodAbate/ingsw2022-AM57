@@ -2,6 +2,7 @@ package it.polimi.ingsw.model.expertGame;
 
 import it.polimi.ingsw.model.Game;
 import it.polimi.ingsw.model.IslandTile;
+import it.polimi.ingsw.model.statePattern.InfluenceCalculator;
 
 import java.util.ArrayList;
 
@@ -9,7 +10,7 @@ import java.util.ArrayList;
  * This subclass of game is instantiated when selecting Expert Mode, it adds the coin and expert cards system
  * @author Lorenzo Corrado
  */
-public class ExpertGame extends Game implements PseudoMotherNature, IncrementMaxMovement{
+public class ExpertGame extends Game implements PseudoMotherNature, IncrementMaxMovement, InfluenceCluster{
 
     private int coinBank;
     private ArrayList<ExpertCard> expertCards;
@@ -63,4 +64,14 @@ public class ExpertGame extends Game implements PseudoMotherNature, IncrementMax
             motherNature = archipelago.indexOf(tempIsland);
         }
     }
+
+    /**
+     * This method implements the changeCalculator of game
+     * @param calc the calculator
+     */
+    @Override
+    public void changeCalculator(InfluenceCalculator calc) {
+        this.calc = calc;
+    }
+
 }

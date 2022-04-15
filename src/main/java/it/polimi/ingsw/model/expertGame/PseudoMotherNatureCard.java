@@ -34,7 +34,7 @@ public class PseudoMotherNatureCard extends ExpertCard {
      */
     @Override
     public void effect() {
-        if(isPlayed()){
+        if(!isPlayed()){
             played = true;
             price += 1;
         }
