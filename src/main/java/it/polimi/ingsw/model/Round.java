@@ -116,7 +116,7 @@ public class Round {
 
     /**
      * Gets the current player.
-     * @return the current player
+     * @return the reference to the current player
      */
     public Player getCurrentPlayer() {
         return currentTurn;
@@ -140,7 +140,8 @@ public class Round {
      * This method modify the current player and indicates the start of a new turn.
      */
     public void nextTurn() {
-        /*
+
+        /*  TODO
          if (!planningIterator.hasNext())
              setActionPhaseOrder();
          if (!actionIterator.hasNext())
