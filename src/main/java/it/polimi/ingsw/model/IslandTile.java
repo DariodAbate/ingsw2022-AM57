@@ -17,6 +17,7 @@ public class IslandTile {
     private int numTowers;
     private Tower towerColor;
     private InfluenceCalculator calc;
+    private boolean isBanned = false;
 
     /**
      * Constructor of the class, the island starts with 0 towers, and a maximum size students
@@ -146,5 +147,9 @@ public class IslandTile {
             }
             towerColor = players.get(index).getBoard().getTowerColor();
         }
+    }
+
+    public void setBanned(boolean isBanned) {
+        this.isBanned = isBanned;
     }
 }
