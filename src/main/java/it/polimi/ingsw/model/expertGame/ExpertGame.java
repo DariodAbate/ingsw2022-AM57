@@ -3,6 +3,7 @@ package it.polimi.ingsw.model.expertGame;
 import it.polimi.ingsw.model.Color;
 import it.polimi.ingsw.model.Game;
 import it.polimi.ingsw.model.IslandTile;
+import it.polimi.ingsw.model.Player;
 import it.polimi.ingsw.model.statePattern.InfluenceCalculator;
 
 import java.util.ArrayList;
@@ -12,7 +13,8 @@ import java.util.ArrayList;
  * @author Lorenzo Corrado
  */
 
-public class ExpertGame extends Game implements PseudoMotherNature, IncrementMaxMovement, InfluenceCluster, SwapStudents{
+public class ExpertGame extends Game implements PseudoMotherNature, IncrementMaxMovement, InfluenceCluster, SwapStudents,
+                                                BannedIsland, PutThreeStudentsInTheBag{
 
     private int coinBank;
     private ArrayList<ExpertCard> expertCards;
@@ -90,5 +92,30 @@ public class ExpertGame extends Game implements PseudoMotherNature, IncrementMax
             throw new IllegalArgumentException("You don't have a student with this color in your hall");
        getCurrentPlayer().getBoard().entranceToHall(entranceStudentColor);
        getCurrentPlayer().getBoard().hallToEntrance(hallStudentColor);
+    }
+
+    //TODO method still to be finished
+    @Override
+    public void banIsland(int islandIndex) {
+        getArchipelago().get(islandIndex).setBanned(true);
+    }
+
+    @Override
+    public void putThreeStudentsInTheBag(Color studentColor){
+        for (Player player : players) {
+            int studentRemoved = 0;
+            if (player.getBoard().hallSize(studentColor) < 3) {
+                while (player.getBoard().hallSize(studentColor) != 0) {
+                    player.getBoard().removeStudentFromHall(studentColor);
+                    studentRemoved += 1;
+                }
+                actionBag.add(studentColor, studentRemoved);
+            } else {
+                for (studentRemoved = 0; studentRemoved < 3; studentRemoved ++) {
+                    player.getBoard().removeStudentFromHall(studentColor);
+                }
+                actionBag.add(studentColor,3);
+            }
+        }
     }
 }
