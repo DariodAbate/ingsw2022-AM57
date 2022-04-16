@@ -49,9 +49,10 @@ class BagTest {
         Bag bag = new Bag(10, 15, 8, 12, 14);
         bag.add(Color.RED,2);
         assertEquals(61, bag.size());
-        while (bag.isEmpty()) {
+        while (!bag.isEmpty()) {
             bag.draw();
         }
+        assertEquals(0, bag.size());
         bag.add(Color.YELLOW, 2);
         assertEquals(2, bag.size());
     }
