@@ -100,6 +100,7 @@ public class ExpertGame extends Game implements PseudoMotherNature, IncrementMax
         getArchipelago().get(islandIndex).setBanned(true);
     }
 
+    //TODO method to be tested
     @Override
     public void putThreeStudentsInTheBag(Color studentColor){
         for (Player player : players) {
