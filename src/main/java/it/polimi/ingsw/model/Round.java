@@ -2,6 +2,7 @@ package it.polimi.ingsw.model;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.Iterator;
 
 /**
@@ -101,15 +102,9 @@ public class Round {
      * indicates the beginning of the action phase.
      */
     // Case of same priority card to be added
+    //TODO Change logic
     public void setActionPhaseOrder() {
-        for (Player player : playersCopy) {
-            actionPhaseOrder.sort((player1, player2) -> {
-                if (player1.viewLastCard().getPriority() < player2.viewLastCard().getPriority())
-                    return -1;
-                else
-                    return 1;
-            });
-        }
+        actionPhaseOrder.sort(Comparator.comparingInt(player -> player.viewLastCard().getPriority()));
         currentTurn = actionPhaseOrder.get(0);
         isPlanning = false;
     }
