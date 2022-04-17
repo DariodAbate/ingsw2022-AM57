@@ -22,9 +22,7 @@ public abstract class ExpertCard {
     /**
      * Play the effect of the card
      */
-    public void effect(){
-
-    }
+    public void effect() throws NotExistingStudentException {}
 
     /**
      *

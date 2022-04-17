@@ -1,7 +1,6 @@
 package it.polimi.ingsw.model.expertGame;
 
-import it.polimi.ingsw.model.Game;
-import it.polimi.ingsw.model.IslandTile;
+import it.polimi.ingsw.model.*;
 import it.polimi.ingsw.model.statePattern.InfluenceCalculator;
 
 import java.util.ArrayList;
@@ -10,7 +9,7 @@ import java.util.ArrayList;
  * This subclass of game is instantiated when selecting Expert Mode, it adds the coin and expert cards system
  * @author Lorenzo Corrado
  */
-public class ExpertGame extends Game implements PseudoMotherNature, IncrementMaxMovement, InfluenceCluster{
+public class ExpertGame extends Game implements PseudoMotherNature, IncrementMaxMovement, InfluenceCluster, StudentsBufferCluster{
 
     private int coinBank;
     private ArrayList<ExpertCard> expertCards;
@@ -43,8 +42,9 @@ public class ExpertGame extends Game implements PseudoMotherNature, IncrementMax
     /**
      * This method is called by the controller to activate the effect of a card, identified by an index
      * @param indexCard represent a character card if the effect to activate
+     * @throws NotExistingStudentException when the effect of a card involving a non-existent student is activated
      */
-        public void playEffect(int indexCard){
+        public void playEffect(int indexCard) throws NotExistingStudentException{
         expertCards.get(indexCard).effect();
     }
 
@@ -82,4 +82,61 @@ public class ExpertGame extends Game implements PseudoMotherNature, IncrementMax
         this.calc = calc;
     }
 
+    /**
+     * This method is used to populate the student cluster
+     * @return color drown from the bag
+     */
+    public Color draw(){
+        return actionBag.draw();
+    }
+
+
+    /**
+     * This method is used to move a student from the man's expert card of the student cluster to an
+     * existing island. The student is removed inside the student cluster class
+     * @param idxChosenIsland index of the island to which the student will be moved
+     * @param colorStudentToBeMoved color of the student to be moved
+     * @throws IndexOutOfBoundsException when it is passed an index which does not have a
+     * corresponding island tile in the archipelago arrayList
+     */
+    public void fromManCardToIsland(int idxChosenIsland, Color colorStudentToBeMoved){
+        if(idxChosenIsland < 0 || idxChosenIsland > archipelago.size())
+            throw new IndexOutOfBoundsException("The specified island tile does not exist");
+
+        archipelago.get(idxChosenIsland).add(colorStudentToBeMoved);
+    }
+
+    /**
+     * This method is used to swap a student from the clown's expert card of the student cluster, with a
+     * student in the board's hall of the current player.
+     * @param colorStudentOnCard color of the student on the card
+     * @param colorStudentInEntrance color of the student in the hall
+     * @throws NotExistingStudentException when  there is no student of the specified color to move from the entrance
+     */
+    public void fromClownCardToEntrance(Color colorStudentOnCard, Color colorStudentInEntrance) throws NotExistingStudentException{
+        Board currentPlayerBoard = getCurrentPlayer().getBoard();
+        if(currentPlayerBoard.studentInEntrance(colorStudentInEntrance))
+            currentPlayerBoard.removeStudentFromEntrance(colorStudentInEntrance);
+        else
+            throw new NotExistingStudentException("Lo studente da muovere non è presente nell'ingresso!");
+        currentPlayerBoard.fillEntrance(colorStudentOnCard);
+    }
+
+    /**
+     * This method is used to move a student from the woman's expert card of the student cluster to the hall
+     * of the current player. The student is removed inside the student cluster class.
+     * If the hall cannot contain the student of the specified color, the hall remains unchanged and the student is not removed
+     * from the top of the card.
+     * @param colorStudentToBeMoved color of the student to be moved
+     * @return true if movement has done, false otherwise
+     */
+    public boolean fromWomanCardToHall( Color colorStudentToBeMoved){
+        Board currentPlayerBoard = getCurrentPlayer().getBoard();
+        if(currentPlayerBoard.hallIsFillable(colorStudentToBeMoved)){
+            currentPlayerBoard.fillHall(colorStudentToBeMoved);
+            return true;
+        }else
+            return false;
+
+    }
 }

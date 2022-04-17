@@ -20,6 +20,7 @@ public class InfluenceCardsCluster extends ExpertCard{
     private int index;
     private InfluenceCluster game;
     private Color color; //this serves only for EXCEPT_ONE_COLOR_CALCULATOR
+
     public InfluenceCardsCluster(int cardIndex, ExpertGame game){
         super(3);
         this.game = game;
