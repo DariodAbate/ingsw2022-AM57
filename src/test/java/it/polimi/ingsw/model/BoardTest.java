@@ -302,4 +302,50 @@ class BoardTest {
         }
     }
 
+    /**
+     * Tests the correct working of the hallToEntrance method
+     */
+    @Test
+    @DisplayName("Moving a student from hall to entrance")
+    void hallToEntranceTest() {
+        for (Color i : Color.values()) {
+            assertEquals(0, b.entranceSize(i));
+            assertEquals(0, b.hallSize(i));
+        }
+        b.fillEntrance(Color.GREEN);
+        b.fillEntrance(Color.YELLOW);
+        b.fillEntrance(Color.RED);
+        b.fillEntrance(Color.GREEN);
+        assertEquals(4, b.entranceSize());
+        b.entranceToHall(Color.GREEN);
+        b.entranceToHall(Color.YELLOW);
+        b.entranceToHall(Color.GREEN);
+        assertEquals(0, b.entranceSize(Color.GREEN));
+        assertEquals(3, b.hallSize());
+        b.hallToEntrance(Color.GREEN);
+        assertEquals(1, b.entranceSize(Color.GREEN));
+        assertEquals(2, b.hallSize());
+    }
+
+    /**
+     * Tests that nothing happen if the method hallToEntrance is called
+     * with an empty hall
+     */
+    @Test
+    @DisplayName("Moving a student from a empty hall to the entrance")
+    void emptyHallToEntrance() {
+        for (Color i : Color.values()) {
+            assertEquals(0, b.entranceSize(i));
+            assertEquals(0, b.hallSize(i));
+        }
+        b.fillEntrance(Color.PINK);
+        b.fillEntrance(Color.YELLOW);
+        b.fillEntrance(Color.RED);
+        b.fillEntrance(Color.YELLOW);
+        assertEquals(4, b.entranceSize());
+        b.hallToEntrance(Color.YELLOW);
+        assertEquals(0, b.hallSize());
+        assertEquals(4, b.entranceSize());
+    }
+
 }

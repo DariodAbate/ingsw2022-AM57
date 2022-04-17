@@ -1,6 +1,10 @@
 package it.polimi.ingsw.model.expertGame;
 
 import it.polimi.ingsw.model.*;
+import it.polimi.ingsw.model.Color;
+import it.polimi.ingsw.model.Game;
+import it.polimi.ingsw.model.IslandTile;
+import it.polimi.ingsw.model.Player;
 import it.polimi.ingsw.model.statePattern.InfluenceCalculator;
 
 import java.util.ArrayList;
@@ -9,7 +13,7 @@ import java.util.ArrayList;
  * This subclass of game is instantiated when selecting Expert Mode, it adds the coin and expert cards system
  * @author Lorenzo Corrado
  */
-public class ExpertGame extends Game implements PseudoMotherNature, IncrementMaxMovement, InfluenceCluster, StudentsBufferCluster{
+public class ExpertGame extends Game implements PseudoMotherNature, IncrementMaxMovement, InfluenceCluster, StudentsBufferCluster, SwapStudents, BannedIsland, PutThreeStudentsInTheBag{
 
     private int coinBank;
     private ArrayList<ExpertCard> expertCards;
@@ -138,5 +142,46 @@ public class ExpertGame extends Game implements PseudoMotherNature, IncrementMax
         }else
             return false;
 
+    }
+    /**
+     * This method swaps a student from the entrance to the hall and vice versa.
+     * @param entranceStudentColor is the color of the student in the entrance that need to be swapped
+     * @param hallStudentColor is the color of the student in the hall that need to be swapped.
+     * @throws IllegalArgumentException when the selected color student isn't in the entrance or in the hall
+     */
+    @Override
+    public void swapStudents(Color entranceStudentColor, Color hallStudentColor){
+        if (getCurrentPlayer().getBoard().entranceSize(entranceStudentColor) == 0)
+            throw new IllegalArgumentException("You don't have a student with this color in your entrance");
+        if (getCurrentPlayer().getBoard().hallSize(hallStudentColor) == 0)
+            throw new IllegalArgumentException("You don't have a student with this color in your hall");
+       getCurrentPlayer().getBoard().entranceToHall(entranceStudentColor);
+       getCurrentPlayer().getBoard().hallToEntrance(hallStudentColor);
+    }
+
+    //TODO method still to be finished
+    @Override
+    public void banIsland(int islandIndex) {
+        getArchipelago().get(islandIndex).setBanned(true);
+    }
+
+    //TODO method to be tested
+    @Override
+    public void putThreeStudentsInTheBag(Color studentColor){
+        for (Player player : players) {
+            int studentRemoved = 0;
+            if (player.getBoard().hallSize(studentColor) < 3) {
+                while (player.getBoard().hallSize(studentColor) != 0) {
+                    player.getBoard().removeStudentFromHall(studentColor);
+                    studentRemoved += 1;
+                }
+                actionBag.add(studentColor, studentRemoved);
+            } else {
+                for (studentRemoved = 0; studentRemoved < 3; studentRemoved ++) {
+                    player.getBoard().removeStudentFromHall(studentColor);
+                }
+                actionBag.add(studentColor,3);
+            }
+        }
     }
 }
