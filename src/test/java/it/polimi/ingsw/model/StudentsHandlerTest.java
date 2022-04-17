@@ -90,7 +90,6 @@ class StudentsHandlerTest {
      */
     @Test
     void testRemove() {
-
         int num = 10;
         int num1 = -1;
         int num2 = 40;

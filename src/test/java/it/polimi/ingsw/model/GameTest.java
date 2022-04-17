@@ -1,5 +1,10 @@
 package it.polimi.ingsw.model;
 
+import it.polimi.ingsw.model.expertGame.ExpertGame;
+import it.polimi.ingsw.model.expertGame.InfluenceCardsCluster;
+import it.polimi.ingsw.model.statePattern.NoTowerCalculator;
+import it.polimi.ingsw.model.statePattern.StandardCalculator;
+import it.polimi.ingsw.model.statePattern.TwoMoreCalculator;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -331,6 +336,7 @@ class GameTest {
     }
 
 
+
     //The following tests involve moving a student to an island tile where there is no mother nature
     //I consider cases where there are only students due to initialization
 
@@ -402,6 +408,20 @@ class GameTest {
 
         assertThrows(IllegalStateException.class, () ->
                 g.entranceToIsland(0, Color.YELLOW));
+    }
+
+    void setup_MovementNature(Game game){
+        game.addPlayer("Dario");
+        game.addPlayer("Luca");
+        game.startGame();
+        game.getPlayers().get(0).getBoard().addProfessor(Color.BLUE);
+        game.getPlayers().get(0).getBoard().addProfessor(Color.YELLOW);
+        game.getPlayers().get(1).getBoard().addProfessor(Color.RED);
+        game.getPlayers().get(1).getBoard().addProfessor(Color.GREEN);
+        game.getPlayers().get(2).getBoard().addProfessor(Color.PINK);
+        game.getPlayers().get(0).getBoard().chooseTower(Tower.WHITE);
+        game.getPlayers().get(1).getBoard().chooseTower(Tower.BLACK);
+        game.getPlayers().get(2).getBoard().chooseTower(Tower.GRAY);
     }
 
 }

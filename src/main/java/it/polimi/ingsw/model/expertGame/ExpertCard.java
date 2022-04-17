@@ -28,7 +28,7 @@ public abstract class ExpertCard {
 
     /**
      *
-     * @return if the card has been played or not
+     * @return true if the card has been played at least one time, false otherwise
      */
     public boolean isPlayed(){
         return played;
