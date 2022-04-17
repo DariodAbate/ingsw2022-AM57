@@ -12,7 +12,6 @@
 | GUI                             | 🔴 |
 | CLI                             | 🔴 |
 | Character cards                 | 🟡 |
-| 4-players game                  | 🔴 |
 | Multiple games                  | 🔴 |
 | Persistence                     | 🔴 |
 | Resilience to disconnections    | 🔴 |

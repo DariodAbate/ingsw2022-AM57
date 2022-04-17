@@ -159,6 +159,7 @@ class IslandTileTest {
         InfluenceCardsCluster card = new InfluenceCardsCluster(0,game);
         card.changeColor(Color.YELLOW);
         setup_influencePattern(game);
+        game.round.setCurrentTurn(game.getPlayers().get(0));
         IslandTile tempIsland = game.getCurrentIsland();
         tempIsland.add(Color.GREEN);
         tempIsland.add(Color.PINK);

@@ -2,13 +2,19 @@ package it.polimi.ingsw.model.statePattern;
 
 import it.polimi.ingsw.model.IslandTile;
 import it.polimi.ingsw.model.Player;
+import it.polimi.ingsw.model.RoundObserver;
+import it.polimi.ingsw.model.expertGame.ExpertCard;
+import it.polimi.ingsw.model.expertGame.InfluenceCardsCluster;
 
 /**
  * This class extends a standard calculator adding 2 more influence point to the count
  * @author Lorenzo Corrado
  */
 public class TwoMoreCalculator extends StandardCalculator{
-    public TwoMoreCalculator(){
+    private Player currentPlayer;
+    private InfluenceCardsCluster card;
+    public TwoMoreCalculator(InfluenceCardsCluster card){
+        this.card = card;
 
     }
     /**
@@ -28,6 +34,8 @@ public class TwoMoreCalculator extends StandardCalculator{
      */
     @Override
     public int checkInfluence(Player player) {
-        return super.checkInfluence(player) + 2;
+        currentPlayer = card.getRound().getRoundPlayer();
+        if(currentPlayer == player) return super.checkInfluence(player) + 2;
+        return super.checkInfluence(player);
     }
 }

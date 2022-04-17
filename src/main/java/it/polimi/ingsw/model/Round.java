@@ -170,5 +170,9 @@ public class Round {
     public void setIsEnding(boolean isEnding) { //this method sets a condition for the endgame
          this.isEnding = isEnding;
     }
+
+    public void setCurrentTurn(Player player){
+        currentTurn = player;
+    }
 }
 

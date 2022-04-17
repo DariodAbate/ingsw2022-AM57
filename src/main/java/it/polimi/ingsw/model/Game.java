@@ -17,7 +17,7 @@ import java.util.Random;
  * @author Dario d'Abate
  * @author Lorenzo Corrado
  */
-public class Game {
+public class Game implements RoundObserver{
     protected GameConstants gameConstants;//contains all the game's constants
     protected ArrayList<Player> players;
     protected final int numGamePlayers; //number of players for a particular game
@@ -28,7 +28,7 @@ public class Game {
     protected ArrayList<IslandTile> archipelago;
     protected int motherNature; //motherNature as an index corresponding to an island
     protected int maxMovement; //maxMovement that mother nature can do
-    protected RoundStub round; //FIXME
+    protected Round round;
     //using a stub for round
     protected InfluenceCalculator calc; //calculator for the influence
 
@@ -141,7 +141,8 @@ public class Game {
     }
 
     //initialize  a round through which the current player can be selected
-    protected void initRound(){round = new RoundStub(players);} //FIXME
+    protected void initRound(){
+        round = new Round(players);} //FIXME
 
 
 
@@ -566,5 +567,10 @@ public class Game {
      */
     public ArrayList<Player> getPlayers() {
         return players;
+    }
+
+    @Override
+    public Player getRoundPlayer() {
+        return round.getCurrentPlayer();
     }
 }
