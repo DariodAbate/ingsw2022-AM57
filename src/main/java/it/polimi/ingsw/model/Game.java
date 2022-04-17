@@ -1,5 +1,7 @@
 package it.polimi.ingsw.model;
 
+import it.polimi.ingsw.model.expertGame.NotExistingStudentException;
+import it.polimi.ingsw.model.statePattern.HallFullException;
 import it.polimi.ingsw.model.statePattern.InfluenceCalculator;
 import it.polimi.ingsw.model.statePattern.StandardCalculator;
 import it.polimi.ingsw.model.constantFactory.*;
@@ -274,6 +276,69 @@ public class Game {
 
     }
 
+    //TODO to be tested
+    /**
+     * This method is invoked by the current player to move a single student from its entrance to its hall.
+     * When the move is made, if the player does not have the professor of the specified color and has the most students
+     * of that color among all the players, then he gets the professor
+     * @param colorStudentToBeMoved color of the student to be moved
+     * @throws NotExistingStudentException when a player does not have a student of the specified color
+     * in his board's entrance
+     */
+    public void entranceToHall(Color colorStudentToBeMoved) throws NotExistingStudentException, HallFullException {
+        Board currentPlayerBoard = getCurrentPlayer().getBoard();
+
+        if( ! currentPlayerBoard.studentInEntrance(colorStudentToBeMoved))
+            throw new NotExistingStudentException("The current player does not have a student for the specified color");
+
+        if(!currentPlayerBoard.hallIsFillable(colorStudentToBeMoved))
+            throw new HallFullException("The hall cannot accept a student of the specified color");
+        currentPlayerBoard.entranceToHall(colorStudentToBeMoved);
+
+        //assignment of the professor
+        if(!currentPlayerBoard.hasProfessor(colorStudentToBeMoved) && hasMaxStudents(colorStudentToBeMoved)){
+            takeBackProfessor(colorStudentToBeMoved);
+            currentPlayerBoard.addProfessor(colorStudentToBeMoved);
+        }
+
+    }
+
+    /**
+     * Helper method used to determine if the current player has the maximum number of students,
+     * of the specified color, in the hall
+     * @param color color of student
+     * @return true if the current player has the maximum number of students among all players, false otherwise
+     */
+    private boolean hasMaxStudents(Color color){
+        int idxCurrentPlayer = players.indexOf(getCurrentPlayer());
+        int numStudCurrentPlayer = getCurrentPlayer().getBoard().hallSize(color);
+        int numStudPlayer;
+
+        for(int i = 0; i < players.size(); i++){
+            numStudPlayer = players.get(i).getBoard().hallSize(color);
+            if(i != idxCurrentPlayer && numStudCurrentPlayer < numStudPlayer)
+                return false;
+        }
+        return true;
+    }
+
+    /**
+     * Helper method used to move the professor of the specified color on the current player board.
+     * It removes the professor from the board of the player who held it up to that moment.
+     * If no one had that professor, the boards remain the same
+     * @param color color of the professor to be removed
+     */
+    private void takeBackProfessor(Color color){
+        int idxCurrentPlayer = players.indexOf(getCurrentPlayer());
+        Board board;
+        for(int i = 0; i < players.size(); i++){
+            board = players.get(i).getBoard();
+            if(i != idxCurrentPlayer && board.hasProfessor(color))
+                board.removeProfessor(color);
+        }
+    }
+
+
     /**
      * This method is invoked by the current player to move a single student from its board to an
      * island tile
@@ -281,20 +346,20 @@ public class Game {
      * @param idxChosenIsland index of the island to which the student will be moved
      * @throws IndexOutOfBoundsException when it is passed an index which does not have a
      * corresponding island tile in the archipelago arrayList
-     * @throws IllegalStateException when a player does not have a student of the specified color
+     * @throws NotExistingStudentException when a player does not have a student of the specified color
      * in his board's entrance
      */
-    public void entranceToIsland(int idxChosenIsland, Color colorStudentToBeMoved){
+    public void entranceToIsland(int idxChosenIsland, Color colorStudentToBeMoved) throws NotExistingStudentException{
         if(idxChosenIsland < 0 || idxChosenIsland > archipelago.size())
             throw new IndexOutOfBoundsException("The specified island tile does not exist");
 
         Board currentPlayerBoard = getCurrentPlayer().getBoard();
         if( ! currentPlayerBoard.studentInEntrance(colorStudentToBeMoved))
-            throw new IllegalStateException("The current player does not have a student for the specified color");
+            throw new NotExistingStudentException("The current player does not have a student for the specified color");
 
         currentPlayerBoard.removeStudentFromEntrance(colorStudentToBeMoved);
         archipelago.get(idxChosenIsland).add(colorStudentToBeMoved);
-        //check conquering condition TODO
+        //TODO check conquering condition
     }
 
     //TODO TO BE TESTED
