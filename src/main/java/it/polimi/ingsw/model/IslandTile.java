@@ -39,7 +39,11 @@ public class IslandTile {
         return towerColor;
     }
 
-    public StudentsHandler getIslandStudents() { //è da rimuovere?
+    /**
+     * Method used only for testing
+     * @return the reference to the studentsHandler contained in the class
+     */
+    public StudentsHandler getIslandStudents() {
         return islandStudents;
     }
 
@@ -60,7 +64,7 @@ public class IslandTile {
 
     /**
      * Change the color of the towers on the island
-     * @param color
+     * @param color of the tower that will be set
      * @throws IllegalStateException if there are 0 towers
      */
     public void changeTowerColor(Tower color){
