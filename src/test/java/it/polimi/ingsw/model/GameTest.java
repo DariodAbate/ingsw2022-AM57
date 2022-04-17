@@ -1,5 +1,6 @@
 package it.polimi.ingsw.model;
 
+import it.polimi.ingsw.model.expertGame.NotExistingStudentException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -341,7 +342,7 @@ class GameTest {
      */
     @Test
     @DisplayName("Moving an existing student from entrance to an existing island tile")
-    void entranceToIsland1() {
+    void entranceToIsland1() throws NotExistingStudentException {
         setupFullPlayer();
         g.startGame();
 
@@ -400,7 +401,7 @@ class GameTest {
             boardCurrentPlayer.removeStudentFromEntrance(Color.YELLOW);
         assertFalse(boardCurrentPlayer.studentInEntrance(Color.YELLOW));
 
-        assertThrows(IllegalStateException.class, () ->
+        assertThrows(NotExistingStudentException.class, () ->
                 g.entranceToIsland(0, Color.YELLOW));
     }
 
