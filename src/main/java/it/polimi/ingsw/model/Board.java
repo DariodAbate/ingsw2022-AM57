@@ -127,6 +127,13 @@ public class Board {
     public boolean entranceIsFillable(){return entrance.numStudents() < gameConstants.getEntranceSize(); }
 
     /**
+     *Indicates whether a student of the specified color can be placed in the hall
+     * @param color of the student to be added
+     * @return true if the hall can be filled with a student of the specified color, false otherwise
+     */
+    public boolean hallIsFillable(Color color){return hall.numStudents(color) < gameConstants.HALL_SIZE; }
+
+    /**
      * Indicates if there is at least one student of the specified color in the entrance
      * @param color of the students in entrance
      * @return true if in the board's entrance there is at least one student of the specified color, false otherwise
@@ -168,13 +175,22 @@ public class Board {
     }
 
     /**
+     * @param color color of the professor
+     * @return true if the set of professors contains that one of the specified color
+     */
+    public boolean hasProfessor( Color color){
+        return getProfessors().contains(color);
+    }
+
+    /**
      * Getter method that return the set of professor contained in a player's board
      * @return the copy of the set of professors
      */
     public Set<Color> getProfessors (){ return new HashSet<>(professors);} //shallow copy
 
     /**
-     * This method put a single student in the entrance
+     * This method put a single student in the entrance. If that student can not be added, the entrance
+     * is unchanged
      * @param color Color of the student to be added
      */
     public void fillEntrance(Color color){
@@ -199,7 +215,7 @@ public class Board {
 
     /**
      * This method moves a student from hall to entrance if the movement can be done, otherwise
-     * entrance and hall are unchanged. this method is used in the expert game mode.
+     * entrance and hall are unchanged. This method is used in the expert game mode
      * @param studentColor It is the color of the student to be moved from hall to entrance
      */
     public void hallToEntrance(Color studentColor){
@@ -208,4 +224,19 @@ public class Board {
             entrance.add(studentColor);
         }
     }
+
+    /**
+     * This method put a single student of the specified color in the hall. If that student can not be added, the hall
+     * is unchanged. This method is used in the expert game mode
+     * @param color Color of the student to be added
+     */
+    public void fillHall(Color color){
+        if(color == null)
+            throw new NullPointerException();
+        else if (hallIsFillable(color)){
+            hall.add(color);
+        }
+    }
+
+
 }
