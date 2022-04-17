@@ -2,11 +2,14 @@ package it.polimi.ingsw.model;
 
 import it.polimi.ingsw.model.expertGame.ExpertGame;
 import it.polimi.ingsw.model.expertGame.PseudoMotherNatureCard;
+import it.polimi.ingsw.model.expertGame.PutThreeStudentsInTheBagCard;
+import it.polimi.ingsw.model.expertGame.SwapStudentsCard;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
+
 
 class ExpertGameTest {
     ExpertGame g;
@@ -26,7 +29,7 @@ class ExpertGameTest {
      */
     @DisplayName("Merge Island with PseudoMotherNature")
     @Test
-    public void PseudoMotherNatureCardTest(){
+    void PseudoMotherNatureCardTest(){
         PseudoMotherNatureCard card = new PseudoMotherNatureCard(1, g);
         setupFullPlayer();
         g.startGame();
@@ -55,7 +58,7 @@ class ExpertGameTest {
      */
     @DisplayName("Check conquer functionalities")
     @Test
-    public void PseudoMotherNatureCardTest2(){
+    void PseudoMotherNatureCardTest2(){
         PseudoMotherNatureCard card = new PseudoMotherNatureCard(1, g);
         setupFullPlayer();
         g.startGame();
@@ -74,4 +77,58 @@ class ExpertGameTest {
         assertEquals(3, g.getMotherNature());
     }
 
+    /**
+     * This method tests the correct working of the SwapStudents card. In particular is tested
+     * the case when the player chose to swap two students.
+     */
+   /* @DisplayName("Tests the correct swapping of two students")  //FIXME i test dipendono da come viene riempita la antrance
+    @Test
+    void SwapTwoStudentsTest() {
+        SwapStudentsCard card = new SwapStudentsCard(2, Color.YELLOW, Color.RED, Color.PINK, Color.BLUE, g);
+        setupFullPlayer();
+        g.startGame();
+        if(g.getCurrentPlayer().getBoard().studentInEntrance(Color.BLUE))
+            g.getCurrentPlayer().getBoard().entranceToHall(Color.BLUE);
+        else return;
+        if(g.getCurrentPlayer().getBoard().studentInEntrance(Color.PINK))
+            g.getCurrentPlayer().getBoard().entranceToHall(Color.PINK);
+        else return;
+        card.effect();
+        assertEquals(1 ,g.getCurrentPlayer().getBoard().hallSize(Color.RED));
+        assertEquals(1,g.getCurrentPlayer().getBoard().hallSize(Color.YELLOW));
+        assertEquals(0,g.getCurrentPlayer().getBoard().hallSize(Color.BLUE));
+        assertEquals(0, g.getCurrentPlayer().getBoard().hallSize(Color.PINK));
+    }
+
+    /**
+     * This method tests the correct working of the SwapStudents card. In particular s tested
+     * the case when the player chose to swap one student.
+     */
+    /* @DisplayName("Tests the correct swapping of one students") //FIXME i test dipendono da come viene riempita la entrance
+    @Test
+    void SwapOneStudentTest() {
+        SwapStudentsCard card = new SwapStudentsCard(1, Color.BLUE, Color.RED, g);
+        setupFullPlayer();
+        g.startGame();
+        if(g.getCurrentPlayer().getBoard().studentInEntrance(Color.RED))
+            g.getCurrentPlayer().getBoard().entranceToHall(Color.RED);
+        else return;
+        card.effect();
+        assertEquals(1, g.getCurrentPlayer().getBoard().hallSize(Color.BLUE));
+        assertEquals(0, g.getCurrentPlayer().getBoard().hallSize(Color.RED));
+    }
+
+    /**
+     * This method tests that an exception is thrown when the player try to swap a student
+     * that isn't in the hall
+     */
+    @DisplayName("Tests exception when the selected color isn't available")
+    @Test
+    void SwapNonExistentStudent() {
+        SwapStudentsCard card = new SwapStudentsCard(1, Color.YELLOW, Color.GREEN, g);
+        setupFullPlayer();
+        g.startGame();
+        assertThrows(IllegalArgumentException.class,
+                card::effect);
+    }
 }

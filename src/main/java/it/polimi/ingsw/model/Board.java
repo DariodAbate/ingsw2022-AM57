@@ -197,6 +197,7 @@ public class Board {
         }
     }
 
+    //TODO Test
     /**
      * This method moves a student from hall to entrance if the movement can be done, otherwise
      * entrance and hall are unchanged. this method is used in the expert game mode.
@@ -208,4 +209,14 @@ public class Board {
             entrance.add(studentColor);
         }
     }
+
+    /**
+     * Remove a student of the specified Color form the hall.
+     * @param studentColor is the color of the student to be removed
+     */
+    public void removeStudentFromHall(Color studentColor) {
+        hall.remove(studentColor);
+    }
+
+    //TODO Add a method that returns the color of the students that the board has both in the entrance and in the hall
 }

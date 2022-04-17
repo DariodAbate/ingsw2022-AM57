@@ -28,6 +28,15 @@ public class Bag {
     }
 
     /**
+     * Add a specified number of students of the same color to the bag.
+     * @param studentColor is the color of the students
+     * @param numberToAdd is the number of students of the same color to add to the bag
+     */
+    public void add(Color studentColor, int numberToAdd) {
+        studentsHandlerToken.add(studentColor, numberToAdd);
+    }
+
+    /**
      * This method simulates a real draw calculating the probability of each color to be extracted, than he removes the
      * extracted token from the bag
      * @return The color of the extracted token, if the bag is empty return null
