@@ -13,7 +13,7 @@ import java.util.ArrayList;
  * This subclass of game is instantiated when selecting Expert Mode, it adds the coin and expert cards system
  * @author Lorenzo Corrado
  */
-public class ExpertGame extends Game implements PseudoMotherNature, IncrementMaxMovement, InfluenceCluster, StudentsBufferCluster, SwapStudents, BannedIsland, PutThreeStudentsInTheBag{
+public class ExpertGame extends Game implements PseudoMotherNature, IncrementMaxMovement, InfluenceCluster, StudentsBufferCluster, SwapStudents, BannedIsland, PutThreeStudentsInTheBag, TakeProfessorEqualStudents{
 
     private int coinBank;
     private ArrayList<ExpertCard> expertCards;
@@ -183,5 +183,14 @@ public class ExpertGame extends Game implements PseudoMotherNature, IncrementMax
                 actionBag.add(studentColor,3);
             }
         }
+    }
+
+    /**
+     * This method allows the current player  to get the professor of a certain color even if it has
+     * the same number of students as the player who currently owns that professor
+     */
+    @Override
+    public void setTakeProfessorEqualStudents() {
+        this.notAbsoluteMax = true;
     }
 }

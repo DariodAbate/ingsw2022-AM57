@@ -29,8 +29,9 @@ public class Game implements RoundObserver{
     protected int motherNature; //motherNature as an index corresponding to an island
     protected int maxMovement; //maxMovement that mother nature can do
     protected Round round;
-    //using a stub for round
+
     protected InfluenceCalculator calc; //calculator for the influence
+    protected boolean notAbsoluteMax; //flag used to implement an expertCard
 
     /*
     Game creation rules, as indicated by specifications:
@@ -142,7 +143,7 @@ public class Game implements RoundObserver{
 
     //initialize  a round through which the current player can be selected
     protected void initRound(){
-        round = new Round(players);} //FIXME
+        round = new Round(players);}
 
 
 
@@ -316,7 +317,11 @@ public class Game implements RoundObserver{
 
         for(int i = 0; i < players.size(); i++){
             numStudPlayer = players.get(i).getBoard().hallSize(color);
-            if(i != idxCurrentPlayer && numStudCurrentPlayer <= numStudPlayer)  //with the expert card should be <, not <=
+            //notAbsoluteMax = true  -> expert card activated
+            //notAbsoluteMax = false -> expert card not activated
+            //remember to set false the flag in the controller after returned false
+            if(i != idxCurrentPlayer &&
+                    (numStudCurrentPlayer < numStudPlayer && notAbsoluteMax || numStudCurrentPlayer <= numStudPlayer && !notAbsoluteMax))
                 return false;
         }
         return true;
@@ -359,7 +364,6 @@ public class Game implements RoundObserver{
 
         currentPlayerBoard.removeStudentFromEntrance(colorStudentToBeMoved);
         archipelago.get(idxChosenIsland).add(colorStudentToBeMoved);
-        //TODO check conquering condition
     }
 
     //TODO TO BE TESTED
