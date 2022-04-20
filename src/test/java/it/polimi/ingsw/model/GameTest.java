@@ -1,11 +1,7 @@
 package it.polimi.ingsw.model;
 
-import it.polimi.ingsw.model.expertGame.ExpertGame;
-import it.polimi.ingsw.model.expertGame.InfluenceCardsCluster;
-import it.polimi.ingsw.model.statePattern.NoTowerCalculator;
-import it.polimi.ingsw.model.statePattern.StandardCalculator;
-import it.polimi.ingsw.model.statePattern.TwoMoreCalculator;
 import it.polimi.ingsw.model.expertGame.NotExistingStudentException;
+import it.polimi.ingsw.model.statePattern.HallFullException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -410,18 +406,167 @@ class GameTest {
                 g.entranceToIsland(0, Color.YELLOW));
     }
 
-    void setup_MovementNature(Game game){
-        game.addPlayer("Dario");
-        game.addPlayer("Luca");
-        game.startGame();
-        game.getPlayers().get(0).getBoard().addProfessor(Color.BLUE);
-        game.getPlayers().get(0).getBoard().addProfessor(Color.YELLOW);
-        game.getPlayers().get(1).getBoard().addProfessor(Color.RED);
-        game.getPlayers().get(1).getBoard().addProfessor(Color.GREEN);
-        game.getPlayers().get(2).getBoard().addProfessor(Color.PINK);
-        game.getPlayers().get(0).getBoard().chooseTower(Tower.WHITE);
-        game.getPlayers().get(1).getBoard().chooseTower(Tower.BLACK);
-        game.getPlayers().get(2).getBoard().chooseTower(Tower.GRAY);
+
+    /**
+     * This method tests whether moving a not existing student from the current player's entrance in its hall
+     * throws an exception. The entrance should not be modified
+     */
+    @Test
+    @DisplayName("Moving a not existing student from entrance to empty hall test")
+    void entranceToHall1(){
+        setupFullPlayer();
+        g.startGame();
+        Board boardCurrentPlayer = g.getCurrentPlayer().getBoard();
+
+        while(boardCurrentPlayer.studentInEntrance(Color.BLUE)) //emptying entrance from blue students
+            boardCurrentPlayer.removeStudentFromEntrance(Color.BLUE);
+        int oldSize = boardCurrentPlayer.entranceSize();
+
+        assertThrows(NotExistingStudentException.class, ()-> g.entranceToHall(Color.BLUE));
+        int newSize = boardCurrentPlayer.entranceSize();
+        assertEquals(oldSize,newSize);
+    }
+
+    //helper method for choosing an existing color on the entrance' board
+    public Color getExistingColor(Board board) {
+        for (Color color : Color.values()) {
+            if (board.studentInEntrance(color))
+                return color;
+        }
+        return null;
+    }
+
+    /**
+     * This method tests whether moving an existing student from the current player's entrance in its full hall
+     * throws an exception. The entrance should not be modified
+     */
+    @Test
+    @DisplayName("Moving an existing student from entrance to full hall test")
+    void entranceToHall2(){
+        setupFullPlayer();
+        g.startGame();
+        Board boardCurrentPlayer = g.getCurrentPlayer().getBoard();
+        Color existingColor = getExistingColor(boardCurrentPlayer);
+
+        while(boardCurrentPlayer.hallIsFillable(existingColor)) //filling the hall with a specified color
+            boardCurrentPlayer.fillHall(existingColor);
+
+        int oldSize = boardCurrentPlayer.entranceSize();
+        assertThrows(HallFullException.class, ()->g.entranceToHall(existingColor));
+        int newSize = boardCurrentPlayer.entranceSize();
+        assertEquals(oldSize,newSize);
+
+    }
+
+    /**
+     * This method tests moving a student moving a student from the current player's entrance in its hall in a non
+     * error condition.
+     */
+    @Test
+    @DisplayName("Moving an existing student from entrance to empty hall test")
+    void entranceToHall3() throws NotExistingStudentException, HallFullException{
+        setupFullPlayer();
+        g.startGame();
+        Board boardCurrentPlayer = g.getCurrentPlayer().getBoard();
+        Color existingColor = getExistingColor(boardCurrentPlayer);
+
+        int oldSizeEntrance = boardCurrentPlayer.entranceSize(existingColor);
+        int oldSizeHall = boardCurrentPlayer.hallSize(existingColor);
+        g.entranceToHall(existingColor);
+
+        int newSizeEntrance = boardCurrentPlayer.entranceSize(existingColor);
+        int newSizeHall = boardCurrentPlayer.hallSize(existingColor);
+        assertEquals(oldSizeEntrance - 1, newSizeEntrance);
+        assertEquals(oldSizeHall + 1, newSizeHall);
+
+    }
+
+
+    /**
+     * This method tests the condition in which a player obtains a professor that has never taken before,
+     * after he has moved a student from his entrance to his hall.
+     */
+    @Test
+    @DisplayName("Obtain a not already taken professor test")
+    void entranceToHall4() throws NotExistingStudentException, HallFullException{
+        setupFullPlayer();
+        g.startGame();
+        Board boardCurrentPlayer = g.getCurrentPlayer().getBoard();
+        Color existingColor = getExistingColor(boardCurrentPlayer);
+        assertFalse(boardCurrentPlayer.hasProfessor(existingColor));
+        g.entranceToHall(existingColor);
+        assertTrue(boardCurrentPlayer.hasProfessor(existingColor));
+    }
+
+    //helper method for getting the player of a player that's not the current player
+    private Board getBoardOtherPlayer(){
+        int idxCurrentPlayer = g.players.indexOf(g.getCurrentPlayer());
+        Board board;
+        for(int i = 0; i < g.players.size(); i++){
+            board = g.players.get(i).getBoard();
+            if(i != idxCurrentPlayer)
+                return board;
+        }
+        return null;
+    }
+
+    /**
+     * This method tests the condition in which a player obtains a professor that has already taken before,
+     * after he has moved a student from his entrance to his hall.
+     */
+    @Test
+    @DisplayName("Obtain an already taken professor test")
+    void entranceToHall5() throws NotExistingStudentException, HallFullException{
+        setupFullPlayer();
+        g.startGame();
+        Board boardAnotherPlayer = getBoardOtherPlayer();
+        Board boardCurrentPlayer = g.getCurrentPlayer().getBoard();
+        Color color = getExistingColor(boardCurrentPlayer);
+
+        assertFalse(boardAnotherPlayer.hasProfessor(color));
+        boardAnotherPlayer.fillHall(color);
+        boardAnotherPlayer.fillHall(color);
+        boardAnotherPlayer.addProfessor(color);
+        assertTrue(boardAnotherPlayer.hasProfessor(color));
+
+
+        boardCurrentPlayer.fillHall(color);
+        boardCurrentPlayer.fillHall(color);
+        assertFalse(boardCurrentPlayer.hasProfessor(color));
+        g.entranceToHall(color);
+        assertTrue(boardCurrentPlayer.hasProfessor(color));
+    }
+
+    /**
+     *
+     */
+    @Test
+    @DisplayName("Getting name of winner who built the most towers on the islands test")
+    void alternativeWinner1(){
+        setupFullPlayer();
+        g.startGame();
+        Board boardCurrentPlayer = g.getCurrentPlayer().getBoard();
+
+        boardCurrentPlayer.decNumTower();
+        assertEquals(g.getCurrentPlayer().getNickname(), g.alternativeWinner());
+    }
+
+    /**
+     *
+     */
+    @Test
+    @DisplayName("Getting name of winner who owns the largest number of professors test")
+    void alternativeWinne2(){
+        setupFullPlayer();
+        g.startGame();
+        Board boardAnotherPlayer = getBoardOtherPlayer();
+        Board boardCurrentPlayer = g.getCurrentPlayer().getBoard();
+
+        boardCurrentPlayer.decNumTower();
+        boardCurrentPlayer.addProfessor(Color.BLUE);
+        boardAnotherPlayer.decNumTower();
+
+        assertEquals(g.getCurrentPlayer().getNickname(), g.alternativeWinner());
     }
 
 }

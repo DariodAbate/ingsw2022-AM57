@@ -277,7 +277,6 @@ public class Game implements RoundObserver{
 
     }
 
-    //TODO to be tested
     /**
      * This method is invoked by the current player to move a single student from its entrance to its hall.
      * When the move is made, if the player does not have the professor of the specified color and has the most students
@@ -317,7 +316,7 @@ public class Game implements RoundObserver{
 
         for(int i = 0; i < players.size(); i++){
             numStudPlayer = players.get(i).getBoard().hallSize(color);
-            if(i != idxCurrentPlayer && numStudCurrentPlayer < numStudPlayer)
+            if(i != idxCurrentPlayer && numStudCurrentPlayer <= numStudPlayer)  //with the expert card should be <, not <=
                 return false;
         }
         return true;

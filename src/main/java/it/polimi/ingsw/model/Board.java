@@ -1,8 +1,5 @@
 package it.polimi.ingsw.model;
 
-import it.polimi.ingsw.model.Color;
-import it.polimi.ingsw.model.StudentsHandler;
-import it.polimi.ingsw.model.Tower;
 import it.polimi.ingsw.model.constantFactory.GameConstants;
 
 import java.util.HashSet;
@@ -87,10 +84,6 @@ public class Board {
      */
     public int entranceSize(){ return entrance.numStudents(); }
 
-    /**
-     * @return true if there are no students in the entrance, false otherwise
-     */
-    public boolean entranceIsEmpty(){ return entrance.numStudents() == 0;}
 
     /**
      *Gets the number of students in the entrance of the color specified as parameter
