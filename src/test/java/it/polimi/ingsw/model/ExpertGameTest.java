@@ -1,11 +1,7 @@
 package it.polimi.ingsw.model;
 
-import it.polimi.ingsw.model.expertGame.ExpertGame;
-import it.polimi.ingsw.model.expertGame.NotExistingStudentException;
-import it.polimi.ingsw.model.expertGame.PseudoMotherNatureCard;
-import it.polimi.ingsw.model.expertGame.StudentsBufferCardsCluster;
-import it.polimi.ingsw.model.expertGame.PutThreeStudentsInTheBagCard;
-import it.polimi.ingsw.model.expertGame.SwapStudentsCard;
+import it.polimi.ingsw.model.expertGame.*;
+import it.polimi.ingsw.model.statePattern.HallFullException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -24,6 +20,7 @@ class ExpertGameTest {
     StudentsBufferCardsCluster manCard;
     StudentsBufferCardsCluster clownCard;
     StudentsBufferCardsCluster womanCard;
+    TakeProfessorEqualStudentsCard TPEScard;
 
     @BeforeEach
     void setup() {
@@ -515,6 +512,70 @@ class ExpertGameTest {
         assertEquals(4, womanCard.getStudBuffer().numStudents());
         assertTrue(womanCard.isPlayed());
         assertEquals(3, womanCard.getPrice());
+
+    }
+
+    //Tests of card of TakeProfessorEqualStudentsCard class, called TPES for brevity
+
+    /**************************************************************************************
+     *                                    CARD                                            *
+     * EFFECT: During this turn, take control of the professors even if you have the      *
+     * same number of students in your room as the player currently controlling them.     *
+     *                                                                                    *
+     *************************************************************************************/
+
+    public void setupTPESCard() {
+        setupFullPlayer();
+        g.startGame();
+        TPEScard = new TakeProfessorEqualStudentsCard(g); //2 corresponds to the woman card
+    }
+
+    //helper method for getting the player of a player that's not the current player
+    private Board getBoardOtherPlayer(){
+        int idxCurrentPlayer = g.players.indexOf(g.getCurrentPlayer());
+        Board board;
+        for(int i = 0; i < g.players.size(); i++){
+            board = g.players.get(i).getBoard();
+            if(i != idxCurrentPlayer)
+                return board;
+        }
+        return null;
+    }
+
+    //helper method for choosing an existing color on the entrance' board
+    public Color getExistingColor(Board board) {
+        for (Color color : Color.values()) {
+            if (board.studentInEntrance(color))
+                return color;
+        }
+        return null;
+    }
+
+    /**
+     * This method tests the behavior of the card in non error condition. The current player should get the professor
+     * even if he has the same number of students as the player who owns him at that moment
+     */
+    @DisplayName("Get professor with same number of student test")
+    @Test
+    public void TPESCardTest1() throws NotExistingStudentException, HallFullException {
+        setupTPESCard();
+        TPEScard.effect();
+
+        Board boardAnotherPlayer = getBoardOtherPlayer();
+        Board boardCurrentPlayer = g.getCurrentPlayer().getBoard();
+        Color color = getExistingColor(boardCurrentPlayer);
+
+        assertFalse(boardAnotherPlayer.hasProfessor(color));
+        boardAnotherPlayer.fillHall(color);
+        boardAnotherPlayer.fillHall(color);
+        boardAnotherPlayer.addProfessor(color);
+        assertTrue(boardAnotherPlayer.hasProfessor(color));
+
+
+        boardCurrentPlayer.fillHall(color);
+        assertFalse(boardCurrentPlayer.hasProfessor(color));
+        g.entranceToHall(color);
+        assertTrue(boardCurrentPlayer.hasProfessor(color));
 
     }
 

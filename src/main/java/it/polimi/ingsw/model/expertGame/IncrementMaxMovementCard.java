@@ -1,7 +1,7 @@
 package it.polimi.ingsw.model.expertGame;
 
 /**
- * This class represents the Increment Max Movement Card, which effect is to increments the maximum movement possible
+ * This class represents the Increment Max Movement Card, which effect is to increment the maximum movement possible
  * for the player in that turn.
  */
 public class IncrementMaxMovementCard extends ExpertCard {
