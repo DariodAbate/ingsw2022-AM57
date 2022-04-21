@@ -572,4 +572,14 @@ class ExpertGameTest {
         assertThrows(IllegalArgumentException.class,
                 card::effect);
     }
+
+    @DisplayName("Initializing Expert Cards")
+    @Test
+    void PickCards(){
+        ExpertGame expertGame = new ExpertGame("Lorenzo", 3);
+        expertGame.addPlayer("Dario");
+        expertGame.addPlayer("Luca");
+        expertGame.startGame();
+        assertEquals(3, expertGame.getExpertCards().size());
+    }
 }
