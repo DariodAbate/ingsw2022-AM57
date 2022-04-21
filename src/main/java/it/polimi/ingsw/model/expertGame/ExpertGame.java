@@ -65,6 +65,8 @@ public class ExpertGame extends Game implements PseudoMotherNature, IncrementMax
 
         //determine casually the first player TODO
         initBank();
+
+        pickCards();
     }
 
     /**
@@ -81,13 +83,12 @@ public class ExpertGame extends Game implements PseudoMotherNature, IncrementMax
         expertCards = new ArrayList<>();
         ArrayList<Integer> cardsPlaceHolder = new ArrayList<>();
         Random rand = new Random();
-        Integer temp;
+        int temp;
         for (int j = 1; j <= 12; j++) {
             cardsPlaceHolder.add(j);
         }
         for(int i=0; i<NUMBER_OF_EXPERT_CARDS; i++){
             temp = rand.nextInt((cardsPlaceHolder.size()));
-            System.out.println(cardsPlaceHolder.get(temp));
             switch (cardsPlaceHolder.get(temp)) {
                 case 1:
                     expertCards.add(new BannedIslandCard(motherNature, this));
@@ -123,11 +124,11 @@ public class ExpertGame extends Game implements PseudoMotherNature, IncrementMax
                     expertCards.add(new SwapStudentsCard(0, null, null, null, null, this));
                     break;
                 case 12:
-                    expertCards.add(new BannedIslandCard(motherNature, this)); //FIXME add the last card
+                    expertCards.add(new TakeProfessorEqualStudentsCard(this));
                     break;
 
             }
-            cardsPlaceHolder.remove((int)temp);
+            cardsPlaceHolder.remove(temp);
         }
     }
 
@@ -137,7 +138,12 @@ public class ExpertGame extends Game implements PseudoMotherNature, IncrementMax
      * @throws NotExistingStudentException when the effect of a card involving a non-existent student is activated
      */
         public void playEffect(int indexCard) throws NotExistingStudentException{
-        expertCards.get(indexCard).effect();
+        if(expertCards.get(indexCard).getPrice()<=getCurrentPlayer().getNumCoin()) {
+            expertCards.get(indexCard).effect();
+            for (int i = 0; i < expertCards.get(indexCard).getPrice(); i++){
+                getCurrentPlayer().removeCoin();
+            }
+        }
     }
 
     /**
