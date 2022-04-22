@@ -5,6 +5,7 @@ import it.polimi.ingsw.model.statePattern.HallFullException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.function.Executable;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -583,38 +584,37 @@ class ExpertGameTest {
      * This method tests the correct working of the SwapStudents card. In particular is tested
      * the case when the player chose to swap two students.
      */
-   /* @DisplayName("Tests the correct swapping of two students")  //FIXME i test dipendono da come viene riempita la antrance
+    @DisplayName("Tests the correct swapping of two students")
     @Test
     void SwapTwoStudentsTest() {
         SwapStudentsCard card = new SwapStudentsCard(2, Color.YELLOW, Color.RED, Color.PINK, Color.BLUE, g);
-        setupFullPlayer();
-        g.startGame();
-        if(g.getCurrentPlayer().getBoard().studentInEntrance(Color.BLUE))
-            g.getCurrentPlayer().getBoard().entranceToHall(Color.BLUE);
-        else return;
-        if(g.getCurrentPlayer().getBoard().studentInEntrance(Color.PINK))
-            g.getCurrentPlayer().getBoard().entranceToHall(Color.PINK);
-        else return;
+        g.initRound();
+        g.getPlayers().get(0).getBoard().fillEntrance(Color.PINK);
+        g.getPlayers().get(0).getBoard().fillEntrance(Color.BLUE);
+        g.getPlayers().get(0).getBoard().fillEntrance(Color.RED);
+        g.getPlayers().get(0).getBoard().fillEntrance(Color.YELLOW);
+        g.getPlayers().get(0).getBoard().entranceToHall(Color.PINK);
+        g.getPlayers().get(0).getBoard().entranceToHall(Color.BLUE);
         card.effect();
-        assertEquals(1 ,g.getCurrentPlayer().getBoard().hallSize(Color.RED));
-        assertEquals(1,g.getCurrentPlayer().getBoard().hallSize(Color.YELLOW));
-        assertEquals(0,g.getCurrentPlayer().getBoard().hallSize(Color.BLUE));
-        assertEquals(0, g.getCurrentPlayer().getBoard().hallSize(Color.PINK));
+        assertEquals(1 ,g.getPlayers().get(0).getBoard().hallSize(Color.RED));
+        assertEquals(1,g.getPlayers().get(0).getBoard().hallSize(Color.YELLOW));
+        assertEquals(0,g.getPlayers().get(0).getBoard().hallSize(Color.BLUE));
+        assertEquals(0, g.getPlayers().get(0).getBoard().hallSize(Color.PINK));
     }
 
     /**
      * This method tests the correct working of the SwapStudents card. In particular s tested
      * the case when the player chose to swap one student.
      */
-    /* @DisplayName("Tests the correct swapping of one students") //FIXME i test dipendono da come viene riempita la entrance
+    @DisplayName("Tests the correct swapping of one students") //FIXME i test dipendono da come viene riempita la entrance
     @Test
     void SwapOneStudentTest() {
         SwapStudentsCard card = new SwapStudentsCard(1, Color.BLUE, Color.RED, g);
         setupFullPlayer();
-        g.startGame();
-        if(g.getCurrentPlayer().getBoard().studentInEntrance(Color.RED))
-            g.getCurrentPlayer().getBoard().entranceToHall(Color.RED);
-        else return;
+        g.initRound();
+        g.getPlayers().get(0).getBoard().fillEntrance(Color.BLUE);
+        g.getPlayers().get(0).getBoard().fillEntrance(Color.RED);
+        g.getPlayers().get(0).getBoard().entranceToHall(Color.RED);
         card.effect();
         assertEquals(1, g.getCurrentPlayer().getBoard().hallSize(Color.BLUE));
         assertEquals(0, g.getCurrentPlayer().getBoard().hallSize(Color.RED));
@@ -622,7 +622,7 @@ class ExpertGameTest {
 
     /**
      * This method tests that an exception is thrown when the player try to swap a student
-     * that isn't in the hall
+     * that isn't in the hall.
      */
     @DisplayName("Tests exception when the selected color isn't available")
     @Test
@@ -633,6 +633,35 @@ class ExpertGameTest {
         assertThrows(IllegalArgumentException.class,
                 card::effect);
     }
+
+    /**
+     * This method tests the correct working of the PutThreeStudentsInTheBag card both in the
+     * case when the player has enough students and in the case when he doesn't.
+     */
+    @DisplayName("Tests the correct removing of the students from the hall")
+    @Test
+    void PutThreeStudentsInTheBagTest() {
+        PutThreeStudentsInTheBagCard card = new PutThreeStudentsInTheBagCard(Color.GREEN, g);
+        setupFullPlayer();
+        g.initRound();
+        g.initBags();
+        for (int i = 0; i < 4; i ++) {
+            g.getPlayers().get(0).getBoard().fillEntrance(Color.GREEN);
+            g.getPlayers().get(0).getBoard().entranceToHall(Color.GREEN);
+        }
+        for (int i = 0; i < 2; i ++) {
+            g.getPlayers().get(1).getBoard().fillEntrance(Color.GREEN);
+            g.getPlayers().get(1).getBoard().entranceToHall(Color.GREEN);
+        }
+        assertEquals(4, g.getPlayers().get(0).getBoard().hallSize(Color.GREEN));
+        assertEquals(2, g.getPlayers().get(1).getBoard().hallSize(Color.GREEN));
+        assertEquals(0, g.getPlayers().get(2).getBoard().hallSize(Color.GREEN));
+        card.effect();
+        assertEquals(1, g.getPlayers().get(0).getBoard().hallSize(Color.GREEN));
+        assertEquals(0, g.getPlayers().get(1).getBoard().hallSize(Color.GREEN));
+        assertEquals(0, g.getPlayers().get(2).getBoard().hallSize(Color.GREEN));
+    }
+
 
     @DisplayName("Initializing Expert Cards")
     @Test
