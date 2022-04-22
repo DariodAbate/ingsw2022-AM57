@@ -259,7 +259,12 @@ public class ExpertGame extends Game implements PseudoMotherNature, IncrementMax
         getArchipelago().get(islandIndex).setBanned(true);
     }
 
-    //TODO method to be tested
+    /**
+     * This method represent the card that allows the players to put three students of the specified
+     * color from the hall of their board to the bag. If the players doesn't have enough student of the
+     * color in the hall they have to put all the students they have in the hall in the bag.
+     * @param studentColor is the color chosen by the player that play this effect card
+     */
     @Override
     public void putThreeStudentsInTheBag(Color studentColor){
         for (Player player : players) {
