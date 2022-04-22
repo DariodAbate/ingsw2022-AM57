@@ -101,7 +101,7 @@ public class Round {
      * indicates the beginning of the action phase.
      */
     //TODO Case of same priority card to be added
-    //TODO Change logic
+    //TODO review logic
     public void setActionPhaseOrder() {
         actionPhaseOrder.sort(Comparator.comparingInt(player -> player.viewLastCard().getPriority()));
         currentTurn = actionPhaseOrder.get(0);
