@@ -40,6 +40,8 @@ class RoundTest {
         r = new Round(players);
         r.setActionPhaseOrder();
         assertEquals(2, r.getActionPhaseOrder().get(0).getId());
+        assertEquals(3, r.getActionPhaseOrder().get(1).getId());
+        assertEquals(1, r.getActionPhaseOrder().get(2).getId());
         p1.playCard(5);
         p2.playCard(7);
         p3.playCard(2);
@@ -124,7 +126,6 @@ class RoundTest {
     /**
      * This method tests the correct working of the method nextTurn.
      */
-    // method nextTurn to be finished
     @Test
     void nextTurnTest() {
         g = new GameConstantsCreatorThreePlayers();
@@ -141,15 +142,66 @@ class RoundTest {
         players.add(p2);
         players.add(p3);
         r = new Round(players);
-        assertEquals(1, r.getCurrentPlayer().getId());
-        r.setPlanningPhaseOrder();      //setPlanningPhaseOrder --> 231
+        //assertEquals(1, r.getCurrentPlayer().getId());
+        r.setPlanningPhaseOrder();//setPlanningPhaseOrder --> 231
         assertEquals(2, r.getCurrentPlayer().getId());
+        r.checkStatus();
         r.nextTurn();
+        r.checkStatus();
         r.nextTurn();
         assertEquals(1, r.getCurrentPlayer().getId());
-        r.setActionPhaseOrder();        //setActionPhaseOrder --> 213
+        //r.setActionPhaseOrder();        //setActionPhaseOrder --> 213
+        r.checkStatus();
         assertEquals(2, r.getCurrentPlayer().getId());
+        r.checkStatus();
         r.nextTurn();
-        assertEquals(1,r.getCurrentPlayer().getId());
+        assertEquals(1, r.getCurrentPlayer().getId());
+        r.checkStatus();
+        r.nextTurn();
+        assertEquals(3, r.getCurrentPlayer().getId());
+    }
+
+    @Test
+    void nextTurnTest1() {
+        g = new GameConstantsCreatorThreePlayers();
+        GameConstants gc = g.create();
+        ArrayList<Player> players = new ArrayList<>();
+        Round r;
+        Player p1 = new Player(1, gc);
+        Player p2 = new Player(2, gc);
+        Player p3 = new Player(3, gc);
+        players.add(p1);
+        players.add(p2);
+        players.add(p3);
+        r = new Round(players);        //Planning order = 123
+        assertEquals(1, r.getCurrentPlayer().getId());
+        p1.playCard(5);
+        r.checkStatus();
+        r.nextTurn();
+        assertEquals(2, r.getCurrentPlayer().getId());
+        p2.playCard(0);
+        r.checkStatus();
+        r.nextTurn();
+        assertEquals(3, r.getCurrentPlayer().getId());
+        p3.playCard(8);
+        r.checkStatus();
+        //Action order = 213
+        assertEquals(2, r.getCurrentPlayer().getId());
+        r.checkStatus();
+        r.nextTurn();
+        assertEquals(1, r.getCurrentPlayer().getId());
+        r.checkStatus();
+        r.nextTurn();
+        assertEquals(3, r.getCurrentPlayer().getId());
+        r.checkStatus();
+        //New round, Planning order = 231
+        assertEquals(1, r.getRoundNumber());
+        assertEquals(2, r.getCurrentPlayer().getId());
+        r.checkStatus();
+        r.nextTurn();
+        assertEquals(3, r.getCurrentPlayer().getId());
+        r.checkStatus();
+        r.nextTurn();
+        assertEquals(1, r.getCurrentPlayer().getId());
     }
 }
