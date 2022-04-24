@@ -9,55 +9,62 @@ import it.polimi.ingsw.model.Color;
  */
 public class SwapStudentsCard extends ExpertCard {
     private final SwapStudents board;
-    private final int numOfStudentsToMove;
-    private final Color student1InEntranceColor;
+    private  int numOfStudentsToMove;
+    private Color student1InEntranceColor;
     private Color student2InEntranceColor;
-    private final Color student1InHallColor;
+    private Color student1InHallColor;
     private Color student2InHallColor;
 
     /**
      * This SwapStudentsCard constructor is used when the player
      * choose to swap two students. It creates a card with the default cost of one.
-     * @param numOfStudentsToMove is the number of students to swap chosen by the player
-     * @param entrance1Color is the color of the first student in the entrance that the player
-     *                       want to move
-     * @param entrance2Color is the color of the second student in the entrance that the player
-     *                       want to move
-     * @param hall1Color is the color of the first student in the hall that the player want to move
-     * @param hall2Color is the color of the second student in the hall that the player want to move
      * @param board is the reference to game used for accessing the current player board
      */
-    public SwapStudentsCard(int numOfStudentsToMove, Color entrance1Color,
-                            Color entrance2Color, Color hall1Color, Color hall2Color,
-                            SwapStudents board ){
+    public SwapStudentsCard(SwapStudents board ){
         super(1);
-        if (numOfStudentsToMove > 2)
-            throw new IllegalArgumentException("You can move maximum 2 students");
         this.board = board;
-        this.numOfStudentsToMove = numOfStudentsToMove;
-        this.student1InEntranceColor = entrance1Color;
-        this.student2InEntranceColor = entrance2Color;
-        this.student1InHallColor = hall1Color;
-        this .student2InHallColor = hall2Color;
     }
 
-    /**
-     * This SwapStudentsCard constructor is used when the player
-     * chose to swap just one student
-     * @param numOfStudentsToMove is the number of students to swap chosen by the player
-     * @param entrance1Color is the color of the student in the entrance that the player want to move
-     * @param hall1Color is the color of the student in the hall that the player want to move
-     * @param board is the reference to game used for accessing the current player board
-     */
-    public SwapStudentsCard(int numOfStudentsToMove, Color entrance1Color,
-                            Color hall1Color, SwapStudents board) {
-        super(1);
-        if (numOfStudentsToMove > 2)
+    public void setNumOfStudentsToMove(int numOfStudentToMove){
+        if (numOfStudentToMove > 2)
             throw new IllegalArgumentException("You can move maximum 2 students");
-        this.board = board;
-        this.numOfStudentsToMove = numOfStudentsToMove;
-        this.student1InEntranceColor = entrance1Color;
-        this.student1InHallColor = hall1Color;
+        this.numOfStudentsToMove = numOfStudentToMove;
+    }
+
+    public int getNumOfStudentsToMove() {
+        return this.numOfStudentsToMove;
+    }
+
+    public void setStudent1InEntranceColor(Color studentColor){
+        this.student1InEntranceColor = studentColor;
+    }
+
+    public Color getStudent1InEntranceColor() {
+        return this.student1InEntranceColor;
+    }
+
+    public void setStudent2InEntranceColor(Color studentColor) {
+        this.student2InEntranceColor = studentColor;
+    }
+
+    public Color getStudent2InEntranceColor() {
+        return student2InEntranceColor;
+    }
+
+    public void setStudent1InHallColor(Color studentColor) {
+        this.student1InHallColor = studentColor;
+    }
+
+    public Color getStudent1InHallColor() {
+        return student1InHallColor;
+    }
+
+    public void setStudent2InHallColor(Color student2InHallColor) {
+        this.student2InHallColor = student2InHallColor;
+    }
+
+    public Color getStudent2InHallColor() {
+        return student2InHallColor;
     }
 
     /**
