@@ -109,7 +109,7 @@ public class ExpertGame extends Game implements PseudoMotherNature, IncrementMax
                     expertCards.add(new IncrementMaxMovementCard(this));
                     break;
                 case 7:
-                    expertCards.add(new PutThreeStudentsInTheBagCard(null, this));
+                    expertCards.add(new PutThreeStudentsInTheBagCard(this));
                     break;
                 case 8:
                     expertCards.add(new StudentsBufferCardsCluster(0, this));
@@ -121,7 +121,7 @@ public class ExpertGame extends Game implements PseudoMotherNature, IncrementMax
                     expertCards.add(new StudentsBufferCardsCluster(2, this));
                     break;
                 case 11:
-                    expertCards.add(new SwapStudentsCard(0, null, null, null, null, this));
+                    expertCards.add(new SwapStudentsCard(this));
                     break;
                 case 12:
                     expertCards.add(new TakeProfessorEqualStudentsCard(this));
