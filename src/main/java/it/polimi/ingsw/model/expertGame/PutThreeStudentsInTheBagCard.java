@@ -4,12 +4,19 @@ import it.polimi.ingsw.model.Color;
 
 public class PutThreeStudentsInTheBagCard extends ExpertCard {
     private final PutThreeStudentsInTheBag game;
-    private final Color studentColor;
+    private Color studentColor;
 
-    public PutThreeStudentsInTheBagCard(Color studentColor, PutThreeStudentsInTheBag game) {
+    public PutThreeStudentsInTheBagCard(PutThreeStudentsInTheBag game) {
         super(3);
         this.game = game;
+    }
+
+    public void setStudentColor(Color studentColor) {
         this.studentColor = studentColor;
+    }
+
+    public Color getStudentColor() {
+        return studentColor;
     }
 
     @Override
