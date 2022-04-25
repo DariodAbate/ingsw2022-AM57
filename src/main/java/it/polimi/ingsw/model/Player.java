@@ -107,16 +107,16 @@ public class Player{
     }
 
     /**
-     * Gets the last discarded card.
+     * Gets a copy of the last discarded card.
      * @return the last discarded card
      */
     public AssistantCard viewLastCard() {
-        return discardCard;
+        return new AssistantCard(discardCard.getPriority(), discardCard.getMovement());
     }
 
 
     /**
-     * Gets the player's board.
+     * Gets a reference to the player's board.
      * @return the player's board
      */
     public Board getBoard() {

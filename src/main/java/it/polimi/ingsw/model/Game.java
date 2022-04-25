@@ -365,6 +365,22 @@ public class Game implements RoundObserver{
         archipelago.get(idxChosenIsland).add(colorStudentToBeMoved);
     }
 
+    /**
+     * Thi method is called when the current player have to play a card. It also sets the maximum
+     * number of island mother movement can travel.
+     * @param idxCard Index of the card chosen by the player
+     * @throws IllegalArgumentException when the index does not correspond to an existing card
+     */
+    public void playCard(int idxCard){
+        AssistantCard cardPlayed;
+        try{
+            cardPlayed = getCurrentPlayer().playCard(idxCard);
+        }catch (IllegalArgumentException e){
+            throw new IllegalArgumentException(e.getMessage());
+        }
+        setMaxMovement(cardPlayed.getMovement());
+    }
+
     //TODO TO BE TESTED
     /**
      * Causes mother nature to move by as many positions as indicated by the parameter.

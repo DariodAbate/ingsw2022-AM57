@@ -535,9 +535,7 @@ class GameTest {
         assertTrue(boardCurrentPlayer.hasProfessor(color));
     }
 
-    /**
-     *
-     */
+
     @Test
     @DisplayName("Getting name of winner who built the most towers on the islands test")
     void alternativeWinner1(){
@@ -549,12 +547,10 @@ class GameTest {
         assertEquals(g.getCurrentPlayer().getNickname(), g.alternativeWinner());
     }
 
-    /**
-     *
-     */
+
     @Test
     @DisplayName("Getting name of winner who owns the largest number of professors test")
-    void alternativeWinne2(){
+    void alternativeWinner2(){
         setupFullPlayer();
         g.startGame();
         Board boardAnotherPlayer = getBoardOtherPlayer();
@@ -567,4 +563,30 @@ class GameTest {
         assertEquals(g.getCurrentPlayer().getNickname(), g.alternativeWinner());
     }
 
+    /**
+     * This method tests whether playing an assistant card sets the correct maximum number of moves that mother nature
+     * can do
+     */
+    @Test
+    @DisplayName("Playing existing assistant card test")
+    void playCardTest1(){
+        setupFullPlayer();
+        g.startGame();
+
+        //idxCard = 0 -> movement = 1, priority = 1
+        g.playCard(0);
+        assertEquals(1, g.getMaxMovement());
+    }
+
+    /**
+     *  This method tests that playing a not existing assistant card throws an IllegalArgumentException
+     */
+    @Test
+    @DisplayName("Playing not existing assistant card test")
+    void playCardTest2(){
+        setupFullPlayer();
+        g.startGame();
+
+        assertThrows(IllegalArgumentException.class, ()-> g.playCard(-1));
+    }
 }

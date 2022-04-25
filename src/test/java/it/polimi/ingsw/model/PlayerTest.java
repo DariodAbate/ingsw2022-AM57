@@ -41,7 +41,7 @@ class PlayerTest {
      */
     @Test
     void noDiscardCardYet() {
-        assertNull(p.viewLastCard());
+        assertThrows(NullPointerException.class, ()->p.viewLastCard());
     }
 
     /**
