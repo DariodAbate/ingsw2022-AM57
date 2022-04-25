@@ -50,7 +50,7 @@ public class StudentsBufferCardsCluster extends ExpertCard {
             studBuffer = new StudentsHandler(WOMAN_CARD_BUFFER_SIZE);
             cardBufferSize = WOMAN_CARD_BUFFER_SIZE;
         }else
-            throw new IllegalArgumentException("L'indice della carta non è valido!"); //TODO change with custom checked exception
+            throw new IllegalArgumentException("L'indice della carta non è valido!");
 
         refillStudBuffer();
     }
@@ -129,12 +129,12 @@ public class StudentsBufferCardsCluster extends ExpertCard {
      * - Clown's card : swap a student of the specified color on the card with one in the board's hall of the current player<br/>
      * - Woman's card: removes a student of the specified color on the card and moves it in the board's hall of the current player,
      * then refills the card with a single student. If the hall is full, all is unchanged
-     * @throws NotExistingStudentException when there is no student of the specified color to move from the card
+     * @throws IllegalArgumentException when there is no student of the specified color to move from the card
      * @throws  IndexOutOfBoundsException when is chosen an index which does not have a
      * corresponding island tile in the archipelago arrayList, used by the woman card
      */
     @Override
-    public void effect() throws NotExistingStudentException {
+    public void effect(){
         //Do not increase the cost and do not play the card if the parameters are incorrect
         if(studBuffer.numStudents(studentColorToBeMoved) > 0) {
             if (index == MAN_CARD_INDEX) {
@@ -150,7 +150,7 @@ public class StudentsBufferCardsCluster extends ExpertCard {
                     studBuffer.remove(studentColorToBeMoved);
                     studBuffer.add(studentColorInEntrance);
                     usingCard();
-                }catch(NotExistingStudentException e){throw new NotExistingStudentException(e.getMessage());}
+                }catch(IllegalArgumentException e){throw new IllegalArgumentException(e.getMessage());}
             } else {
                 if(game.fromWomanCardToHall(studentColorToBeMoved)) {
                     studBuffer.remove(studentColorToBeMoved);
@@ -159,7 +159,7 @@ public class StudentsBufferCardsCluster extends ExpertCard {
                 }
             }
         }else {
-            throw new NotExistingStudentException("Lo studente da muovere non è presente sulla carta!");
+            throw new IllegalArgumentException("Lo studente da muovere non è presente sulla carta!");
         }
     }
     //helper method used for playing a card

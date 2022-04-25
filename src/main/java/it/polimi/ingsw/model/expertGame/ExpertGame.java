@@ -1,16 +1,10 @@
 package it.polimi.ingsw.model.expertGame;
 
 import it.polimi.ingsw.model.*;
-import it.polimi.ingsw.model.Color;
-import it.polimi.ingsw.model.Game;
-import it.polimi.ingsw.model.IslandTile;
-import it.polimi.ingsw.model.Player;
 import it.polimi.ingsw.model.statePattern.InfluenceCalculator;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.Random;
-import java.util.Set;
 
 /**
  * This subclass of game is instantiated when selecting Expert Mode, it adds the coin and expert cards system
@@ -90,60 +84,42 @@ public class ExpertGame extends Game implements PseudoMotherNature, IncrementMax
         for(int i=0; i<NUMBER_OF_EXPERT_CARDS; i++){
             temp = rand.nextInt((cardsPlaceHolder.size()));
             switch (cardsPlaceHolder.get(temp)) {
-                case 1:
-                    expertCards.add(new BannedIslandCard(motherNature, this));
-                    break;
-                case 2:
-                    expertCards.add(new InfluenceCardsCluster(0, this));
-                    break;
-                case 3:
-                    expertCards.add(new InfluenceCardsCluster(1, this));
-                    break;
-                case 4:
-                    expertCards.add(new InfluenceCardsCluster(2, this));
-                    break;
-                case 5:
-                    expertCards.add(new PseudoMotherNatureCard(motherNature, this));
-                    break;
-                case 6:
-                    expertCards.add(new IncrementMaxMovementCard(this));
-                    break;
-                case 7:
-                    expertCards.add(new PutThreeStudentsInTheBagCard(this));
-                    break;
-                case 8:
-                    expertCards.add(new StudentsBufferCardsCluster(0, this));
-                    break;
-                case 9:
-                    expertCards.add(new StudentsBufferCardsCluster(1, this));
-                    break;
-                case 10:
-                    expertCards.add(new StudentsBufferCardsCluster(2, this));
-                    break;
-                case 11:
-                    expertCards.add(new SwapStudentsCard(this));
-                    break;
-                case 12:
-                    expertCards.add(new TakeProfessorEqualStudentsCard(this));
-                    break;
-
+                case 1 -> expertCards.add(new BannedIslandCard(motherNature, this));
+                case 2 -> expertCards.add(new InfluenceCardsCluster(0, this));
+                case 3 -> expertCards.add(new InfluenceCardsCluster(1, this));
+                case 4 -> expertCards.add(new InfluenceCardsCluster(2, this));
+                case 5 -> expertCards.add(new PseudoMotherNatureCard(motherNature, this));
+                case 6 -> expertCards.add(new IncrementMaxMovementCard(this));
+                case 7 -> expertCards.add(new PutThreeStudentsInTheBagCard(this));
+                case 8 -> expertCards.add(new StudentsBufferCardsCluster(0, this));
+                case 9 -> expertCards.add(new StudentsBufferCardsCluster(1, this));
+                case 10 -> expertCards.add(new StudentsBufferCardsCluster(2, this));
+                case 11 -> expertCards.add(new SwapStudentsCard(this));
+                case 12 -> expertCards.add(new TakeProfessorEqualStudentsCard(this));
             }
             cardsPlaceHolder.remove(temp);
         }
     }
 
+    //TODO to be tested
     /**
      * This method is called by the controller to activate the effect of a card, identified by an index
-     * @param indexCard represent a character card if the effect to activate
-     * @throws NotExistingStudentException when the effect of a card involving a non-existent student is activated
+     * @param indexCard Represent a character card of the effect to activate
+     * @throws IllegalArgumentException When the effect of a card involving a non-existent student is activated
+     * @throws IllegalArgumentException If a card corresponding to the provided index does not exist
+     * @throws IllegalCallerException If the player who wants to activate a card does not have enough coins to do so
      */
-        public void playEffect(int indexCard) throws NotExistingStudentException{
-        if(expertCards.get(indexCard).getPrice()<=getCurrentPlayer().getNumCoin()) {
-            expertCards.get(indexCard).effect();
-            for (int i = 0; i < expertCards.get(indexCard).getPrice(); i++){
-                getCurrentPlayer().removeCoin();
+        public void playEffect(int indexCard){
+            if(indexCard < 0 || indexCard > NUMBER_OF_EXPERT_CARDS)
+                throw new IllegalArgumentException("Such a card does not exists");
+
+            int cardCost = expertCards.get(indexCard).getPrice();
+            if(getCurrentPlayer().getBoard().hasCoin(cardCost)) {
+                expertCards.get(indexCard).effect();
+                getCurrentPlayer().getBoard().removeCoin(cardCost);
             }
-        }
+            else
+                throw new IllegalCallerException("Current player does not have enough coin to activate this card");
     }
 
     /**
@@ -209,14 +185,14 @@ public class ExpertGame extends Game implements PseudoMotherNature, IncrementMax
      * student in the board's hall of the current player.
      * @param colorStudentOnCard color of the student on the card
      * @param colorStudentInEntrance color of the student in the hall
-     * @throws NotExistingStudentException when  there is no student of the specified color to move from the entrance
+     * @throws IllegalArgumentException when  there is no student of the specified color to move from the entrance
      */
-    public void fromClownCardToEntrance(Color colorStudentOnCard, Color colorStudentInEntrance) throws NotExistingStudentException{
+    public void fromClownCardToEntrance(Color colorStudentOnCard, Color colorStudentInEntrance){
         Board currentPlayerBoard = getCurrentPlayer().getBoard();
         if(currentPlayerBoard.studentInEntrance(colorStudentInEntrance))
             currentPlayerBoard.removeStudentFromEntrance(colorStudentInEntrance);
         else
-            throw new NotExistingStudentException("Lo studente da muovere non è presente nell'ingresso!");
+            throw new IllegalArgumentException("Lo studente da muovere non è presente nell'ingresso!");
         currentPlayerBoard.fillEntrance(colorStudentOnCard);
     }
 

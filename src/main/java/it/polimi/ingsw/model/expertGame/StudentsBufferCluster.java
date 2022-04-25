@@ -11,7 +11,7 @@ public interface StudentsBufferCluster {
 
      void fromManCardToIsland(int idxChosenIsland, Color colorStudentToBeMoved);
 
-     void fromClownCardToEntrance(Color colorStudentOnCard, Color colorStudentInEntrance) throws NotExistingStudentException;
+     void fromClownCardToEntrance(Color colorStudentOnCard, Color colorStudentInEntrance);
 
      boolean fromWomanCardToHall( Color colorStudentToBeMoved);
 

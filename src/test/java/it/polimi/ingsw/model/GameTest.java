@@ -1,7 +1,5 @@
 package it.polimi.ingsw.model;
 
-import it.polimi.ingsw.model.expertGame.NotExistingStudentException;
-import it.polimi.ingsw.model.statePattern.HallFullException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -343,7 +341,7 @@ class GameTest {
      */
     @Test
     @DisplayName("Moving an existing student from entrance to an existing island tile")
-    void entranceToIsland1() throws NotExistingStudentException {
+    void entranceToIsland1(){
         setupFullPlayer();
         g.startGame();
 
@@ -402,7 +400,7 @@ class GameTest {
             boardCurrentPlayer.removeStudentFromEntrance(Color.YELLOW);
         assertFalse(boardCurrentPlayer.studentInEntrance(Color.YELLOW));
 
-        assertThrows(NotExistingStudentException.class, () ->
+        assertThrows(IllegalArgumentException.class, () ->
                 g.entranceToIsland(0, Color.YELLOW));
     }
 
@@ -422,7 +420,7 @@ class GameTest {
             boardCurrentPlayer.removeStudentFromEntrance(Color.BLUE);
         int oldSize = boardCurrentPlayer.entranceSize();
 
-        assertThrows(NotExistingStudentException.class, ()-> g.entranceToHall(Color.BLUE));
+        assertThrows(IllegalArgumentException.class, ()-> g.entranceToHall(Color.BLUE));
         int newSize = boardCurrentPlayer.entranceSize();
         assertEquals(oldSize,newSize);
     }
@@ -452,7 +450,7 @@ class GameTest {
             boardCurrentPlayer.fillHall(existingColor);
 
         int oldSize = boardCurrentPlayer.entranceSize();
-        assertThrows(HallFullException.class, ()->g.entranceToHall(existingColor));
+        assertThrows(IllegalStateException.class, ()->g.entranceToHall(existingColor));
         int newSize = boardCurrentPlayer.entranceSize();
         assertEquals(oldSize,newSize);
 
@@ -464,7 +462,7 @@ class GameTest {
      */
     @Test
     @DisplayName("Moving an existing student from entrance to empty hall test")
-    void entranceToHall3() throws NotExistingStudentException, HallFullException{
+    void entranceToHall3(){
         setupFullPlayer();
         g.startGame();
         Board boardCurrentPlayer = g.getCurrentPlayer().getBoard();
@@ -488,7 +486,7 @@ class GameTest {
      */
     @Test
     @DisplayName("Obtain a not already taken professor test")
-    void entranceToHall4() throws NotExistingStudentException, HallFullException{
+    void entranceToHall4(){
         setupFullPlayer();
         g.startGame();
         Board boardCurrentPlayer = g.getCurrentPlayer().getBoard();
@@ -516,7 +514,7 @@ class GameTest {
      */
     @Test
     @DisplayName("Obtain an already taken professor test")
-    void entranceToHall5() throws NotExistingStudentException, HallFullException{
+    void entranceToHall5(){
         setupFullPlayer();
         g.startGame();
         Board boardAnotherPlayer = getBoardOtherPlayer();

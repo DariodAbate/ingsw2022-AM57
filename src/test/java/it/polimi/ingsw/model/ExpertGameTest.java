@@ -1,11 +1,9 @@
 package it.polimi.ingsw.model;
 
 import it.polimi.ingsw.model.expertGame.*;
-import it.polimi.ingsw.model.statePattern.HallFullException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.function.Executable;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -146,7 +144,7 @@ class ExpertGameTest {
         while (manCard.getStudBuffer().isRemovable(Color.YELLOW))
             manCard.getStudBuffer().remove(Color.YELLOW);
         manCard.setStudentColorToBeMoved(Color.YELLOW);
-        assertThrows(NotExistingStudentException.class, () -> manCard.effect());
+        assertThrows(IllegalArgumentException.class, () -> manCard.effect());
         assertFalse(manCard.isPlayed());
         assertEquals(1, manCard.getPrice());
 
@@ -168,7 +166,7 @@ class ExpertGameTest {
      */
     @DisplayName("Moving an existing student to an existing island")
     @Test
-    public void manCardTest3() throws NotExistingStudentException {
+    public void manCardTest3(){
         setupManCard();
         int idx = g.getMotherNature();
         IslandTile islandTile = g.getArchipelago().get(idx);
@@ -197,7 +195,7 @@ class ExpertGameTest {
      */
     @DisplayName("Moving multiple existing students to an existing island")
     @Test
-    public void manCardTest4() throws NotExistingStudentException {
+    public void manCardTest4(){
         setupManCard();
         int idx = g.getMotherNature();
         IslandTile islandTile = g.getArchipelago().get(idx);
@@ -274,7 +272,7 @@ class ExpertGameTest {
         while(clownCard.getStudBuffer().isRemovable(studentOnCard)) ////emptying card of the specified color
             clownCard.getStudBuffer().remove(studentOnCard);
 
-        assertThrows(NotExistingStudentException.class, () -> clownCard.effect());
+        assertThrows(IllegalArgumentException.class, () -> clownCard.effect());
         assertFalse(clownCard.isPlayed());
         assertEquals(1, clownCard.getPrice());
         Board currentPlayerBoardNew = getBoard();
@@ -300,7 +298,7 @@ class ExpertGameTest {
         while(currentPlayerBoardOld.studentInEntrance(studentInEntrance)) ////emptying entrance of the specified color
             currentPlayerBoardOld.removeStudentFromEntrance(studentInEntrance);
 
-        assertThrows(NotExistingStudentException.class, () -> clownCard.effect());
+        assertThrows(IllegalArgumentException.class, () -> clownCard.effect());
         assertFalse(clownCard.isPlayed());
         assertEquals(1, clownCard.getPrice());
         Board currentPlayerBoardNew = getBoard();
@@ -315,7 +313,7 @@ class ExpertGameTest {
      */
     @DisplayName("Swapping existent students")
     @Test
-    public void clownCardTest3()throws NotExistingStudentException{
+    public void clownCardTest3(){
         setupClownCard();
         Board currentPlayerBoard = getBoard();
 
@@ -357,7 +355,7 @@ class ExpertGameTest {
      */
     @DisplayName("Swapping multiple existent students")
     @Test
-    public void clownCardTest4()throws NotExistingStudentException{
+    public void clownCardTest4(){
         setupClownCard();
 
         Color studentOnCard = getExistingColor(clownCard.getStudBuffer()); //color of the student that goes from the card to the entrance
@@ -419,7 +417,7 @@ class ExpertGameTest {
      */
     @DisplayName("Moving a student to full hall")
     @Test
-    public void womanCardTest1() throws NotExistingStudentException {
+    public void womanCardTest1(){
         setupWomanCard();
         Color studentOnCard = getExistingColor(womanCard.getStudBuffer());
         Board currentPlayerBoard = getBoard();
@@ -448,7 +446,7 @@ class ExpertGameTest {
         while (womanCard.getStudBuffer().isRemovable(Color.GREEN)) //emptying card of the specified color
             womanCard.getStudBuffer().remove(Color.GREEN);
 
-        assertThrows(NotExistingStudentException.class, () -> womanCard.effect());
+        assertThrows(IllegalArgumentException.class, () -> womanCard.effect());
         Board currentPlayerBoardNew = getBoard();
         assertEquals(currentPlayerBoardOld.entranceSize(Color.GREEN), currentPlayerBoardNew.entranceSize(Color.GREEN));
         assertFalse(womanCard.isPlayed());
@@ -461,7 +459,7 @@ class ExpertGameTest {
      */
     @DisplayName("Moving an existing student to a not full hall")
     @Test
-    public void womanCardTest3() throws NotExistingStudentException {
+    public void womanCardTest3(){
         setupWomanCard();
         Color studentOnCard = getExistingColor(womanCard.getStudBuffer());
         Board currentPlayerBoard = getBoard();
@@ -486,7 +484,7 @@ class ExpertGameTest {
      */
     @DisplayName("Moving multiple existing student to a not full hall")
     @Test
-    public void womanCardTest4() throws NotExistingStudentException {
+    public void womanCardTest4(){
         setupWomanCard();
         Board currentPlayerBoard = getBoard();
 
@@ -558,7 +556,7 @@ class ExpertGameTest {
      */
     @DisplayName("Get professor with same number of student test")
     @Test
-    public void TPESCardTest1() throws NotExistingStudentException, HallFullException {
+    public void TPESCardTest1(){
         setupTPESCard();
         TPEScard.effect();
 
