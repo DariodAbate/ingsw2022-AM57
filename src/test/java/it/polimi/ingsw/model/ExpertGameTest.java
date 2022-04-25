@@ -682,4 +682,58 @@ class ExpertGameTest {
         expertGame.startGame();
         assertEquals(3, expertGame.getExpertCards().size());
     }
+
+    /**
+     * Tests the correct working of the BannedIsland card checking that a player with more influence
+     * on an island already controlled by another player doesn't conquer this island. Tests also that
+     * the ban tiles are removed from the reserve of the game and when a player try to conquer an island
+     * with a ban tile on it the tile is removed from the island and added back to the reserve.
+     */
+    @DisplayName("Testing correct working of BanedIsland card")
+    @Test
+    void BannedIslandTest() {
+        BannedIslandCard card = new BannedIslandCard(g);
+        setupFullPlayer();
+        g.startGame();
+        //Player 1 has green and pink professors
+        //Player 2 has yellow and blue professors
+        //Player 3 has red professor
+        g.getPlayers().get(0).getBoard().addProfessor(Color.GREEN);
+        g.getPlayers().get(0).getBoard().addProfessor(Color.PINK);
+        g.getPlayers().get(1).getBoard().addProfessor(Color.YELLOW);
+        g.getPlayers().get(1).getBoard().addProfessor(Color.BLUE);
+        g.getPlayers().get(2).getBoard().addProfessor(Color.RED);
+        g.getArchipelago().get(1).add(Color.GREEN);
+        g.getArchipelago().get(1).add(Color.GREEN);
+        g.getArchipelago().get(1).conquer(g.getPlayers());
+        assertEquals(1, g.getArchipelago().get(1).getNumTowers());
+        assertEquals(5, g.getPlayers().get(0).getBoard().getNumTower());
+        assertEquals(6, g.getPlayers().get(1).getBoard().getNumTower());
+        g.getArchipelago().get(1).add(Color.BLUE);
+        g.getArchipelago().get(1).add(Color.BLUE);
+        g.getArchipelago().get(1).add(Color.BLUE);
+        g.getArchipelago().get(1).add(Color.BLUE);
+        g.getArchipelago().get(1).add(Color.BLUE);
+        assertEquals(4, g.getBanTile());
+        card.setIslandIndex(1);
+        card.effect();
+        assertEquals(3, g.getBanTile());
+        g.getArchipelago().get(1).conquer(g.getPlayers());
+        assertEquals(6, g.getPlayers().get(1).getBoard().getNumTower());
+        assertEquals(5, g.getPlayers().get(0).getBoard().getNumTower());
+        assertEquals(1, g.getArchipelago().get(1).getNumTowers());
+        assertFalse(g.getArchipelago().get(1).getIsBanned());
+        assertEquals(4, g.getBanTile());
+    }
+
+    /**
+     * Tests that an exception is thrown when try to add more than 4 tile
+     * to the general tile reserve
+     */
+    @DisplayName("Tests exception throw when try to add more than 4 ban tile")
+    @Test
+    void AddingTooManyBanTile() {
+        assertThrows(IllegalStateException.class,
+                g::addBanTile);
+    }
 }
