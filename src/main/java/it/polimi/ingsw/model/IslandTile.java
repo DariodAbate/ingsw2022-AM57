@@ -1,5 +1,6 @@
 package it.polimi.ingsw.model;
 
+import it.polimi.ingsw.model.expertGame.BanTile;
 import it.polimi.ingsw.model.statePattern.InfluenceCalculator;
 
 import java.util.ArrayList;
@@ -18,6 +19,7 @@ public class IslandTile {
     private Tower towerColor;
     private InfluenceCalculator calc;
     private boolean isBanned = false;
+    public BanTile banTileAdder;
 
     /**
      * Constructor of the class, the island starts with 0 towers, and a maximum size students
@@ -111,6 +113,12 @@ public class IslandTile {
         int max = 0;
         int currentindex = 0;
         int index = 0;
+        if (isBanned) {
+            isBanned = false;
+            banTileAdder.addBanTile();
+            return;
+        }
+
         //If the Island is already controlled we need to get the index of the controlling player
         if(numTowers!=0){
             for (Player player:players) {
@@ -153,7 +161,12 @@ public class IslandTile {
         }
     }
 
-    public void setBanned(boolean isBanned) {
+    public void setBanned(boolean isBanned, BanTile banTileAdder) {
         this.isBanned = isBanned;
+        this.banTileAdder = banTileAdder;
+    }
+
+    public boolean  getIsBanned() {
+        return this.isBanned;
     }
 }
