@@ -175,5 +175,9 @@ public class Round {
     public void setCurrentTurn(Player player){
         currentTurn = player;
     }
+
+    public boolean isRoundEnding() {
+        return !isPlanning && (getCurrentPlayerIndex() == playersCopy.size() - 1);
+    }
 }
 
