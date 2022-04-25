@@ -10,11 +10,12 @@ import java.util.Random;
  * This subclass of game is instantiated when selecting Expert Mode, it adds the coin and expert cards system
  * @author Lorenzo Corrado
  */
-public class ExpertGame extends Game implements PseudoMotherNature, IncrementMaxMovement, InfluenceCluster, StudentsBufferCluster, SwapStudents, BannedIsland, PutThreeStudentsInTheBag, TakeProfessorEqualStudents{
+public class ExpertGame extends Game implements PseudoMotherNature, IncrementMaxMovement, InfluenceCluster, StudentsBufferCluster, SwapStudents, BannedIsland, PutThreeStudentsInTheBag, TakeProfessorEqualStudents, BanTile{
 
     private final static int NUMBER_OF_EXPERT_CARDS = 3;
     private int coinBank;
     private ArrayList<ExpertCard> expertCards;
+    private int banTile = 4;
 
     /**
      * This constructor adds coins and expert Cards
@@ -84,7 +85,7 @@ public class ExpertGame extends Game implements PseudoMotherNature, IncrementMax
         for(int i=0; i<NUMBER_OF_EXPERT_CARDS; i++){
             temp = rand.nextInt((cardsPlaceHolder.size()));
             switch (cardsPlaceHolder.get(temp)) {
-                case 1 -> expertCards.add(new BannedIslandCard(motherNature, this));
+                case 1 -> expertCards.add(new BannedIslandCard(this));
                 case 2 -> expertCards.add(new InfluenceCardsCluster(0, this));
                 case 3 -> expertCards.add(new InfluenceCardsCluster(1, this));
                 case 4 -> expertCards.add(new InfluenceCardsCluster(2, this));
@@ -229,10 +230,36 @@ public class ExpertGame extends Game implements PseudoMotherNature, IncrementMax
        getCurrentPlayer().getBoard().hallToEntrance(hallStudentColor);
     }
 
-    //TODO method still to be finished
+    /**
+     * This method represent the action of putting the ban tile of the ban card on a selected island
+     * @param islandIndex is the index of the selected island to ban
+     */
+    //TODO make an exception when the ban cards are finished
     @Override
     public void banIsland(int islandIndex) {
-        getArchipelago().get(islandIndex).setBanned(true);
+        if(banTile > 0)
+            getArchipelago().get(islandIndex).setBanned(true, this);
+        else
+            throw new IllegalStateException("No more ban cards available");
+        banTile -= 1;
+    }
+
+    /**
+     * This method add a ban tile to the general reserve
+     */
+    @Override
+    public void addBanTile() {
+        if(banTile < 4)
+            banTile += 1;
+        else
+            throw new IllegalStateException("All the four ban cards are available");
+    }
+
+    /**
+     * @return the number of tile available in the general reserve
+     */
+    public int getBanTile() {
+        return banTile;
     }
 
     /**
