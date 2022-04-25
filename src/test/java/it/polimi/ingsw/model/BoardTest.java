@@ -27,7 +27,7 @@ class BoardTest {
 
 
     /**
-     *Method that tests addProfessor() trying to add
+     * Method that tests addProfessor() trying to add
      * to a set an already existing professor
      */
     @Test
@@ -47,6 +47,7 @@ class BoardTest {
     /**
      * Method that tests addProfessor() trying to pass
      * a null color
+     *
      * @throws NullPointerException if a null Color is passed
      */
     @Test
@@ -59,7 +60,7 @@ class BoardTest {
     }
 
     /**
-     *Method that tests removeProfessor() trying to remove an
+     * Method that tests removeProfessor() trying to remove an
      * existing professor
      */
     @Test
@@ -89,6 +90,7 @@ class BoardTest {
     /**
      * removeNullProfessor() tests removeProfessor() trying to pass
      * a null color
+     *
      * @throws NullPointerException if a null Color is passed
      */
     @Test
@@ -106,7 +108,7 @@ class BoardTest {
      */
     @Test
     @DisplayName("Filling entrance test with single student and entrance initially empty")
-    void fillEntranceNormal(){
+    void fillEntranceNormal() {
         assertEquals(0, b.entranceSize());
         assertEquals(0, b.hallSize());
 
@@ -124,11 +126,11 @@ class BoardTest {
      */
     @Test
     @DisplayName("Filling entrance test with single student and entrance initially full of single color")
-    void fillFullEntrance1(){
+    void fillFullEntrance1() {
         //for 2 player the maximum number of student in the entrance is 7
         assertEquals(0, b.entranceSize());
         assertEquals(0, b.hallSize());
-        for(int j = 0 ; j < 10; j++)
+        for (int j = 0; j < 10; j++)
             b.fillEntrance(Color.RED);
         assertEquals(7, b.entranceSize());
         assertEquals(7, b.entranceSize(Color.RED));
@@ -141,19 +143,18 @@ class BoardTest {
     }
 
     /**
-     *
-     *fillFullEntrance2() tests fillEntrance() when the entrance contains the
-     *maximum number of students of various color, and we try to add a
-     *single student of another color.
-     *The set of entrance's students should be unchanged
+     * fillFullEntrance2() tests fillEntrance() when the entrance contains the
+     * maximum number of students of various color, and we try to add a
+     * single student of another color.
+     * The set of entrance's students should be unchanged
      */
     @Test
     @DisplayName("Filling entrance test with single student and entrance initially full of various color")
-    void fillFullEntrance2(){
+    void fillFullEntrance2() {
         //for 2 player the maximum number of student in the entrance is 7
         assertEquals(0, b.entranceSize());
         assertEquals(0, b.hallSize());
-        for(int j = 0 ; j < 10; j++) {
+        for (int j = 0; j < 10; j++) {
             if (j < 3)
                 b.fillEntrance(Color.BLUE);
             else
@@ -173,50 +174,50 @@ class BoardTest {
 
 
     /**
-     *This method tests entranceToHall() when it is possible to move a student
-     *from the entrance to the hall
+     * This method tests entranceToHall() when it is possible to move a student
+     * from the entrance to the hall
      */
     @Test
     @DisplayName("Moving student inside the board test in normal condition")
     void entranceToHall() {
-        for(Color i: Color.values()){
+        for (Color i : Color.values()) {
             assertEquals(0, b.entranceSize(i));
             assertEquals(0, b.hallSize(i));
 
         }
 
         b.fillEntrance(Color.GREEN);
-        for(Color i: Color.values()){
-            if(i.equals(Color.GREEN))
+        for (Color i : Color.values()) {
+            if (i.equals(Color.GREEN))
                 assertEquals(1, b.entranceSize(i));
             else
                 assertEquals(0, b.entranceSize(i));
         }
-        for(Color i: Color.values()){
+        for (Color i : Color.values()) {
             assertEquals(0, b.hallSize(i));
         }
 
         b.entranceToHall(Color.GREEN);
-        for(Color i: Color.values()){
-            if(i.equals(Color.GREEN))
+        for (Color i : Color.values()) {
+            if (i.equals(Color.GREEN))
                 assertEquals(1, b.hallSize(i));
             else
                 assertEquals(0, b.hallSize(i));
         }
-        for(Color i: Color.values()) {
+        for (Color i : Color.values()) {
             assertEquals(0, b.entranceSize(i));
         }
     }
 
     /**
-     *This method tests entranceToHall() trying to move a student of a determined
-     *color, but that student does not exist in the entrance.
-     *The entrance set of students should be unchanged
+     * This method tests entranceToHall() trying to move a student of a determined
+     * color, but that student does not exist in the entrance.
+     * The entrance set of students should be unchanged
      */
     @Test
     @DisplayName("Moving non-existing student inside the board test")
     void emptyEntranceToHall() {
-        for(Color i: Color.values()){
+        for (Color i : Color.values()) {
             assertEquals(0, b.entranceSize(i));
             assertEquals(0, b.hallSize(i));
 
@@ -226,7 +227,7 @@ class BoardTest {
 
         b.entranceToHall(Color.GREEN);
 
-        for(Color i: Color.values()) {
+        for (Color i : Color.values()) {
             assertEquals(0, b.entranceSize(i));
             assertEquals(0, b.hallSize(i));
         }
@@ -235,12 +236,13 @@ class BoardTest {
     /**
      * This method tests entranceToHall() when it is passed a null color.
      * The sets of students in entrance and in the hall should be unchanged
+     *
      * @throws NullPointerException if the color passed is null
      */
     @Test
     @DisplayName("Moving a student of null color inside the board test")
     void entranceToHallNullColor() {
-        for(Color i: Color.values()){
+        for (Color i : Color.values()) {
             assertEquals(0, b.entranceSize(i));
             assertEquals(0, b.hallSize(i));
 
@@ -250,38 +252,37 @@ class BoardTest {
 
         b.entranceToHall(null);
 
-        for(Color i: Color.values()) {
+        for (Color i : Color.values()) {
             assertEquals(0, b.entranceSize(i));
             assertEquals(0, b.hallSize(i));
         }
     }
 
     /**
-     *This method tests entranceToHall() trying to move a student of a determined color
-     *from the entrance to the hall, when the hall of that color already contains
-     *the maximum number of students.
-     *The sets of students in the entrance and in the hall should be unchanged
+     * This method tests entranceToHall() trying to move a student of a determined color
+     * from the entrance to the hall, when the hall of that color already contains
+     * the maximum number of students.
+     * The sets of students in the entrance and in the hall should be unchanged
      */
     @Test
     @DisplayName("Moving a student from entrance to a full hall test")
     void entranceToHallFullHall() {
-        for(Color i: Color.values()){
+        for (Color i : Color.values()) {
             assertEquals(0, b.entranceSize(i));
             assertEquals(0, b.hallSize(i));
 
         }
-        for(int j = 0; j < 10 ; j++) {//full green hall
+        for (int j = 0; j < 10; j++) {//full green hall
             b.fillEntrance(Color.GREEN);
             b.entranceToHall(Color.GREEN);
         }
         b.fillEntrance(Color.GREEN);
 
-        for(Color i: Color.values()){
-            if(i.equals(Color.GREEN)) {
+        for (Color i : Color.values()) {
+            if (i.equals(Color.GREEN)) {
                 assertEquals(1, b.entranceSize(i));
                 assertEquals(10, b.hallSize(i));
-            }
-            else {
+            } else {
                 assertEquals(0, b.entranceSize(i));
                 assertEquals(0, b.hallSize(i));
             }
@@ -289,12 +290,11 @@ class BoardTest {
 
         b.entranceToHall(Color.GREEN);
 
-        for(Color i: Color.values()) {
-            if(i.equals(Color.GREEN)) {
+        for (Color i : Color.values()) {
+            if (i.equals(Color.GREEN)) {
                 assertEquals(1, b.entranceSize(i));
                 assertEquals(10, b.hallSize(i));
-            }
-            else {
+            } else {
                 assertEquals(0, b.entranceSize(i));
                 assertEquals(0, b.hallSize(i));
             }
@@ -348,4 +348,85 @@ class BoardTest {
         assertEquals(4, b.entranceSize());
     }
 
+    /**
+     * THis method checks the initial amount of coin, it should be 1
+     */
+    @Test
+    @DisplayName("Starting coin test")
+    void coinManagement1() {
+        assertEquals(1, b.getNumCoin());
+    }
+
+    //helper method used to put a student in the entrance and to move it in the hall
+    private void putAndMoveStudent(Color color) {
+        b.fillEntrance(color);
+        b.entranceToHall(color);
+    }
+
+    /**
+     * This method tests that no coins are given if a player is not eligible
+     */
+    @Test
+    @DisplayName("Coin with not enough student")
+    void coinManagement2() {
+        putAndMoveStudent(Color.PINK);
+        putAndMoveStudent(Color.BLUE);
+        putAndMoveStudent(Color.RED);
+        assertEquals(1, b.getNumCoin());
+    }
+
+    /**
+     * This method tests that a player is given a coin the first time he puts 3 students
+     * of the same color in the hall. The player should gain 1 coin
+     */
+    @Test
+    @DisplayName("Giving coin the first time test")
+    void coinManagement3() {
+        for (int i = 0; i < 3; i++)
+            putAndMoveStudent(Color.RED);
+        assertEquals(2, b.getNumCoin());
+    }
+
+    /**
+     * This method tests that a player is given a coin the first time he places the maximum
+     *  number of students of the same color in the hall. The player should gain 3 coins
+     */
+    @Test
+    @DisplayName("Giving coin with max students of one color test")
+    void coinManagement4() {
+        for (int i = 0; i < 10; i++)
+            putAndMoveStudent(Color.RED);
+        assertEquals(4, b.getNumCoin());
+    }
+
+    /**
+     * This method tests that a player is given a coin the first time he places the maximum
+     * number of students of two different color in the hall. The player should gain 7 coins
+     */
+    @Test
+    @DisplayName("Giving coin with max students of two color test")
+    void coinManagement5() {
+        for (int i = 0; i < 10; i++){
+            putAndMoveStudent(Color.RED);
+            putAndMoveStudent(Color.BLUE);
+        }
+        assertEquals(7, b.getNumCoin());
+    }
+
+    /**
+     * This method tests that a player is not given a coin if it has already been obtained
+     * previously
+     */
+    @Test
+    @DisplayName("Not giving coin the second time test")
+    void coinManagement6() {
+        for (int i = 0; i < 3; i++)
+            putAndMoveStudent(Color.RED);
+        assertEquals(2, b.getNumCoin());
+        b.removeStudentFromHall(Color.RED);
+        putAndMoveStudent(Color.RED);
+        assertEquals(2, b.getNumCoin());
+    }
 }
+
+

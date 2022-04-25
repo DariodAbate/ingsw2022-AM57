@@ -8,7 +8,8 @@ import java.util.Set;
 /**
  * This class represent the board, called in italian "Plancia", of each individual player.
  * It contains the towers a player has chosen, the professors earned by him and the students
- * present in the entrance and hall
+ * present in the entrance and hall.
+ * It also contains
  *
  * @author Dario d'Abate
  */
@@ -19,6 +20,8 @@ public class Board {
     private StudentsHandler hall;
     private Set<Color> professors;
     private GameConstants gameConstants;
+    private int coinReserve;
+    private boolean[][] addCoinChecker;
 
     /**
      * Constructor of the class. It can handle games for 2 or 3 players
@@ -32,6 +35,9 @@ public class Board {
         entrance = new StudentsHandler(gameConstants.getEntranceSize());
         hall = new StudentsHandler(gameConstants.HALL_SIZE);
         numTower = gameConstants.getNumTowersOnBoard();
+
+        addCoinChecker = new boolean[5][3]; //five colors, 3 checkPoint
+        coinReserve = 1; //one coin for each player at the starting
     }
 
     /**
@@ -196,14 +202,37 @@ public class Board {
 
     /**
      * This method moves a student from entrance to hall if the movement can be done, otherwise
-     * entrance and hall are unchanged
+     * entrance and hall are unchanged.
+     * It also gives a coin to a player if there are sufficient students in the hall
      * @param studentColor It is the color of the student to be moved from entrance to hall
      */
     public void entranceToHall(Color studentColor){
         if(studentColor != null && entrance.isRemovable(studentColor) && hall.isAddable(studentColor)){
             entrance.remove(studentColor);
             hall.add(studentColor);
+
+            //A coin must be added only the first time that a player owe it
+            if(hall.numStudents(studentColor) % 3 == 0){
+                if(!addCoinChecker[getRowFromColor(studentColor)][(hall.numStudents(studentColor) / 3) - 1]){
+                    addCoinChecker[getRowFromColor(studentColor)][(hall.numStudents(studentColor) / 3) - 1] = true;
+                    coinReserve++;
+                }
+            }
         }
+    }
+
+    /**
+     * Helper method used in entranceToHall
+     * @return index corresponding to a specified color in the board's hall
+     */
+    private int getRowFromColor(Color color){
+        return switch (color) {
+            case GREEN -> 0;
+            case RED -> 1;
+            case YELLOW -> 2;
+            case PINK -> 3;
+            case BLUE -> 4;
+        };
     }
 
     //TODO Test
@@ -243,4 +272,28 @@ public class Board {
     }
 
     //TODO Add a method that returns the color of the students that the board has both in the entrance and in the hall
+
+    /**
+     * Gets the number of coin that a player have
+     * @return the number of coin that a player have
+     */
+    public int getNumCoin() {
+        return coinReserve;
+    }
+
+    /**
+     * @param activationCost Number of coins to spend to activate the effect of an Expert card
+     * @return true if the player has enough coins to activate a card, false otherwise
+     */
+    public boolean hasCoin(int activationCost){return coinReserve - activationCost >= 0;}
+
+    /**
+      * If the player has enough coins this method removes the specified number of coins from the reserve, otherwise nothing happens
+      * @param activationCost Number of coins to spend to activate the effect of an Expert card
+     */
+    public void removeCoin(int activationCost) {
+        if(hasCoin(activationCost))
+            coinReserve -= activationCost;
+    }
+
 }
