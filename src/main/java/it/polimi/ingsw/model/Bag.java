@@ -37,7 +37,7 @@ public class Bag {
     }
 
     /**
-     * This method simulates a real draw calculating the probability of each color to be extracted, than he removes the
+     * This method simulates a real draw calculating the probability of each color to be extracted, then he removes the
      * extracted token from the bag
      * @return The color of the extracted token, if the bag is empty return null
      */

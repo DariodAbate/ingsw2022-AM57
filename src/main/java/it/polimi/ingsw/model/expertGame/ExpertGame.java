@@ -8,6 +8,9 @@ import it.polimi.ingsw.model.Player;
 import it.polimi.ingsw.model.statePattern.InfluenceCalculator;
 
 import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Random;
+import java.util.Set;
 
 /**
  * This subclass of game is instantiated when selecting Expert Mode, it adds the coin and expert cards system
@@ -15,6 +18,7 @@ import java.util.ArrayList;
  */
 public class ExpertGame extends Game implements PseudoMotherNature, IncrementMaxMovement, InfluenceCluster, StudentsBufferCluster, SwapStudents, BannedIsland, PutThreeStudentsInTheBag, TakeProfessorEqualStudents{
 
+    private final static int NUMBER_OF_EXPERT_CARDS = 3;
     private int coinBank;
     private ArrayList<ExpertCard> expertCards;
 
@@ -25,7 +29,44 @@ public class ExpertGame extends Game implements PseudoMotherNature, IncrementMax
      */
     public ExpertGame(String nickPlayer, int numGamePlayers){
         super(nickPlayer, numGamePlayers);
+    }
+
+    @Override
+    public void startGame(){
+        if(getNumPlayers() < numGamePlayers)
+            throw new IllegalStateException("Established number of player has not yet been reached");
+        //initialize a round
+        initRound();
+
+        //initialize set of island tiles
+        initArchipelago();
+
+        //initialize bags
+        initBags();
+
+        //put mother nature on casual island
+        putMotherNature();
+        //put student on island from startBag
+        initIslandWithStudent();
+
+        //initialize clouds
+        initClouds();
+
+        // FIXME choose tower color for each player
+        //Now a player cannot choose
+        associatePlayerToTower();
+
+        /* FIXME choose cardBack for each player */
+        // Now a player cannot choose
+        associatePlayerToCardBack();
+
+        //fill entrance for each player's board
+        initEntrancePlayers();
+
+        //determine casually the first player TODO
         initBank();
+
+        pickCards();
     }
 
     /**
@@ -38,9 +79,57 @@ public class ExpertGame extends Game implements PseudoMotherNature, IncrementMax
     /**
      * This method initializes the cards in the game
      */
-    private void pickCards(){
+    private void pickCards() {
         expertCards = new ArrayList<>();
-        //card generation
+        ArrayList<Integer> cardsPlaceHolder = new ArrayList<>();
+        Random rand = new Random();
+        int temp;
+        for (int j = 1; j <= 12; j++) {
+            cardsPlaceHolder.add(j);
+        }
+        for(int i=0; i<NUMBER_OF_EXPERT_CARDS; i++){
+            temp = rand.nextInt((cardsPlaceHolder.size()));
+            switch (cardsPlaceHolder.get(temp)) {
+                case 1:
+                    expertCards.add(new BannedIslandCard(motherNature, this));
+                    break;
+                case 2:
+                    expertCards.add(new InfluenceCardsCluster(0, this));
+                    break;
+                case 3:
+                    expertCards.add(new InfluenceCardsCluster(1, this));
+                    break;
+                case 4:
+                    expertCards.add(new InfluenceCardsCluster(2, this));
+                    break;
+                case 5:
+                    expertCards.add(new PseudoMotherNatureCard(motherNature, this));
+                    break;
+                case 6:
+                    expertCards.add(new IncrementMaxMovementCard(this));
+                    break;
+                case 7:
+                    expertCards.add(new PutThreeStudentsInTheBagCard(this));
+                    break;
+                case 8:
+                    expertCards.add(new StudentsBufferCardsCluster(0, this));
+                    break;
+                case 9:
+                    expertCards.add(new StudentsBufferCardsCluster(1, this));
+                    break;
+                case 10:
+                    expertCards.add(new StudentsBufferCardsCluster(2, this));
+                    break;
+                case 11:
+                    expertCards.add(new SwapStudentsCard(this));
+                    break;
+                case 12:
+                    expertCards.add(new TakeProfessorEqualStudentsCard(this));
+                    break;
+
+            }
+            cardsPlaceHolder.remove(temp);
+        }
     }
 
     /**
@@ -49,7 +138,12 @@ public class ExpertGame extends Game implements PseudoMotherNature, IncrementMax
      * @throws NotExistingStudentException when the effect of a card involving a non-existent student is activated
      */
         public void playEffect(int indexCard) throws NotExistingStudentException{
-        expertCards.get(indexCard).effect();
+        if(expertCards.get(indexCard).getPrice()<=getCurrentPlayer().getNumCoin()) {
+            expertCards.get(indexCard).effect();
+            for (int i = 0; i < expertCards.get(indexCard).getPrice(); i++){
+                getCurrentPlayer().removeCoin();
+            }
+        }
     }
 
     /**
@@ -165,7 +259,12 @@ public class ExpertGame extends Game implements PseudoMotherNature, IncrementMax
         getArchipelago().get(islandIndex).setBanned(true);
     }
 
-    //TODO method to be tested
+    /**
+     * This method represent the card that allows the players to put three students of the specified
+     * color from the hall of their board to the bag. If the players doesn't have enough student of the
+     * color in the hall they have to put all the students they have in the hall in the bag.
+     * @param studentColor is the color chosen by the player that play this effect card
+     */
     @Override
     public void putThreeStudentsInTheBag(Color studentColor){
         for (Player player : players) {
@@ -192,5 +291,8 @@ public class ExpertGame extends Game implements PseudoMotherNature, IncrementMax
     @Override
     public void setTakeProfessorEqualStudents() {
         this.notAbsoluteMax = true;
+    }
+    public ArrayList<ExpertCard> getExpertCards(){
+        return expertCards;
     }
 }

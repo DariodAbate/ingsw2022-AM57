@@ -33,7 +33,6 @@ public class Round {
         actionPhaseOrder = new ArrayList<>(players);
         planningPhaseOrder = new ArrayList<>(players);
         isPlanning = true;
-        // Add RNG to pick the first player TODO
         currentTurn = players.get(0);
     }
 
@@ -101,8 +100,8 @@ public class Round {
      * priority card. The method also set the boolean variable isPlanning to false that
      * indicates the beginning of the action phase.
      */
-    // Case of same priority card to be added
-    //TODO Change logic
+    //TODO Case of same priority card to be added
+    //TODO review logic
     public void setActionPhaseOrder() {
         actionPhaseOrder.sort(Comparator.comparingInt(player -> player.viewLastCard().getPriority()));
         currentTurn = actionPhaseOrder.get(0);
@@ -124,29 +123,31 @@ public class Round {
      * @return the index of the currentTurn player inside the planningPhaseOrder list
      * or actionPhaseOrder list
      */
-    private int getCurrentPlayerIndex(){
+    public int getCurrentPlayerIndex(){
      if (isPlanning)
          return planningPhaseOrder.indexOf(currentTurn);
      else
          return actionPhaseOrder.indexOf(currentTurn);
     }
 
+    //TODO funzione da chiamare prima di nextTurn() che controlla se si è alla fine delle liste
+    public void checkStatus() {
+        if (isPlanning && (getCurrentPlayerIndex() == (playersCopy.size() - 1))) {
+            setActionPhaseOrder();
+        }
+        if (!isPlanning &&(getCurrentPlayerIndex() == (playersCopy.size() - 1))) {
+            nextRound();
+        }
+    }
+
     /**
      * This method modify the current player and indicates the start of a new turn.
      */
     public void nextTurn() {
-
-        /*  TODO
-         if (!planningIterator.hasNext())
-             setActionPhaseOrder();
-         if (!actionIterator.hasNext())
-             nextRound();
-         planningIterator.next();
-         actionIterator.next();
-        */
         if (isPlanning) {
             currentTurn = planningPhaseOrder.get(getCurrentPlayerIndex() + 1);
-        } else {
+        }
+        if (!isPlanning){
             currentTurn = actionPhaseOrder.get(getCurrentPlayerIndex() + 1);
         }
     }
@@ -173,6 +174,10 @@ public class Round {
 
     public void setCurrentTurn(Player player){
         currentTurn = player;
+    }
+
+    public boolean isRoundEnding() {
+        return !isPlanning && (getCurrentPlayerIndex() == playersCopy.size() - 1);
     }
 }
 
