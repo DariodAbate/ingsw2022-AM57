@@ -39,4 +39,10 @@ public interface GameConstants {
       */
      int getMaxCoinSize();
 
+     /**
+      *
+      * @return number of students that can be moved in an action phase
+      */
+     int getMaxNumStudMovements();
+
 }

@@ -11,6 +11,8 @@ public class TwoPlayersConstants implements GameConstants{
     private final static int NUM_CLOUDS = 2;
     private final static int NUM_STUDENTS_CLOUD = 3;
     private final static int MAX_COIN_SIZE = 18;
+    private final static int MAX_NUM_STUD_MOVEMENTS = 3;
+
     @Override
     public int getEntranceSize() {
         return ENTRANCE_SIZE;
@@ -32,5 +34,8 @@ public class TwoPlayersConstants implements GameConstants{
     @Override
     public int getMaxCoinSize(){ return MAX_COIN_SIZE;}
 
-
+    @Override
+    public int getMaxNumStudMovements() {
+        return MAX_NUM_STUD_MOVEMENTS;
+    }
 }

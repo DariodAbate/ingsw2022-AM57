@@ -27,7 +27,10 @@ public class Game implements RoundObserver{
     protected int motherNature; //motherNature as an index corresponding to an island
     protected int maxMovement; //maxMovement that mother nature can do
     protected Round round;
-    protected GameState gameState;
+
+    protected GameState gameState; //state of the game
+    protected final int maxNumStudMoves; //maximum number of student movements
+    protected int actualNumStudMoves; //number of movements of students that has done
 
     protected InfluenceCalculator calc; //calculator for the influence
     protected boolean notAbsoluteMax; //flag used to implement an expertCard
@@ -56,6 +59,8 @@ public class Game implements RoundObserver{
             players = new ArrayList<>();
             players.add(p1);
             this.gameState = GameState.JOIN_STATE; //When the game is initialized, we wait for all the player to join
+            this.maxNumStudMoves = gameConstants.getMaxNumStudMovements();
+            actualNumStudMoves = 0;
         }
         else
             throw new IllegalArgumentException("Illegal parameter for first player");//FIXME change with a checked custom exception
@@ -136,7 +141,7 @@ public class Game implements RoundObserver{
         //fill entrance for each player's board
         initEntrancePlayers();
 
-        //determine casually the first player TODO
+        //TODO determine casually the first player
 
         //set planning state
         setGameState(GameState.PLANNING_STATE);
@@ -146,8 +151,7 @@ public class Game implements RoundObserver{
         this.gameState = state;
     }
     //initialize  a round through which the current player can be selected
-    protected void initRound(){
-        round = new Round(players);}
+    protected void initRound(){round = new Round(players);}
 
 
 
@@ -279,6 +283,7 @@ public class Game implements RoundObserver{
                 }
             }
         }
+        nextTurn();
 
     }
 
@@ -299,6 +304,7 @@ public class Game implements RoundObserver{
 
         if(!currentPlayerBoard.hallIsFillable(colorStudentToBeMoved))
             throw new IllegalStateException("The hall cannot accept a student of the specified color");
+        controlMovementStudents();//one movement of student has done
         currentPlayerBoard.entranceToHall(colorStudentToBeMoved);
 
         //assignment of the professor
@@ -367,8 +373,21 @@ public class Game implements RoundObserver{
         if( ! currentPlayerBoard.studentInEntrance(colorStudentToBeMoved))
             throw new IllegalArgumentException("The current player does not have a student for the specified color");
 
+        controlMovementStudents();//one movement of student has done
         currentPlayerBoard.removeStudentFromEntrance(colorStudentToBeMoved);
         archipelago.get(idxChosenIsland).add(colorStudentToBeMoved);
+    }
+
+    /**
+     * This method is used as a control for the movement of a predetermined number of students, moreover it
+     * passes to the phase in which mother nature can be moved
+     */
+    private void controlMovementStudents(){
+        ++actualNumStudMoves;
+        if(actualNumStudMoves == maxNumStudMoves){
+            actualNumStudMoves = 0;
+            setGameState(GameState.MOTHER_MOVEMENT_STATE);// after a player has moved all the students, he must move mother nature
+        }
     }
 
     /**
@@ -380,6 +399,7 @@ public class Game implements RoundObserver{
     public void playCard(int idxCard){
         try{
             getCurrentPlayer().playCard(idxCard);
+            nextTurn();
         }catch (IllegalArgumentException e){
             throw new IllegalArgumentException(e.getMessage());
         }
@@ -398,10 +418,15 @@ public class Game implements RoundObserver{
      * This method is used every time a player ends his turn. When the turn is an action, it sets the maximum number
      * of island mother nature can travel. After this method, motherMovement() can be invoked
      */
-    public void nextTurn(){
+    protected void nextTurn(){
         round.nextTurn();
         if(! round.isPlanning())
             setMovesMotherNature();
+        if(round.isRoundEnding())
+            setGameState(GameState.PLANNING_STATE); // after the last turn in the action phase, the game passes to planning state
+        else
+            setGameState(GameState.MOVING_STUDENT_STATE);// after a player that's not the last  has completed the action phase, the next player should play
+
     }
 
     //TODO TO BE TESTED
@@ -420,7 +445,7 @@ public class Game implements RoundObserver{
         archipelago.get(motherNature).conquer(players); //this is the only method that calls conquer()
         //TODO add call for end game due to no towers remaining
         mergeIslandTile();
-        setGameState(GameState.CLOUD_TO_ENTRANCE_STATE);
+        setGameState(GameState.CLOUD_TO_ENTRANCE_STATE); //after a player has moved mother nature, he must claim a cloud tile
     }
 
     /**

@@ -2,6 +2,7 @@ package it.polimi.ingsw.model;
 
 /**
  * This enum set represents the state of the game
+ * @author Lorenzo Corrado
  */
 public enum GameState {
     JOIN_STATE,

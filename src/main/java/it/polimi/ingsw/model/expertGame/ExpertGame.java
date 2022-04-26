@@ -183,12 +183,16 @@ public class ExpertGame extends Game implements PseudoMotherNature, IncrementMax
      * of island mother nature can travel and sets cardHasBeenPlayed to false. After this method, motherMovement() can be invoked
      */
     @Override
-    public void nextTurn(){
+    protected void nextTurn(){
         round.nextTurn();
         if(! round.isPlanning()) {
             setMovesMotherNature();
             cardHasBeenPlayed = false;
         }
+        if(round.isRoundEnding())
+            setGameState(GameState.PLANNING_STATE);
+        else
+            setGameState(GameState.MOVING_STUDENT_STATE);
     }
 
     /**

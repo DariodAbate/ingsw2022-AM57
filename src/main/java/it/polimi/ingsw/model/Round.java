@@ -171,7 +171,6 @@ public class Round {
             setPlanningPhaseOrder();
     }
 
-    //@author Lorenzo Corrado
     public void setIsEnding ( boolean isEnding){ //this method sets a condition for the endgame
         this.isEnding = isEnding;
     }
@@ -180,6 +179,10 @@ public class Round {
         currentTurn = player;
     } //FIXME
 
+    /**
+     *
+     * @return true if the last player is playing in the action phase, false otherwise
+     */
     public boolean isRoundEnding () {
         return !isPlanning && (getCurrentPlayerIndex() == playersCopy.size() - 1);
     }

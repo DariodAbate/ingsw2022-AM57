@@ -574,7 +574,11 @@ class GameTest {
         g.startGame();
 
         //idxCard = 0 -> movement = 1, priority = 1
+        //All the players should play their card, otherwise the current player cannot set his movement
+        g.playCard(5);
         g.playCard(0);
+        g.playCard(7);
+        g.setMovesMotherNature();
         assertEquals(1, g.getMaxMovement());
     }
 
