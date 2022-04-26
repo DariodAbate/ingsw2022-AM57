@@ -1,5 +1,7 @@
 package it.polimi.ingsw.model.expertGame;
 
+import it.polimi.ingsw.model.Color;
+
 /**
  * This class implements the expert card system
  * @author Lorenzo Corrado
@@ -31,4 +33,18 @@ public abstract class ExpertCard {
     public boolean isPlayed(){
         return played;
     }
+
+    /**
+     * Change the island where the player wants the effect to be activated
+     * @param index of the island
+     */
+    public void changeIslandIndex(int index){}
+
+    public void setStudentColorInEntrance(Color studentColorInEntrance){}
+
+    public void setIdxChosenIsland(int idxChosenIsland){}
+
+    public void setStudentColorToBeMoved(Color studentColorToBeMoved){}
+
+    public void changeColor(Color color){}
 }

@@ -290,4 +290,6 @@ public class ExpertGame extends Game implements PseudoMotherNature, IncrementMax
     public ArrayList<ExpertCard> getExpertCards(){
         return expertCards;
     }
+
+
 }

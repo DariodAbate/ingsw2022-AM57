@@ -24,6 +24,7 @@ public class PseudoMotherNatureCard extends ExpertCard {
      * Change the island where the player wants the effect to be activated
      * @param index of the island
      */
+    @Override
     public void changeIslandIndex(int index){
         this.islandIndex = index;
     }
