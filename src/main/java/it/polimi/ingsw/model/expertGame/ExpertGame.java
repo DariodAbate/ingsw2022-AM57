@@ -60,6 +60,8 @@ public class ExpertGame extends Game implements PseudoMotherNature, IncrementMax
         //fill entrance for each player's board
         initEntrancePlayers();
 
+        setGameState(GameState.PLANNING_STATE);
+
         //determine casually the first player TODO
         initBank();
 
@@ -364,6 +366,7 @@ public class ExpertGame extends Game implements PseudoMotherNature, IncrementMax
     public ArrayList<ExpertCard> getExpertCards(){
         return expertCards;
     }
+
 
 
 }

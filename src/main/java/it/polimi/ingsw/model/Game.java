@@ -27,6 +27,7 @@ public class Game implements RoundObserver{
     protected int motherNature; //motherNature as an index corresponding to an island
     protected int maxMovement; //maxMovement that mother nature can do
     protected Round round;
+    protected GameState gameState;
 
     protected InfluenceCalculator calc; //calculator for the influence
     protected boolean notAbsoluteMax; //flag used to implement an expertCard
@@ -54,7 +55,7 @@ public class Game implements RoundObserver{
             Player p1 = new Player(nickPlayer, gameConstants);
             players = new ArrayList<>();
             players.add(p1);
-
+            this.gameState = GameState.JOIN_STATE; //When the game is initialized, we wait for all the player to join
         }
         else
             throw new IllegalArgumentException("Illegal parameter for first player");//FIXME change with a checked custom exception
@@ -137,8 +138,13 @@ public class Game implements RoundObserver{
 
         //determine casually the first player TODO
 
+        //set planning state
+        setGameState(GameState.PLANNING_STATE);
     }
 
+    protected void setGameState(GameState state){
+        this.gameState = state;
+    }
     //initialize  a round through which the current player can be selected
     protected void initRound(){
         round = new Round(players);}
@@ -414,6 +420,7 @@ public class Game implements RoundObserver{
         archipelago.get(motherNature).conquer(players); //this is the only method that calls conquer()
         //TODO add call for end game due to no towers remaining
         mergeIslandTile();
+        setGameState(GameState.CLOUD_TO_ENTRANCE_STATE);
     }
 
     /**
@@ -604,6 +611,9 @@ public class Game implements RoundObserver{
         return players;
     }
 
+    /**
+     * @return the current player
+     */
     @Override
     public Player getRoundPlayer() {
         return round.getCurrentPlayer();
