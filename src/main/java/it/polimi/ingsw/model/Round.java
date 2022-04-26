@@ -183,5 +183,12 @@ public class Round {
     public boolean isRoundEnding () {
         return !isPlanning && (getCurrentPlayerIndex() == playersCopy.size() - 1);
     }
+
+    /**
+     * @return true if the current turn a planning turn, false is the current turn is an action turn
+     */
+    public boolean isPlanning() {
+        return  isPlanning;
+    }
 }
 

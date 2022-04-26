@@ -289,11 +289,11 @@ public class Board {
 
     /**
       * If the player has enough coins this method removes the specified number of coins from the reserve, otherwise nothing happens
-      * @param activationCost Number of coins to spend to activate the effect of an Expert card
+      * @param numCoins Number of coins to remove from the coin reserve
      */
-    public void removeCoin(int activationCost) {
-        if(hasCoin(activationCost))
-            coinReserve -= activationCost;
+    public void removeCoin(int numCoins) {
+        if(hasCoin(numCoins))
+            coinReserve -= numCoins;
     }
 
 }

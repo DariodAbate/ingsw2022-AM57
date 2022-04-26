@@ -309,7 +309,7 @@ public class Game implements RoundObserver{
      * @param color color of student
      * @return true if the current player has the maximum number of students among all players, false otherwise
      */
-    private boolean hasMaxStudents(Color color){
+    protected boolean hasMaxStudents(Color color){
         int idxCurrentPlayer = players.indexOf(getCurrentPlayer());
         int numStudCurrentPlayer = getCurrentPlayer().getBoard().hallSize(color);
         int numStudPlayer;
@@ -332,7 +332,7 @@ public class Game implements RoundObserver{
      * If no one had that professor, the boards remain the same
      * @param color color of the professor to be removed
      */
-    private void takeBackProfessor(Color color){
+    protected void takeBackProfessor(Color color){
         int idxCurrentPlayer = players.indexOf(getCurrentPlayer());
         Board board;
         for(int i = 0; i < players.size(); i++){
@@ -372,13 +372,30 @@ public class Game implements RoundObserver{
      * @throws IllegalArgumentException when the index does not correspond to an existing card
      */
     public void playCard(int idxCard){
-        AssistantCard cardPlayed;
         try{
-            cardPlayed = getCurrentPlayer().playCard(idxCard);
+            getCurrentPlayer().playCard(idxCard);
         }catch (IllegalArgumentException e){
             throw new IllegalArgumentException(e.getMessage());
         }
+    }
+
+    /**
+     * This method is used every time a player has to move mother nature. It set the maximum
+     * number of island mother nature can travel
+     */
+    protected void setMovesMotherNature(){
+        AssistantCard cardPlayed = getCurrentPlayer().viewLastCard();
         setMaxMovement(cardPlayed.getMovement());
+    }
+
+    /**
+     * This method is used every time a player ends his turn. When the turn is an action, it sets the maximum number
+     * of island mother nature can travel. After this method, motherMovement() can be invoked
+     */
+    public void nextTurn(){
+        round.nextTurn();
+        if(! round.isPlanning())
+            setMovesMotherNature();
     }
 
     //TODO TO BE TESTED

@@ -16,6 +16,7 @@ public class ExpertGame extends Game implements PseudoMotherNature, IncrementMax
     private int coinBank;
     private ArrayList<ExpertCard> expertCards;
     private int banTile = 4;
+    private boolean cardHasBeenPlayed;//one player can play only one card in his turn
 
     /**
      * This constructor adds coins and expert Cards
@@ -24,6 +25,7 @@ public class ExpertGame extends Game implements PseudoMotherNature, IncrementMax
      */
     public ExpertGame(String nickPlayer, int numGamePlayers){
         super(nickPlayer, numGamePlayers);
+        cardHasBeenPlayed = false;
     }
 
     @Override
@@ -65,6 +67,14 @@ public class ExpertGame extends Game implements PseudoMotherNature, IncrementMax
     }
 
     /**
+     *
+     * @return true if an ExpertCard has been played, false otherwise
+     */
+    public boolean CardHasBeenPlayed() {
+        return cardHasBeenPlayed;
+    }
+
+    /**
      * This method initializes the coinBank
      */
     private void initBank(){
@@ -102,9 +112,50 @@ public class ExpertGame extends Game implements PseudoMotherNature, IncrementMax
         }
     }
 
+    /**
+     * This method is invoked by the current player to move a single student from its entrance to its hall.
+     * When the move is made, if the player does not have the professor of the specified color and has the most students
+     * of that color among all the players, then he gets the professor.
+     * If a player gains some coins, they will be removed from the coins reserve  as long as it has them. If the coin reserve does not contain enough coins,
+     * the player should discard them.
+     * @param colorStudentToBeMoved color of the student to be moved
+     * @throws IllegalArgumentException when a player does not have a student of the specified color
+     * in his board's entrance
+     * @throws IllegalStateException when the hall of a board cannot accept a student of the specified color
+     */
+    public void entranceToHall(Color colorStudentToBeMoved){
+        Board currentPlayerBoard = getCurrentPlayer().getBoard();
+
+        if( ! currentPlayerBoard.studentInEntrance(colorStudentToBeMoved))
+            throw new IllegalArgumentException("The current player does not have a student for the specified color");
+
+        if(!currentPlayerBoard.hallIsFillable(colorStudentToBeMoved))
+            throw new IllegalStateException("The hall cannot accept a student of the specified color");
+
+        int oldNumCoin = currentPlayerBoard.getNumCoin();
+        currentPlayerBoard.entranceToHall(colorStudentToBeMoved);
+        int newNumCoin = currentPlayerBoard.getNumCoin();
+
+        //coin management
+        if(newNumCoin - oldNumCoin > 0){
+            if(coinBank > 0)
+                --coinBank;
+            else
+                currentPlayerBoard.removeCoin(1);
+        }
+
+        //assignment of the professor
+        if(!currentPlayerBoard.hasProfessor(colorStudentToBeMoved) && hasMaxStudents(colorStudentToBeMoved)){
+            takeBackProfessor(colorStudentToBeMoved);
+            currentPlayerBoard.addProfessor(colorStudentToBeMoved);
+        }
+
+    }
+
     //TODO to be tested
     /**
-     * This method is called by the controller to activate the effect of a card, identified by an index
+     * This method is called by the controller to activate the effect of a card, identified by an index.
+     * it also sets cardHasBeenPlayed to true
      * @param indexCard Represent a character card of the effect to activate
      * @throws IllegalArgumentException When the effect of a card involving a non-existent student is activated
      * @throws IllegalArgumentException If a card corresponding to the provided index does not exist
@@ -118,9 +169,24 @@ public class ExpertGame extends Game implements PseudoMotherNature, IncrementMax
             if(getCurrentPlayer().getBoard().hasCoin(cardCost)) {
                 expertCards.get(indexCard).effect();
                 getCurrentPlayer().getBoard().removeCoin(cardCost);
+                coinBank += cardCost;
+                cardHasBeenPlayed = true;
             }
             else
                 throw new IllegalCallerException("Current player does not have enough coin to activate this card");
+    }
+
+    /**
+     * This method is used every time a player ends his turn. When the turn is an action, it sets the maximum number
+     * of island mother nature can travel and sets cardHasBeenPlayed to false. After this method, motherMovement() can be invoked
+     */
+    @Override
+    public void nextTurn(){
+        round.nextTurn();
+        if(! round.isPlanning()) {
+            setMovesMotherNature();
+            cardHasBeenPlayed = false;
+        }
     }
 
     /**
