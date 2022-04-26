@@ -34,10 +34,7 @@ public abstract class ExpertCard {
         return played;
     }
 
-    /**
-     * Change the island where the player wants the effect to be activated
-     * @param index of the island
-     */
+   //this methods are just for static type purpose
     public void changeIslandIndex(int index){}
 
     public void setStudentColorInEntrance(Color studentColorInEntrance){}

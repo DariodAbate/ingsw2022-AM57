@@ -736,4 +736,19 @@ class ExpertGameTest {
         assertThrows(IllegalStateException.class,
                 g::addBanTile);
     }
+
+    /**
+     * This method test the IncrementMaxMovementCard
+     */
+    @DisplayName("Increment Max Movement Card")
+    @Test
+    void IncrementMaxMovementCard(){
+        setupFullPlayer();
+        g.startGame();
+        IncrementMaxMovementCard card = new IncrementMaxMovementCard(g);
+        g.setMaxMovement(3);
+        card.effect();
+        assertEquals(5, g.getMaxMovement());
+    }
+
 }
