@@ -1,14 +1,20 @@
 package it.polimi.ingsw.model.expertGame;
 
-//TODO vedere logica con cui l' influenza viene calcolata = 0
 public class BannedIslandCard extends ExpertCard {
     private final BannedIsland game;
-    private final int islandIndex;
+    private int islandIndex;
 
-    public BannedIslandCard(int islandIndex, BannedIsland game) {
+    public BannedIslandCard (BannedIsland game) {
         super(2);
-        this.islandIndex = islandIndex;
         this.game = game;
+    }
+
+    public void setIslandIndex(int islandIndex) {
+        this.islandIndex = islandIndex;
+    }
+
+    public int getIslandIndex() {
+        return this.islandIndex;
     }
 
     @Override

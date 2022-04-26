@@ -20,11 +20,13 @@ public class Round {
     private Player currentTurn;
     private boolean isPlanning;
     private boolean isEnding;
+
     /**
      * Constructor of the class. Given the Arraylist of the players that are playing it
      * initializes the actionPhaseOrder list and the planningPhaseOrder list equal to the given
      * parameter list. The constructor also initialize the boolean value isPlanning to true
      * because each game will start from this phase.
+     *
      * @param players is the list of player that are actually playing the game
      */
     public Round(ArrayList<Player> players) {
@@ -33,12 +35,12 @@ public class Round {
         actionPhaseOrder = new ArrayList<>(players);
         planningPhaseOrder = new ArrayList<>(players);
         isPlanning = true;
-        // Add RNG to pick the first player TODO
         currentTurn = players.get(0);
     }
 
     /**
      * Gets the round number indicating how many rounds the game has had so far.
+     *
      * @return the round number
      */
     public int getRoundNumber() {
@@ -48,6 +50,7 @@ public class Round {
     /**
      * Gets the list of the players during the planning phase calculated in accord
      * to the game's rules.
+     *
      * @return the list of players during the planning phase.
      */
     public ArrayList<Player> getPlanningPhaseOrder() {
@@ -60,6 +63,7 @@ public class Round {
     /**
      * Gets the list of the players during the action phase calculated in accord
      * to the game's rules.
+     *
      * @return the list of the players during the action phase.
      */
     public ArrayList<Player> getActionPhaseOrder() {
@@ -89,7 +93,7 @@ public class Round {
             planningPhaseOrder.add(playersCopy.get((firstPlayerIndex + 1) % 3));
             planningPhaseOrder.add(playersCopy.get((firstPlayerIndex + 2) % 3));
         }
-        if(playersCopy.size() == 2) {
+        if (playersCopy.size() == 2) {
             planningPhaseOrder.add(playersCopy.get((firstPlayerIndex + 1) % 2));
         }
         currentTurn = planningPhaseOrder.get(0);
@@ -101,8 +105,7 @@ public class Round {
      * priority card. The method also set the boolean variable isPlanning to false that
      * indicates the beginning of the action phase.
      */
-    // Case of same priority card to be added
-    //TODO Change logic
+    //TODO Case of same priority card to be added
     public void setActionPhaseOrder() {
         actionPhaseOrder.sort(Comparator.comparingInt(player -> player.viewLastCard().getPriority()));
         currentTurn = actionPhaseOrder.get(0);
@@ -111,6 +114,7 @@ public class Round {
 
     /**
      * Gets the current player.
+     *
      * @return the reference to the current player
      */
     public Player getCurrentPlayer() {
@@ -121,32 +125,33 @@ public class Round {
      * Private method that calculate the currentTurn player index inside the
      * planning phase list or inside the action phase list depending on which phase
      * the game is.
+     *
      * @return the index of the currentTurn player inside the planningPhaseOrder list
      * or actionPhaseOrder list
      */
-    private int getCurrentPlayerIndex(){
-     if (isPlanning)
-         return planningPhaseOrder.indexOf(currentTurn);
-     else
-         return actionPhaseOrder.indexOf(currentTurn);
+    public int getCurrentPlayerIndex() {
+        if (isPlanning)
+            return planningPhaseOrder.indexOf(currentTurn);
+        else
+            return actionPhaseOrder.indexOf(currentTurn);
     }
 
     /**
      * This method modify the current player and indicates the start of a new turn.
      */
     public void nextTurn() {
-
-        /*  TODO
-         if (!planningIterator.hasNext())
-             setActionPhaseOrder();
-         if (!actionIterator.hasNext())
-             nextRound();
-         planningIterator.next();
-         actionIterator.next();
-        */
+        if (isPlanning && (getCurrentPlayerIndex() == (playersCopy.size() - 1))) {
+            setActionPhaseOrder();
+            return;
+        }
+        if (!isPlanning && (getCurrentPlayerIndex() == (playersCopy.size() - 1))) {
+            nextRound();
+            return;
+        }
         if (isPlanning) {
             currentTurn = planningPhaseOrder.get(getCurrentPlayerIndex() + 1);
-        } else {
+        }
+        if (!isPlanning) {
             currentTurn = actionPhaseOrder.get(getCurrentPlayerIndex() + 1);
         }
     }
@@ -156,23 +161,27 @@ public class Round {
      * isPlanning to true which indicates the beginning of a new
      * planning phase.
      */
-    public void nextRound() {
-        if(isEnding){ //if isEnding is true, calls the end of the game
+    public void nextRound () {
+        if (isEnding) { //if isEnding is true, calls the end of the game
             //endgame();
             return;
         }
         roundNumber += 1;
-        isPlanning = true;
-        setPlanningPhaseOrder();
+            isPlanning = true;
+            setPlanningPhaseOrder();
     }
 
     //@author Lorenzo Corrado
-    public void setIsEnding(boolean isEnding) { //this method sets a condition for the endgame
-         this.isEnding = isEnding;
+    public void setIsEnding ( boolean isEnding){ //this method sets a condition for the endgame
+        this.isEnding = isEnding;
     }
 
-    public void setCurrentTurn(Player player){
+    public void setCurrentTurn (Player player){
         currentTurn = player;
+    } //FIXME
+
+    public boolean isRoundEnding () {
+        return !isPlanning && (getCurrentPlayerIndex() == playersCopy.size() - 1);
     }
 }
 

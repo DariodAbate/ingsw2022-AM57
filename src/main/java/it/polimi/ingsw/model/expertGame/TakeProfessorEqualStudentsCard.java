@@ -22,7 +22,7 @@ public class TakeProfessorEqualStudentsCard  extends ExpertCard{
      * player currently controlling them
      */
     @Override
-    public void effect() throws NotExistingStudentException {
+    public void effect(){
         if(!isPlayed()){
             played = true;
             price += 1;

@@ -1,7 +1,5 @@
 package it.polimi.ingsw.model;
 
-import it.polimi.ingsw.model.expertGame.NotExistingStudentException;
-import it.polimi.ingsw.model.statePattern.HallFullException;
 import it.polimi.ingsw.model.statePattern.InfluenceCalculator;
 import it.polimi.ingsw.model.statePattern.StandardCalculator;
 import it.polimi.ingsw.model.constantFactory.*;
@@ -283,17 +281,18 @@ public class Game implements RoundObserver{
      * When the move is made, if the player does not have the professor of the specified color and has the most students
      * of that color among all the players, then he gets the professor
      * @param colorStudentToBeMoved color of the student to be moved
-     * @throws NotExistingStudentException when a player does not have a student of the specified color
+     * @throws IllegalArgumentException when a player does not have a student of the specified color
      * in his board's entrance
+     * @throws IllegalStateException when the hall of a board cannot accept a student of the specified color
      */
-    public void entranceToHall(Color colorStudentToBeMoved) throws NotExistingStudentException, HallFullException {
+    public void entranceToHall(Color colorStudentToBeMoved){
         Board currentPlayerBoard = getCurrentPlayer().getBoard();
 
         if( ! currentPlayerBoard.studentInEntrance(colorStudentToBeMoved))
-            throw new NotExistingStudentException("The current player does not have a student for the specified color");
+            throw new IllegalArgumentException("The current player does not have a student for the specified color");
 
         if(!currentPlayerBoard.hallIsFillable(colorStudentToBeMoved))
-            throw new HallFullException("The hall cannot accept a student of the specified color");
+            throw new IllegalStateException("The hall cannot accept a student of the specified color");
         currentPlayerBoard.entranceToHall(colorStudentToBeMoved);
 
         //assignment of the professor
@@ -351,19 +350,35 @@ public class Game implements RoundObserver{
      * @param idxChosenIsland index of the island to which the student will be moved
      * @throws IndexOutOfBoundsException when it is passed an index which does not have a
      * corresponding island tile in the archipelago arrayList
-     * @throws NotExistingStudentException when a player does not have a student of the specified color
+     * @throws IllegalArgumentException when a player does not have a student of the specified color
      * in his board's entrance
      */
-    public void entranceToIsland(int idxChosenIsland, Color colorStudentToBeMoved) throws NotExistingStudentException{
+    public void entranceToIsland(int idxChosenIsland, Color colorStudentToBeMoved){
         if(idxChosenIsland < 0 || idxChosenIsland > archipelago.size())
             throw new IndexOutOfBoundsException("The specified island tile does not exist");
 
         Board currentPlayerBoard = getCurrentPlayer().getBoard();
         if( ! currentPlayerBoard.studentInEntrance(colorStudentToBeMoved))
-            throw new NotExistingStudentException("The current player does not have a student for the specified color");
+            throw new IllegalArgumentException("The current player does not have a student for the specified color");
 
         currentPlayerBoard.removeStudentFromEntrance(colorStudentToBeMoved);
         archipelago.get(idxChosenIsland).add(colorStudentToBeMoved);
+    }
+
+    /**
+     * Thi method is called when the current player have to play a card. It also sets the maximum
+     * number of island mother movement can travel.
+     * @param idxCard Index of the card chosen by the player
+     * @throws IllegalArgumentException when the index does not correspond to an existing card
+     */
+    public void playCard(int idxCard){
+        AssistantCard cardPlayed;
+        try{
+            cardPlayed = getCurrentPlayer().playCard(idxCard);
+        }catch (IllegalArgumentException e){
+            throw new IllegalArgumentException(e.getMessage());
+        }
+        setMaxMovement(cardPlayed.getMovement());
     }
 
     //TODO TO BE TESTED
