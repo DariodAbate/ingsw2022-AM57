@@ -3,7 +3,7 @@ package it.polimi.ingsw.model;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.Iterator;
+import java.util.concurrent.ThreadLocalRandom;
 
 /**
  * The Round class incorporates the management of the different planning and action
@@ -26,7 +26,6 @@ public class Round {
      * initializes the actionPhaseOrder list and the planningPhaseOrder list equal to the given
      * parameter list. The constructor also initialize the boolean value isPlanning to true
      * because each game will start from this phase.
-     *
      * @param players is the list of player that are actually playing the game
      */
     public Round(ArrayList<Player> players) {
@@ -35,12 +34,11 @@ public class Round {
         actionPhaseOrder = new ArrayList<>(players);
         planningPhaseOrder = new ArrayList<>(players);
         isPlanning = true;
-        currentTurn = players.get(0);
+        setRandomStartPlayer();
     }
 
     /**
      * Gets the round number indicating how many rounds the game has had so far.
-     *
      * @return the round number
      */
     public int getRoundNumber() {
@@ -50,7 +48,6 @@ public class Round {
     /**
      * Gets the list of the players during the planning phase calculated in accord
      * to the game's rules.
-     *
      * @return the list of players during the planning phase.
      */
     public ArrayList<Player> getPlanningPhaseOrder() {
@@ -63,7 +60,6 @@ public class Round {
     /**
      * Gets the list of the players during the action phase calculated in accord
      * to the game's rules.
-     *
      * @return the list of the players during the action phase.
      */
     public ArrayList<Player> getActionPhaseOrder() {
@@ -74,6 +70,29 @@ public class Round {
     }
 
     /**
+     * This method sets the first random player and build the first planning phase order list
+     */
+    public void setRandomStartPlayer() {
+        Player firstPlayer;
+        int randomNum;
+        planningPhaseOrder.removeAll(playersCopy);
+        if (playersCopy.size() == 3) {
+            randomNum = ThreadLocalRandom.current().nextInt(0, 3);
+            firstPlayer = playersCopy.get(randomNum);
+            planningPhaseOrder.add(firstPlayer);
+            int firstPlayerIndex = playersCopy.indexOf(firstPlayer);
+            planningPhaseOrder.add(playersCopy.get((firstPlayerIndex + 1) % 3));
+            planningPhaseOrder.add(playersCopy.get((firstPlayerIndex + 2) % 3));
+        }
+        if (playersCopy.size() == 2) {
+            randomNum = ThreadLocalRandom.current().nextInt(0,2);
+            firstPlayer = playersCopy.get(randomNum);
+            int firstPlayerIndex = playersCopy.indexOf(firstPlayer);
+            planningPhaseOrder.add(playersCopy.get((firstPlayerIndex + 1) % 2));
+        }
+        currentTurn = planningPhaseOrder.get(0);
+    }
+    /**
      * This method set the planning phase list of players. At the beginning all element of
      * the previous planning list are removed. Then the variable firstPlayer is initialized
      * with the player that has played the card with the lower priority and finally the other players
@@ -82,11 +101,11 @@ public class Round {
     public void setPlanningPhaseOrder() {
         planningPhaseOrder.removeAll(playersCopy);
         Player firstPlayer = Collections.min(playersCopy, (player1, player2) -> {
-            if (player1.viewLastCard().getPriority() < player2.viewLastCard().getPriority())
-                return -1;
-            else
-                return 1;
-        });
+                if (player1.viewLastCard().getPriority() < player2.viewLastCard().getPriority())
+                    return -1;
+                else
+                    return 1;
+            });
         planningPhaseOrder.add(firstPlayer);
         int firstPlayerIndex = playersCopy.indexOf(firstPlayer);
         if (playersCopy.size() == 3) {
@@ -114,7 +133,6 @@ public class Round {
 
     /**
      * Gets the current player.
-     *
      * @return the reference to the current player
      */
     public Player getCurrentPlayer() {
@@ -125,7 +143,6 @@ public class Round {
      * Private method that calculate the currentTurn player index inside the
      * planning phase list or inside the action phase list depending on which phase
      * the game is.
-     *
      * @return the index of the currentTurn player inside the planningPhaseOrder list
      * or actionPhaseOrder list
      */
@@ -188,7 +205,7 @@ public class Round {
     }
 
     /**
-     * @return true if the current turn a planning turn, false is the current turn is an action turn
+     * @return true if the current turn is a planning turn, false is the current turn is an action turn
      */
     public boolean isPlanning() {
         return  isPlanning;
