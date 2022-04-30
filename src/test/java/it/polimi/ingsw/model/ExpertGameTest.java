@@ -586,23 +586,24 @@ class ExpertGameTest {
     @Test
     void SwapTwoStudentsTest() {
         SwapStudentsCard card = new SwapStudentsCard(g);
+        setupFullPlayer();
         g.initRound();
-        g.getPlayers().get(0).getBoard().fillEntrance(Color.PINK);
-        g.getPlayers().get(0).getBoard().fillEntrance(Color.BLUE);
-        g.getPlayers().get(0).getBoard().fillEntrance(Color.RED);
-        g.getPlayers().get(0).getBoard().fillEntrance(Color.YELLOW);
-        g.getPlayers().get(0).getBoard().entranceToHall(Color.PINK);
-        g.getPlayers().get(0).getBoard().entranceToHall(Color.BLUE);
+        g.getCurrentPlayer().getBoard().fillEntrance(Color.PINK);
+        g.getCurrentPlayer().getBoard().fillEntrance(Color.BLUE);
+        g.getCurrentPlayer().getBoard().fillEntrance(Color.RED);
+        g.getCurrentPlayer().getBoard().fillEntrance(Color.YELLOW);
+        g.getCurrentPlayer().getBoard().entranceToHall(Color.PINK);
+        g.getCurrentPlayer().getBoard().entranceToHall(Color.BLUE);
         card.setNumOfStudentsToMove(2);
         card.setStudent1InEntranceColor(Color.YELLOW);
         card.setStudent2InEntranceColor(Color.RED);
         card.setStudent1InHallColor(Color.PINK);
         card.setStudent2InHallColor(Color.BLUE);
         card.effect();
-        assertEquals(1 ,g.getPlayers().get(0).getBoard().hallSize(Color.RED));
-        assertEquals(1,g.getPlayers().get(0).getBoard().hallSize(Color.YELLOW));
-        assertEquals(0,g.getPlayers().get(0).getBoard().hallSize(Color.BLUE));
-        assertEquals(0, g.getPlayers().get(0).getBoard().hallSize(Color.PINK));
+        assertEquals(1 ,g.getCurrentPlayer().getBoard().hallSize(Color.RED));
+        assertEquals(1,g.getCurrentPlayer().getBoard().hallSize(Color.YELLOW));
+        assertEquals(0,g.getCurrentPlayer().getBoard().hallSize(Color.BLUE));
+        assertEquals(0, g.getCurrentPlayer().getBoard().hallSize(Color.PINK));
     }
 
     /**
@@ -615,9 +616,9 @@ class ExpertGameTest {
         SwapStudentsCard card = new SwapStudentsCard(g);
         setupFullPlayer();
         g.initRound();
-        g.getPlayers().get(0).getBoard().fillEntrance(Color.BLUE);
-        g.getPlayers().get(0).getBoard().fillEntrance(Color.RED);
-        g.getPlayers().get(0).getBoard().entranceToHall(Color.RED);
+        g.getCurrentPlayer().getBoard().fillEntrance(Color.BLUE);
+        g.getCurrentPlayer().getBoard().fillEntrance(Color.RED);
+        g.getCurrentPlayer().getBoard().entranceToHall(Color.RED);
         card.setNumOfStudentsToMove(1);
         card.setStudent1InEntranceColor(Color.BLUE);
         card.setStudent1InHallColor(Color.RED);
