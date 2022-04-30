@@ -169,14 +169,11 @@ class RoundTest {
         players.add(p1);
         players.add(p2);
         players.add(p3);
-        r = new Round(players);        //Planning order = 123
-        assertEquals(1, r.getCurrentPlayer().getId());
+        r = new Round(players);        //Planning order = random first player
         p1.playCard(5);
         r.nextTurn();
-        assertEquals(2, r.getCurrentPlayer().getId());
         p2.playCard(0);
         r.nextTurn();
-        assertEquals(3, r.getCurrentPlayer().getId());
         p3.playCard(8);
         r.nextTurn();                 //Action order = 213
         assertEquals(2, r.getCurrentPlayer().getId());
@@ -189,9 +186,18 @@ class RoundTest {
         //New round, Planning order = 231
         assertEquals(1, r.getRoundNumber());
         assertEquals(2, r.getCurrentPlayer().getId());
+        p2.playCard(4);
+        r.nextTurn();
+        assertEquals(3, r.getCurrentPlayer().getId());
+        p3.playCard(2);
+        r.nextTurn();
+        assertEquals(1, r.getCurrentPlayer().getId());
+        p1.playCard(0);
+        r.nextTurn();                  //Action order = 132
+        assertEquals(1, r.getCurrentPlayer().getId());
         r.nextTurn();
         assertEquals(3, r.getCurrentPlayer().getId());
         r.nextTurn();
-        assertEquals(1, r.getCurrentPlayer().getId());
+        assertEquals(2, r.getCurrentPlayer().getId());
     }
 }
