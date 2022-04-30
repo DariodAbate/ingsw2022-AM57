@@ -235,7 +235,6 @@ public class Board {
         };
     }
 
-    //TODO Test
     /**
      * This method moves a student from hall to entrance if the movement can be done, otherwise
      * entrance and hall are unchanged. This method is used in the expert game mode

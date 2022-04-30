@@ -114,7 +114,6 @@ public class Player{
         return new AssistantCard(discardCard.getPriority(), discardCard.getMovement());
     }
 
-
     /**
      * Gets a reference to the player's board.
      * @return the player's board
@@ -122,7 +121,6 @@ public class Player{
     public Board getBoard() {
         return board;
     }
-
 }
 
 

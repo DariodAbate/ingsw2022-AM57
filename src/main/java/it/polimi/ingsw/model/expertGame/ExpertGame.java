@@ -306,7 +306,6 @@ public class ExpertGame extends Game implements PseudoMotherNature, IncrementMax
      * This method represent the action of putting the ban tile of the ban card on a selected island
      * @param islandIndex is the index of the selected island to ban
      */
-    //TODO make an exception when the ban cards are finished
     @Override
     public void banIsland(int islandIndex) {
         if(banTile > 0)
