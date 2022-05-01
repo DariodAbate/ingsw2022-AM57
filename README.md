@@ -8,11 +8,11 @@
 |:--------------------------------|:--------------------------------------------------:|
 | Basic rules                     | 🟡 |
 | Complete rules                  | 🟡 |
-| Socket                          | 🔴 |
+| Socket                          | 🟡 |
 | GUI                             | 🔴 |
 | CLI                             | 🔴 |
 | Character cards                 | 🟡 |
-| Multiple games                  | 🔴 |
+| Multiple games                  | 🟡 |
 | Persistence                     | 🔴 |
 | Resilience to disconnections    | 🔴 |
 
