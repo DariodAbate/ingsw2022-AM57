@@ -24,9 +24,9 @@ public class EchoClient {
                 BufferedReader in = new BufferedReader(new InputStreamReader(echoSocket.getInputStream()));
                 BufferedReader stdIn = new BufferedReader(new InputStreamReader(System.in))
         ) {
-            String userInput;
-            while ((userInput = stdIn.readLine()) != null) {
-                out.println(userInput);
+            String userInput = "";
+            while (true) {
+                out.println(" ");
                 System.out.println(in.readLine());
                 if(userInput.equals("quit")){
                     System.out.println("Connection closed");

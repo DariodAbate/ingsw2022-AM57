@@ -8,6 +8,7 @@ import java.util.Scanner;
 public class EchoServerClientHandler implements Runnable {
     private MultiEchoServer server;
     private Socket socket;
+    private PrintWriter out;
 
     public EchoServerClientHandler(MultiEchoServer server, Socket socket) {
         this.server = server;
@@ -17,8 +18,8 @@ public class EchoServerClientHandler implements Runnable {
     public void run() {
         try{
             Scanner in = new Scanner(socket.getInputStream());
-            PrintWriter out = new PrintWriter(socket.getOutputStream());
-
+            out = new PrintWriter(socket.getOutputStream());
+            server.lobby(this);
 
            // playerSetup(in, out);
 
@@ -28,7 +29,6 @@ public class EchoServerClientHandler implements Runnable {
                 if (line.equals("quit")) {
                     break;
                 } else {
-                    out.println("Received: " + line);
                     out.flush();
                 }
             }
@@ -38,6 +38,9 @@ public class EchoServerClientHandler implements Runnable {
             socket.close();
         } catch (IOException e) {
             System.err.println(e.getMessage());
+        }
+        catch( InterruptedException e1){
+
         }
     }
 
@@ -56,7 +59,10 @@ public class EchoServerClientHandler implements Runnable {
 
     }
 
-
+*/
+    public void sendMessage(String message){
+        out.println(message);
+    }
     private void setPlayer(String numPlayer){
         try {
             int num = Integer.parseInt(numPlayer);
@@ -67,6 +73,6 @@ public class EchoServerClientHandler implements Runnable {
         }
     }
 
-     */
+
 
 }

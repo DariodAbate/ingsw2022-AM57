@@ -1,5 +1,7 @@
 package it.polimi.ingsw.server;
 
+import java.util.ArrayList;
+import java.util.Map;
 import java.util.Scanner;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -15,14 +17,16 @@ public class MultiEchoServer {
     private SocketServer socketServer;
 
     //TODO gestione lobby
-    /*
+
     private Map<Integer, EchoServerClientHandler> connectionQueue;
     private int nextId;
     private GameHandler currentGame = null;
     private int requiredPlayer;
+    /** List of clients waiting in the lobby. */
+    private final ArrayList<EchoServerClientHandler> waiting = new ArrayList<>();
 
 
-     */
+
 
     /**
      * Constructor of the class that creates a socketServer Object and a thread that
@@ -49,7 +53,7 @@ public class MultiEchoServer {
     public void stopServer(){
         Scanner scanner = new Scanner(System.in);
         while(true){
-            if(scanner.next().equalsIgnoreCase("Close")){
+            if(scanner.next().equalsIgnoreCase("quit")){
                 socketServer.setOperating(false);
                 System.exit(0);
                 break;
@@ -101,12 +105,26 @@ public class MultiEchoServer {
         executor.shutdown();
     }
 
-
-    public void setRequiredPlayer(int numPlayer){
+*/
+    public void setRequiredPlayer(int numPlayer){ //TODO OUTOFBOUNDEXCEPTION
         this.requiredPlayer = numPlayer;
         currentGame = new GameHandler(numPlayer);
     }
-    */
+
+    public synchronized void lobby(EchoServerClientHandler c) throws InterruptedException {
+        waiting.add(c);
+        if (waiting.size() == 1) {
+            c.sendMessage("Sei il primo giocatore");
+            setRequiredPlayer(3);
+        } else if (waiting.size() == requiredPlayer) {
+            c.sendMessage("Giocatori pieni, inizio partita pirupiru");
+        } else {
+            c.sendMessage("NON sei il primo giocatore");
+
+        }
+    }
+
+
 
 
     /**
