@@ -1,4 +1,4 @@
-package it.polimi.ingsw.server;
+package network.server;
 
 import java.io.IOException;
 import java.net.ServerSocket;
@@ -13,7 +13,7 @@ import java.util.concurrent.Executors;
  * @author Dario d'Abate
  */
 public class SocketServer implements Runnable{
-    private MultiEchoServer server;
+    private MultiServer server;
     private final int port;
     private final ExecutorService executor;
     private volatile boolean operating; // becomes visible to all readers when written
@@ -23,7 +23,7 @@ public class SocketServer implements Runnable{
      * @param server is the type of the Server object
      * @param port port on which the server will accept connections
      */
-    public SocketServer(MultiEchoServer server, int port){
+    public SocketServer(MultiServer server, int port){
         this.server = server;
         this.port = port;
         executor =  Executors.newCachedThreadPool();
@@ -44,9 +44,8 @@ public class SocketServer implements Runnable{
         while(operating){
             try{
                 Socket socket = serverSocket.accept();
-                EchoServerClientHandler clientHandler = new EchoServerClientHandler(server, socket);
+                ServerClientHandler clientHandler = new ServerClientHandler(server, socket);
                 executor.submit(clientHandler);
-
             }catch(IOException e){
                 System.out.println("Error." + e.getMessage());
             }
@@ -61,7 +60,7 @@ public class SocketServer implements Runnable{
         try{
             ServerSocket serverSocket = new ServerSocket(port);
             System.out.println("Server socket started. Listening on port " + port);
-            System.out.println("Type \"quit\" to exit");
+            System.out.println("Type \"close\" to exit");
             acceptConnections(serverSocket);
         }catch(IOException e){
             System.out.println("Error in initialization");

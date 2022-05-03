@@ -1,10 +1,8 @@
-package it.polimi.ingsw.server;
+package network.server;
 
-import java.util.ArrayList;
-
+//tutto synchrionized
 public class GameHandler {
     private final int numPlayer;
-    private ArrayList<int> playersConnections;
     public GameHandler(int numPlayer) {
         this.numPlayer = numPlayer;
     }

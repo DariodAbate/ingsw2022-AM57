@@ -1,4 +1,4 @@
-package it.polimi.ingsw.messages;
+package network.server.messages;
 /**
  * This class is a message client to server that setups connection for the player with provided nickname.
  *
