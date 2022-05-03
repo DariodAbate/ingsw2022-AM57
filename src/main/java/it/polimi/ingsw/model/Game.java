@@ -422,7 +422,7 @@ public class Game implements RoundObserver{
         round.nextTurn();
         if(! round.isPlanning())
             setMovesMotherNature();
-        if(round.isRoundEnding())
+        if(round.isPlanningStart())
             setGameState(GameState.PLANNING_STATE); // after the last turn in the action phase, the game passes to planning state
         else
             setGameState(GameState.MOVING_STUDENT_STATE);// after a player that's not the last  has completed the action phase, the next player should play

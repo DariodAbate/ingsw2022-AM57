@@ -189,7 +189,7 @@ public class ExpertGame extends Game implements PseudoMotherNature, IncrementMax
             setMovesMotherNature();
             cardHasBeenPlayed = false;
         }
-        if(round.isRoundEnding())
+        if(round.isPlanningStart())
             setGameState(GameState.PLANNING_STATE);
         else
             setGameState(GameState.MOVING_STUDENT_STATE);
