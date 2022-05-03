@@ -1,4 +1,4 @@
-package it.polimi.ingsw.messages;
+package network.server.messages;
 
 /**
  *  This class is a message client to server that provides the number of players chosen by the first player
