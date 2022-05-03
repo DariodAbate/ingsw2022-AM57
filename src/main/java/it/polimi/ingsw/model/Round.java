@@ -204,6 +204,10 @@ public class Round {
         return !isPlanning && (getCurrentPlayerIndex() == playersCopy.size() - 1);
     }
 
+    public boolean isPlanningStart() {
+        return isPlanning && (getCurrentPlayerIndex() == 0);
+    }
+
     /**
      * @return true if the current turn is a planning turn, false is the current turn is an action turn
      */
