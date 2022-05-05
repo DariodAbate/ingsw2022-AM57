@@ -18,10 +18,7 @@ import java.util.concurrent.Executors;
  * @author Dario d'Abate
  */
 public class MultiServer {
-    private int port;
     private SocketServer socketServer;
-
-    //TODO gestione lobby
 
     private Map<Integer, String> loggedPlayersByNickname;
     private Map<Integer, ServerClientHandler> loggedPlayersByConnection;
@@ -42,9 +39,8 @@ public class MultiServer {
      * @param port port number on which the server will listen
      */
     public MultiServer(int port) {
-        this.port = port;
         socketServer = new SocketServer(this, port);
-        Thread thread = new Thread(() -> stopServer()); //thread that listen for quitting
+        Thread thread = new Thread(this::stopServer); //thread that listen for quitting
         thread.start();
         connectionList = new ArrayList<>();
 
@@ -123,38 +119,19 @@ public class MultiServer {
         connectionList.add(clientHandler);
 
         if (connectionList.size() == 1) {
-            clientHandler.sendMessageToClient("You are the first player; Please choose a number of players.");//non posso mettere due send
-            boolean isNumber = false;
-            while(!isNumber) {
-                Message msg = clientHandler.readMessageFromClient();
-                if(msg instanceof GenericMessage) {
-
-                    String temp = ((GenericMessage) msg).getMessage();
-                        if (!(isNumber = setRequiredPlayer(temp))) {
-                            clientHandler.sendMessageToClient("Please choose a valid number of players.");
-
-                        } else
-                            clientHandler.sendMessageToClient("Number of players inserted: " + temp);
-                    //TODO new game
-                    //TODO pulisci coda di connessione dopo averla passata a game
-                    //TODO pulisci mappa che coneneve ale connessioni passate a game
-                }
-            }
-
-        } else if (connectionList.size() == requiredPlayer) {
-            broadcastMessage("Number of players reached. Starting a new game.");
             selectNumPlayer(clientHandler);
             selectGameMode(clientHandler);
-            currentGame.setup();
         } else if (connectionList.size() == requiredPlayer) {
             broadcastMessage("Number of players reached. Starting a new game.");
-            //TODO new game
-            //TODO pulisci coda di connessione dopo averla passata a game
-            GameHandler gameHandler = new GameHandler(requiredPlayer, /*TODO*/true, new ArrayList<>(connectionList));
-            //TODO pulisci mappa che conteneva le connessioni passate a game
+
+            currentGame = new GameHandler(requiredPlayer, expertMode, new ArrayList<>(connectionList));
+            currentGame.setup();
+            //passare la reference di gamehandler ai socket
+
             connectionList.clear();
             requiredPlayer = 0;
             expertMode = false;
+            currentGame = null;
         } else {
             clientHandler.sendMessageToClient("Wait for " + (this.requiredPlayer - connectionList.size()) + "players to join.");
         }
@@ -189,7 +166,7 @@ public class MultiServer {
     }
 
     private void selectNumPlayer(ServerClientHandler clientHandler) throws IOException, ClassNotFoundException {
-        clientHandler.sendMessageToClient("You are the first player; Please choose a number of players.");//non posso mettere due send
+        clientHandler.sendMessageToClient("You are the first player; Please choose a number of players.");
         boolean isNumber = false;
         while(!isNumber) {
             Message msg = clientHandler.readMessageFromClient();

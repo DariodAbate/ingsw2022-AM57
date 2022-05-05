@@ -32,7 +32,7 @@ public class Client {
 
         //THE CLIENT MUST SEND A MESSAGE AS FIRST THING
         System.out.println("Type \"?\" to show commands");
-        Thread inServer = new Thread(() -> printServerMessage());
+        Thread inServer = new Thread(this::printServerMessage);
         inServer.start();
 
         String userInput;
