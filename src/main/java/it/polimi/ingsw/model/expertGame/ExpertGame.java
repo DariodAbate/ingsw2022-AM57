@@ -49,14 +49,6 @@ public class ExpertGame extends Game implements PseudoMotherNature, IncrementMax
         //initialize clouds
         initClouds();
 
-        // FIXME choose tower color for each player
-        //Now a player cannot choose
-        associatePlayerToTower();
-
-        /* FIXME choose cardBack for each player */
-        // Now a player cannot choose
-        associatePlayerToCardBack();
-
         //fill entrance for each player's board
         initEntrancePlayers();
 

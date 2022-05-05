@@ -18,6 +18,7 @@ public class ServerClientHandler implements Runnable {
     private Socket socket;
     private ObjectOutputStream out;
     private ObjectInputStream in;
+    private String nickname;
 
     /**
      * Constructor of the class
@@ -104,4 +105,15 @@ public class ServerClientHandler implements Runnable {
         }
     }
 
+    public void setNickname(String nickname) {
+        this.nickname = nickname;
+    }
+
+    public String getNickname() {
+        return nickname;
+    }
+
+    public ObjectInputStream getIn() {
+        return in;
+    }
 }

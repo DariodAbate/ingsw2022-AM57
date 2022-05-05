@@ -99,6 +99,7 @@ public class MultiServer {
                     loggedPlayersByNickname.put(nextId, nickName);
                     loggedPlayersByConnection.put(nextId, clientHandler);
                     correctNick = true;
+                    clientHandler.setNickname(nickName);
                     clientHandler.sendMessageToClient("Welcome " + nickName);
                 } else {
                     clientHandler.sendMessageToClient("Username not available, please try again.");
@@ -140,6 +141,7 @@ public class MultiServer {
 
         } else if (connectionList.size() == requiredPlayer) {
             broadcastMessage("Number of players reached. Starting a new game.");
+            currentGame.setup();
         } else {
             clientHandler.sendMessageToClient("Wait for " + this.requiredPlayer + "players to join.");
 

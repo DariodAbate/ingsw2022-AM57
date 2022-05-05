@@ -47,6 +47,7 @@ public class Player{
         for (int i = 0; i < gameConstants.NUM_ASSISTANT_CARD; i++) {
             hand.add(i, new AssistantCard(i + 1, (i + 1) / 2 + (i + 1) % 2));
         }
+
     }
 
     /**
@@ -73,10 +74,11 @@ public class Player{
     public void chooseBack(CardBack back) {
         if (back == null)
             throw new NullPointerException();
-        else
-            for (int i = 0; i < gameConstants.NUM_ASSISTANT_CARD; i ++) {
+        else {
+            for (int i = 0; i < gameConstants.NUM_ASSISTANT_CARD; i++) {
                 hand.get(i).setCardBack(back);
             }
+        }
     }
 
     /**
@@ -121,6 +123,7 @@ public class Player{
     public Board getBoard() {
         return board;
     }
+
 }
 
 

@@ -22,7 +22,7 @@ public class Game implements RoundObserver{
     protected Bag startBag; //bag used only for the initial distribution of students on the islands
     protected Bag actionBag;//bag used during the game
     protected ArrayList<CloudTile> cloudTiles;
-    //private ArrayList<Tower> availableTowerColor; //a player can choose his own tower's color TODO
+    private ArrayList<Tower> availableTowerColor; //a player can choose his own tower's color
     protected ArrayList<IslandTile> archipelago;
     protected int motherNature; //motherNature as an index corresponding to an island
     protected int maxMovement; //maxMovement that mother nature can do
@@ -35,6 +35,7 @@ public class Game implements RoundObserver{
     protected InfluenceCalculator calc; //calculator for the influence
     protected boolean notAbsoluteMax; //flag used to implement an expertCard
 
+    protected ArrayList<CardBack> remainingCardsBack;
     /*
     Game creation rules, as indicated by specifications:
     If there are no games in the start phase, a new game is created, otherwise the user
@@ -61,6 +62,13 @@ public class Game implements RoundObserver{
             this.gameState = GameState.JOIN_STATE; //When the game is initialized, we wait for all the player to join
             this.maxNumStudMoves = gameConstants.getMaxNumStudMovements();
             actualNumStudMoves = 0;
+            for(CardBack card: CardBack.values()){
+                remainingCardsBack.add(card);
+            }
+            for(Tower color : Tower.values()){
+                availableTowerColor.add(color);
+            }
+
         }
         else
             throw new IllegalArgumentException("Illegal parameter for first player");//FIXME change with a checked custom exception
@@ -129,14 +137,6 @@ public class Game implements RoundObserver{
 
         //initialize clouds
         initClouds();
-
-        // FIXME choose tower color for each player
-        //Now a player cannot choose
-        associatePlayerToTower();
-
-        /* FIXME choose cardBack for each player */
-        // Now a player cannot choose
-        associatePlayerToCardBack();
 
         //fill entrance for each player's board
         initEntrancePlayers();
@@ -210,18 +210,14 @@ public class Game implements RoundObserver{
     }
 
     //in later version a player will be able to choose his own tower's color
-    protected void associatePlayerToTower(){
-        players.get(0).getBoard().chooseTower(Tower.BLACK);
-        players.get(1).getBoard().chooseTower(Tower.WHITE);
-        if(numGamePlayers == 3)
-            players.get(2).getBoard().chooseTower(Tower.GRAY);
+    public void associatePlayerToCardsToBack(CardBack back, Player player){
+        player.chooseBack(back);
+        remainingCardsBack.remove(back);
     }
     //in later version a player will be able to choose his own card's back
-    protected void associatePlayerToCardBack(){
-        players.get(0).chooseBack(CardBack.DRUID);
-        players.get(1).chooseBack(CardBack.WITCH);
-        if(numGamePlayers == 3)
-            players.get(2).chooseBack(CardBack.SAGE);
+    public void associatePlayerToTower(Tower color, Player player){
+        player.getBoard().chooseTower(color);
+        remainingCardsBack.remove(color);
     }
 
     protected void initEntrancePlayers(){
@@ -646,5 +642,13 @@ public class Game implements RoundObserver{
 
     public GameState getGameState() {
         return gameState;
+    }
+
+    public ArrayList<Tower> getAvailableTowerColor() {
+        return availableTowerColor;
+    }
+
+    public ArrayList<CardBack> getRemainingCardsBack() {
+        return remainingCardsBack;
     }
 }
