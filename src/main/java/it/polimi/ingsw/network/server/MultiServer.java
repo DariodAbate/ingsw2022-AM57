@@ -1,5 +1,6 @@
 package it.polimi.ingsw.network.server;
 
+import it.polimi.ingsw.model.Game;
 import it.polimi.ingsw.network.client.messages.GenericMessage;
 import it.polimi.ingsw.network.client.messages.Message;
 
@@ -29,6 +30,7 @@ public class MultiServer {
     private GameHandler currentGame = null;
 
     private int requiredPlayer;
+    private boolean expertMode;
     /** List of clients waiting in the lobby. */
     private final ArrayList<ServerClientHandler> connectionList;
 
@@ -50,6 +52,7 @@ public class MultiServer {
         loggedPlayersByNickname = new HashMap<>();
         loggedPlayersByConnection = new HashMap<>();
         nextId = -1;
+        expertMode = false;
     }
 
     /**
@@ -120,31 +123,23 @@ public class MultiServer {
         connectionList.add(clientHandler);
 
         if (connectionList.size() == 1) {
-            clientHandler.sendMessageToClient("You are the first player; Please choose a number of players.");//non posso mettere due send
-            boolean isNumber = false;
-            while(!isNumber) {
-                Message msg = clientHandler.readMessageFromClient();
-                if(msg instanceof GenericMessage) {
-
-                    String temp = ((GenericMessage) msg).getMessage();
-                        if (!(isNumber = setRequiredPlayer(temp))) {
-                            clientHandler.sendMessageToClient("Please choose a valid number of players.");
-
-                        } else
-                            clientHandler.sendMessageToClient("Number of players inserted: " + temp);
-                    //TODO new game
-                    //TODO pulisci coda di connessione dopo averla passata a game
-                    //TODO pulisci mappa che coneneve ale connessioni passate a game
-                }
-            }
-
+            selectNumPlayer(clientHandler);
+            selectGameMode(clientHandler);
         } else if (connectionList.size() == requiredPlayer) {
             broadcastMessage("Number of players reached. Starting a new game.");
+            //TODO new game
+            //TODO pulisci coda di connessione dopo averla passata a game
+            GameHandler gameHandler = new GameHandler(requiredPlayer, /*TODO*/true, new ArrayList<>(connectionList));
+            //TODO pulisci mappa che conteneva le connessioni passate a game
+            connectionList.clear();
+            requiredPlayer = 0;
+            expertMode = false;
         } else {
-            clientHandler.sendMessageToClient("Wait for " + this.requiredPlayer + "players to join.");
-
+            clientHandler.sendMessageToClient("Wait for " + (this.requiredPlayer - connectionList.size()) + "players to join.");
         }
     }
+
+
 
     /**
      * This method removes a client from a lobby before the maximum number is reached.
@@ -160,19 +155,52 @@ public class MultiServer {
      * @param numPlayer number of players that will connect to a game
      * @return true if a player insert a valid number of player, false otherwise
      */
-    public boolean setRequiredPlayer(String numPlayer){
+    private boolean setRequiredPlayer(String numPlayer){
         try {
             int temp = Integer.parseInt(numPlayer);
             if(temp <= 1 || temp > 3) return false;
 
             this.requiredPlayer = temp;
-            currentGame = new GameHandler(this.requiredPlayer);
-            System.out.println(this.requiredPlayer);
             return true;
         }catch (NumberFormatException e){
             return false;
         }
+    }
 
+    private void selectNumPlayer(ServerClientHandler clientHandler) throws IOException, ClassNotFoundException {
+        clientHandler.sendMessageToClient("You are the first player; Please choose a number of players.");//non posso mettere due send
+        boolean isNumber = false;
+        while(!isNumber) {
+            Message msg = clientHandler.readMessageFromClient();
+            if(msg instanceof GenericMessage) {
+
+                String temp = ((GenericMessage) msg).getMessage();
+                if (!(isNumber = setRequiredPlayer(temp))) {
+                    clientHandler.sendMessageToClient("Please choose a valid number of players.");
+
+                } else
+                    clientHandler.sendMessageToClient("Number of players inserted: " + temp);
+            }
+        }
+    }
+
+    private void selectGameMode(ServerClientHandler clientHandler) throws IOException, ClassNotFoundException {
+        clientHandler.sendMessageToClient("Do you want to play expert mode? [y/n]");
+        boolean isCorrect = false;
+        while(!isCorrect) {
+            Message msg = clientHandler.readMessageFromClient();
+            if(msg instanceof GenericMessage) {
+
+                String temp = ((GenericMessage) msg).getMessage();
+                if (!(isCorrect = temp.equalsIgnoreCase("y") || temp.equalsIgnoreCase("n"))) {
+                    clientHandler.sendMessageToClient("Please choose a valid option.");
+
+                } else {
+                    expertMode = temp.equalsIgnoreCase("y");
+                    clientHandler.sendMessageToClient((expertMode ? ("Expert ") : ("Normal ")) + "mode selected.");
+                }
+            }
+        }
     }
 
     /**
