@@ -1,4 +1,4 @@
-package network.server;
+package it.polimi.ingsw.network.server;
 
 //tutto synchrionized
 public class GameHandler {

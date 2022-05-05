@@ -1,4 +1,4 @@
-package network.server.answers;
+package it.polimi.ingsw.network.server.answers;
 /**
  * This class represents a string sent from the server to the client, used for a generic message
  * @author Lorenzo Corrado

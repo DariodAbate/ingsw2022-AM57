@@ -1,10 +1,12 @@
-package network.server;
+package it.polimi.ingsw.network.server;
 
+import it.polimi.ingsw.network.client.messages.*;
+import it.polimi.ingsw.network.server.answers.GenericAnswer;
 import java.io.IOException;
-import java.io.PrintWriter;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.net.Socket;
 import java.util.Arrays;
-import java.util.Scanner;
 
 /**
  * This class contains the streams through witch the server communicates with a single client
@@ -14,8 +16,8 @@ import java.util.Scanner;
 public class ServerClientHandler implements Runnable {
     private MultiServer server;
     private Socket socket;
-    private PrintWriter out;
-    private Scanner in;
+    private ObjectOutputStream out;
+    private ObjectInputStream in;
 
     /**
      * Constructor of the class
@@ -33,8 +35,8 @@ public class ServerClientHandler implements Runnable {
      */
     public void run() {
         try{
-            out = new PrintWriter(socket.getOutputStream());
-            in = new Scanner(socket.getInputStream());
+            out = new ObjectOutputStream(socket.getOutputStream());
+            in = new ObjectInputStream(socket.getInputStream());
 
             messageDispatcher();
 
@@ -42,8 +44,9 @@ public class ServerClientHandler implements Runnable {
             in.close();
             out.close();
             socket.close();
-        }catch (IOException e) {
+        }catch (IOException | ClassNotFoundException e) {
             System.err.println(e.getMessage());
+            e.printStackTrace();
         }
     }
 
@@ -51,23 +54,26 @@ public class ServerClientHandler implements Runnable {
      *
      * @throws IOException
      */
-    public synchronized void messageDispatcher() throws IOException {
+    public synchronized void messageDispatcher() throws IOException, ClassNotFoundException {
     String[] messagesType = {"quit", "login"};
 
         while (true) {
-            String line = in.nextLine();
-            if (line.equalsIgnoreCase("quit")) {
+            Object msg = in.readObject();
+            if (msg instanceof Disconnect) {
                 server.removeFromLobby(this);
                 break;
             }
-            else if(line.equalsIgnoreCase("?")){
+            else if(msg instanceof Help){
                 sendMessageToClient(Arrays.toString(messagesType));
             }
-            else if(line.equalsIgnoreCase("login")){
+            else if(msg instanceof Login){
                 server.loginPlayer(this);
             }
-            else {
-                sendMessageToClient("Received: " + line);
+            else if(msg instanceof GenericMessage){
+                sendMessageToClient("Received: " + ((GenericMessage) msg).getMessage());
+            }
+            else{
+                System.err.println("Unexpected message from client");
             }
         }
     }
@@ -76,8 +82,8 @@ public class ServerClientHandler implements Runnable {
      *  This method sends a message to a client
      * @param message message to be sent
      */
-    public void sendMessageToClient(String message){
-        out.println(message);
+    public void sendMessageToClient(String message) throws IOException {
+        out.writeObject(new GenericAnswer(message));
         out.flush();
     }
 
@@ -85,12 +91,17 @@ public class ServerClientHandler implements Runnable {
      * This method is used to receive a message from a client
      * @return a message read from the client
      */
-    public String readMessageFromClient(){
-        String msg = null;
+    public Message readMessageFromClient() throws IOException, ClassNotFoundException {
+        Object msg = null;
         while(msg == null){
-            msg = in.nextLine();
+            msg =  in.readObject();
         }
-        return msg;
+        if(msg instanceof Message)
+            return (Message) msg;
+        else{
+            System.err.println("Unexpected message from client");
+            return null;
+        }
     }
 
 }
