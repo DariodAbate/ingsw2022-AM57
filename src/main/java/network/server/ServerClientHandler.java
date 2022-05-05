@@ -16,6 +16,7 @@ public class ServerClientHandler implements Runnable {
     private Socket socket;
     private PrintWriter out;
     private Scanner in;
+    private String nickname;
 
     /**
      * Constructor of the class
@@ -93,4 +94,11 @@ public class ServerClientHandler implements Runnable {
         return msg;
     }
 
+    public String getNickname(){
+        return nickname;
+    }
+
+    public void setNickname(String nickname) {
+        this.nickname = nickname;
+    }
 }

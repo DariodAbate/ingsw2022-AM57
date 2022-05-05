@@ -643,4 +643,8 @@ public class Game implements RoundObserver{
     public Player getRoundPlayer() {
         return round.getCurrentPlayer();
     }
+
+    public GameState getGameState() {
+        return gameState;
+    }
 }

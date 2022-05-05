@@ -93,6 +93,7 @@ public class MultiServer {
                 loggedPlayersByNickname.put(nextId,nickName);
                 loggedPlayersByConnection.put(nextId, clientHandler);
                 correctNick = true;
+                clientHandler.setNickname(nickName);
                 clientHandler.sendMessageToClient("Benvenuto " + nickName);
             }else{
                 clientHandler.sendMessageToClient("Il tuo nickname è già stato utilizzato, inseriscine un altro.");
@@ -189,4 +190,5 @@ public class MultiServer {
         System.out.println("Creating server class...");
         executor.submit(server.socketServer);
     }
+
 }
