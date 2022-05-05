@@ -1,6 +1,5 @@
 package it.polimi.ingsw.network.server;
 
-import it.polimi.ingsw.model.Game;
 import it.polimi.ingsw.network.client.messages.GenericMessage;
 import it.polimi.ingsw.network.client.messages.Message;
 
@@ -102,6 +101,7 @@ public class MultiServer {
                     loggedPlayersByNickname.put(nextId, nickName);
                     loggedPlayersByConnection.put(nextId, clientHandler);
                     correctNick = true;
+                    clientHandler.setNickname(nickName);
                     clientHandler.sendMessageToClient("Welcome " + nickName);
                 } else {
                     clientHandler.sendMessageToClient("Username not available, please try again.");
@@ -123,8 +123,29 @@ public class MultiServer {
         connectionList.add(clientHandler);
 
         if (connectionList.size() == 1) {
+            clientHandler.sendMessageToClient("You are the first player; Please choose a number of players.");//non posso mettere due send
+            boolean isNumber = false;
+            while(!isNumber) {
+                Message msg = clientHandler.readMessageFromClient();
+                if(msg instanceof GenericMessage) {
+
+                    String temp = ((GenericMessage) msg).getMessage();
+                        if (!(isNumber = setRequiredPlayer(temp))) {
+                            clientHandler.sendMessageToClient("Please choose a valid number of players.");
+
+                        } else
+                            clientHandler.sendMessageToClient("Number of players inserted: " + temp);
+                    //TODO new game
+                    //TODO pulisci coda di connessione dopo averla passata a game
+                    //TODO pulisci mappa che coneneve ale connessioni passate a game
+                }
+            }
+
+        } else if (connectionList.size() == requiredPlayer) {
+            broadcastMessage("Number of players reached. Starting a new game.");
             selectNumPlayer(clientHandler);
             selectGameMode(clientHandler);
+            currentGame.setup();
         } else if (connectionList.size() == requiredPlayer) {
             broadcastMessage("Number of players reached. Starting a new game.");
             //TODO new game
