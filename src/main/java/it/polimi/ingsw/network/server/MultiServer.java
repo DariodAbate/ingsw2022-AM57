@@ -1,5 +1,9 @@
-package network.server;
+package it.polimi.ingsw.network.server;
 
+import it.polimi.ingsw.network.client.messages.GenericMessage;
+import it.polimi.ingsw.network.client.messages.Message;
+
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -67,13 +71,14 @@ public class MultiServer {
      *
      * @param clientHandler client handler associated to a player.
      */
-    public void loginPlayer(ServerClientHandler clientHandler){
+    public void loginPlayer(ServerClientHandler clientHandler) throws IOException, ClassNotFoundException {
         if(!loggedPlayersByConnection.containsValue(clientHandler)) {
-            registerPlayer(clientHandler);
-            addToLobby(clientHandler);
+            boolean hasRegistered = registerPlayer(clientHandler);
+            if(hasRegistered)
+                addToLobby(clientHandler);
         }
         else
-            clientHandler.sendMessageToClient("Hai già eseguito il login");
+            clientHandler.sendMessageToClient("User already logged.");
     }
 
     /**
@@ -81,24 +86,28 @@ public class MultiServer {
      * a unique nickname.
      * @param clientHandler client handler associated to a player.
      */
-    public synchronized void registerPlayer(ServerClientHandler clientHandler){
-        clientHandler.sendMessageToClient("Inserisci un nickname");
+    public synchronized boolean registerPlayer(ServerClientHandler clientHandler) throws IOException, ClassNotFoundException {
+        clientHandler.sendMessageToClient("Set a nickname.");
 
         boolean correctNick = false;
-        while(!correctNick){
-            String nickName = clientHandler.readMessageFromClient();
-
-            if(!loggedPlayersByNickname.containsValue(nickName)){
-                ++ nextId;
-                loggedPlayersByNickname.put(nextId,nickName);
-                loggedPlayersByConnection.put(nextId, clientHandler);
-                correctNick = true;
-                clientHandler.setNickname(nickName);
-                clientHandler.sendMessageToClient("Benvenuto " + nickName);
-            }else{
-                clientHandler.sendMessageToClient("Il tuo nickname è già stato utilizzato, inseriscine un altro.");
+        while(!correctNick) {
+            Message nick = clientHandler.readMessageFromClient();
+            if (nick instanceof GenericMessage) {
+                String nickName = ((GenericMessage) nick).getMessage();
+                if (!loggedPlayersByNickname.containsValue(nickName)) {
+                    ++nextId;
+                    loggedPlayersByNickname.put(nextId, nickName);
+                    loggedPlayersByConnection.put(nextId, clientHandler);
+                    correctNick = true;
+                    clientHandler.sendMessageToClient("Welcome " + nickName);
+                } else {
+                    clientHandler.sendMessageToClient("Username not available, please try again.");
+                }
+            }else{//malicious client
+                return false;
             }
         }
+        return true;
     }
 
     /**
@@ -107,28 +116,32 @@ public class MultiServer {
      *
      * @param clientHandler client handler associated to a player.
      */
-    public synchronized void addToLobby(ServerClientHandler clientHandler){
+    public synchronized void addToLobby(ServerClientHandler clientHandler) throws IOException, ClassNotFoundException {
         connectionList.add(clientHandler);
 
         if (connectionList.size() == 1) {
-            clientHandler.sendMessageToClient("Sei il primo giocatore; Inserisci il numero di players");//non posso mettere due send
+            clientHandler.sendMessageToClient("You are the first player; Please choose a number of players.");//non posso mettere due send
             boolean isNumber = false;
             while(!isNumber) {
-                String temp = clientHandler.readMessageFromClient();
-                if(!(isNumber = setRequiredPlayer(temp))){
-                    clientHandler.sendMessageToClient("Non hai inserito un numero di giocatori, riprova");
+                Message msg = clientHandler.readMessageFromClient();
+                if(msg instanceof GenericMessage) {
 
-                }else
-                    clientHandler.sendMessageToClient("Numero di giocatori inserito: " + temp);
+                    String temp = ((GenericMessage) msg).getMessage();
+                        if (!(isNumber = setRequiredPlayer(temp))) {
+                            clientHandler.sendMessageToClient("Please choose a valid number of players.");
+
+                        } else
+                            clientHandler.sendMessageToClient("Number of players inserted: " + temp);
                     //TODO new game
                     //TODO pulisci coda di connessione dopo averla passata a game
                     //TODO pulisci mappa che coneneve ale connessioni passate a game
+                }
             }
 
         } else if (connectionList.size() == requiredPlayer) {
-            broadcastMessage("Numero di giocatori raggiunto, inizio partita.");
+            broadcastMessage("Number of players reached. Starting a new game.");
         } else {
-            clientHandler.sendMessageToClient("Attendi che si arrivi a " + this.requiredPlayer + " giocatori");
+            clientHandler.sendMessageToClient("Wait for " + this.requiredPlayer + "players to join.");
 
         }
     }
@@ -166,7 +179,7 @@ public class MultiServer {
      *  This method sends a message to all the logged players that are waiting for a game
      * @param msg message sent.
      */
-    public void broadcastMessage(String msg){
+    public void broadcastMessage(String msg) throws IOException {
         for(ServerClientHandler clientHandler: connectionList){
             clientHandler.sendMessageToClient(msg);
         }
@@ -190,5 +203,4 @@ public class MultiServer {
         System.out.println("Creating server class...");
         executor.submit(server.socketServer);
     }
-
 }
