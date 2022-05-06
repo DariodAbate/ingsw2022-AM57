@@ -2,11 +2,12 @@ package it.polimi.ingsw.network.server;
 
 import it.polimi.ingsw.model.*;
 import it.polimi.ingsw.model.expertGame.ExpertGame;
-import it.polimi.ingsw.network.client.messages.ChooseCardBack;
-import it.polimi.ingsw.network.client.messages.ChooseTowerColor;
+import it.polimi.ingsw.network.client.messages.*;
+import jdk.swing.interop.SwingInterOpUtils;
 
 
 import java.io.IOException;
+import java.io.StreamCorruptedException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -21,7 +22,7 @@ public class GameHandler {
     public GameHandler(int numPlayer, boolean expertGame, ArrayList<ServerClientHandler> playersConnections) {
         this.numPlayer = numPlayer;
         this.playersConnections = playersConnections;
-        if(expertGame) {
+        if(!expertGame) {
             game = new Game(playersConnections.get(0).getNickname(), numPlayer);
         }else
             game = new ExpertGame(playersConnections.get(0).getNickname(), numPlayer);
@@ -37,10 +38,12 @@ public class GameHandler {
             clientToPlayer.put(playersConnections.get(i), game.getPlayers().get(i));
         }
         game.startGame();
-        for(ServerClientHandler client : playersConnections){
+        /*for(ServerClientHandler client : playersConnections){
             askCardsBackSetup(client);
         }
 
+        */
+        askCardsBackSetup(playersConnections.get(1));
     }
     private synchronized void askColorsSetup(ServerClientHandler client) throws IOException, ClassNotFoundException{
         client.sendMessageToClient("Seleziona il colore di torre desiderato");
@@ -55,7 +58,7 @@ public class GameHandler {
         Object message;
         Tower color;
         while(!towerChosen){
-            message = client.getIn().readObject();
+            message = client.readMessageFromClient();
             if(message instanceof ChooseTowerColor && game.getGameState()==GameState.JOIN_STATE){
                 color = ((ChooseTowerColor) message).getColor();
                 if(game.getAvailableTowerColor().contains(color)){
@@ -84,14 +87,23 @@ public class GameHandler {
     }
     private synchronized void waitForCardBackAnswer(ServerClientHandler client) throws IOException , ClassNotFoundException{
         boolean backChosen = false;
-        Object message;
+        Message message = null;
         CardBack card;
         while(!backChosen){
-            message = client.getIn().readObject();
+            try {
+                message = client.readMessageFromClient();
+
+            }catch (StreamCorruptedException e){
+                System.out.println(e.getMessage());
+            }
+            System.out.println(message instanceof ChooseCardBack);
+            System.out.println(game.getGameState());
             if(message instanceof ChooseCardBack && game.getGameState() == GameState.JOIN_STATE){
-                card = ((ChooseCardBack)message).getMessage();
+
+                card = CardBack.valueOf(((ChooseCardBack)message).getMessage());
                 if(game.getAvailableCardsBack().contains(card)) {
                     game.associatePlayerToCardsToBack(card, clientToPlayer.get(client));
+                    client.sendMessageToClient("Il tuo personaggio è" + card.name());
                     backChosen = true;
                 }
                 else{

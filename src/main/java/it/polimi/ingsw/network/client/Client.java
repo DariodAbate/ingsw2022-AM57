@@ -1,5 +1,6 @@
 package it.polimi.ingsw.network.client;
 
+import it.polimi.ingsw.model.CardBack;
 import it.polimi.ingsw.network.client.messages.*;
 import it.polimi.ingsw.network.server.answers.GenericAnswer;
 
@@ -46,6 +47,7 @@ public class Client {
 
         String userInput;
         while ((userInput = stdIn.nextLine()) != null) {
+
             if(userInput.equals("?")){
                 out.writeObject(new Help());
             }
@@ -57,6 +59,11 @@ public class Client {
                 out.writeObject(new Disconnect());
                 out.flush();
                 break;
+            }
+            else if(userInput.equalsIgnoreCase("king") || userInput.equalsIgnoreCase("witch")
+            || userInput.equalsIgnoreCase("sage") || userInput.equalsIgnoreCase("druid")){
+                //CardBack back = CardBack.valueOf(userInput.toUpperCase());
+                out.writeObject(new ChooseCardBack(userInput));
             }
             else{
                 out.writeObject(new GenericMessage(userInput));

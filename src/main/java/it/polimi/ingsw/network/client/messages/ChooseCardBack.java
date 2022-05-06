@@ -1,15 +1,14 @@
 package it.polimi.ingsw.network.client.messages;
 
-import it.polimi.ingsw.model.CardBack;
 
-public class ChooseCardBack {
-    private CardBack card;
+public class ChooseCardBack implements Message{
+    private final String card;
 
-    public ChooseCardBack(CardBack card){
+    public ChooseCardBack(String card){
         this.card = card;
     }
 
-    public CardBack getMessage() {
+    public String getMessage() {
         return card;
     }
 }

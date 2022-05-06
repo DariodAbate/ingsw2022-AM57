@@ -148,7 +148,7 @@ public class Game implements RoundObserver{
         //TODO determine casually the first player
 
         //set planning state
-        setGameState(GameState.PLANNING_STATE);
+        //setGameState(GameState.PLANNING_STATE);TODO BISOGNA CAMBIARE DOPO LA SELEZIONE NON IN STARTGAME
     }
 
     protected void setGameState(GameState state){

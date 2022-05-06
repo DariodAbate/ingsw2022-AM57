@@ -64,7 +64,7 @@ public class ServerClientHandler implements Runnable {
     public synchronized void messageDispatcher() throws IOException, ClassNotFoundException {
     String[] messagesType = {"quit", "login"};
         while (true) {
-            Object msg = in.readObject();
+            Object msg = readMessageFromClient();
             if (msg instanceof Disconnect) {
                 server.removeFromLobby(this);
                 break;

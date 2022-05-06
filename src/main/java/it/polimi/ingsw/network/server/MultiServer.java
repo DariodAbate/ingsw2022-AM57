@@ -131,12 +131,15 @@ public class MultiServer {
 
             currentGame.setup();
 
+            /*
             connectionList.clear();
             requiredPlayer = 0;
             expertMode = false;
             currentGame = null;
+
+             */
         } else {
-            clientHandler.sendMessageToClient("Wait for " + (this.requiredPlayer - connectionList.size()) + "players to join.");
+            clientHandler.sendMessageToClient("Wait for " + (this.requiredPlayer - connectionList.size()) + " players to join.");
         }
     }
 
