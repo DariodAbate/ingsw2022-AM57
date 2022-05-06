@@ -1,10 +1,7 @@
 package it.polimi.ingsw.network.client;
 
+import it.polimi.ingsw.network.client.messages.*;
 import it.polimi.ingsw.network.server.answers.GenericAnswer;
-import it.polimi.ingsw.network.client.messages.Disconnect;
-import it.polimi.ingsw.network.client.messages.GenericMessage;
-import it.polimi.ingsw.network.client.messages.Help;
-import it.polimi.ingsw.network.client.messages.Login;
 
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -34,6 +31,18 @@ public class Client {
         System.out.println("Type \"?\" to show commands");
         Thread inServer = new Thread(this::printServerMessage);
         inServer.start();
+
+        /*
+            Thread outPing = new Thread(()-> {
+                try {
+                    sendPing();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            });
+            outPing.start();
+
+         */
 
         String userInput;
         while ((userInput = stdIn.nextLine()) != null) {
@@ -75,6 +84,21 @@ public class Client {
         }
 
     }
+
+    /*
+    public void sendPing() throws IOException {
+        while(listenServer) {
+            out.writeObject(new Ping());
+            out.flush();
+            try{
+                Thread.sleep(8000);
+            }catch(InterruptedException e){
+                e.printStackTrace();
+            }
+        }
+    }
+
+     */
 
     public static void main(String[] args) throws IOException {
 
