@@ -70,6 +70,7 @@ class ExpertGameTest {
         PseudoMotherNatureCard card = new PseudoMotherNatureCard(1, g);
         setupFullPlayer();
         g.startGame();
+        g.getPlayers().get(1).getBoard().chooseTower(Tower.WHITE);
         g.getArchipelago().get(1).getIslandStudents().add(Color.RED, 5);
         g.getArchipelago().get(0).addTower();
         g.getArchipelago().get(0).changeTowerColor(Tower.WHITE);
