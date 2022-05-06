@@ -11,7 +11,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
-//tutto synchrionized
+//all method synchronized
 public class GameHandler {
     private final int numPlayer;
     private ArrayList<ServerClientHandler> playersConnections;
@@ -77,8 +77,8 @@ public class GameHandler {
         client.sendMessageToClient("Inserisci il Card Back desiderato");
         client.sendMessageToClient("I Card Back disponibili sono:");
         //client.sendMessage(new RemainingCardBackMessage())
-        for(int i=0; i<game.getRemainingCardsBack().size(); i++){
-            client.sendMessageToClient(game.getRemainingCardsBack().get(i).name());
+        for(int i = 0; i<game.getAvailableCardsBack().size(); i++){
+            client.sendMessageToClient(game.getAvailableCardsBack().get(i).name());
         }
         waitForCardBackAnswer(client);
     }
@@ -90,7 +90,7 @@ public class GameHandler {
             message = client.getIn().readObject();
             if(message instanceof ChooseCardBack && game.getGameState() == GameState.JOIN_STATE){
                 card = ((ChooseCardBack)message).getMessage();
-                if(game.getRemainingCardsBack().contains(card)) {
+                if(game.getAvailableCardsBack().contains(card)) {
                     game.associatePlayerToCardsToBack(card, clientToPlayer.get(client));
                     backChosen = true;
                 }

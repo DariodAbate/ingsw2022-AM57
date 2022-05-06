@@ -124,9 +124,12 @@ public class MultiServer {
         } else if (connectionList.size() == requiredPlayer) {
             broadcastMessage("Number of players reached. Starting a new game.");
 
-            currentGame = new GameHandler(requiredPlayer, expertMode, new ArrayList<>(connectionList));
-            currentGame.setup();
             //passare la reference di gamehandler ai socket
+            currentGame = new GameHandler(requiredPlayer, expertMode, new ArrayList<>(connectionList));
+            for(ServerClientHandler client: connectionList)
+                client.setGameHandler(currentGame);
+
+            currentGame.setup();
 
             connectionList.clear();
             requiredPlayer = 0;

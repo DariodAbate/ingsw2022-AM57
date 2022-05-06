@@ -20,6 +20,8 @@ public class ServerClientHandler implements Runnable {
     private ObjectInputStream in;
     private String nickname;
 
+    private GameHandler gameHandler;
+
     /**
      * Constructor of the class
      * @param server
@@ -30,6 +32,9 @@ public class ServerClientHandler implements Runnable {
         this.socket = socket;
     }
 
+    public void setGameHandler(GameHandler gameHandler) {
+        this.gameHandler = gameHandler;
+    }
 
     /**
      * In this method the streams are instantiated and closed
