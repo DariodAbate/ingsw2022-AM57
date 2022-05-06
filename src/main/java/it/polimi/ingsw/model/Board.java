@@ -3,6 +3,7 @@ package it.polimi.ingsw.model;
 import it.polimi.ingsw.model.constantFactory.GameConstants;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -23,7 +24,6 @@ public class Board {
     private GameConstants gameConstants;
     private int coinReserve;
     private boolean[][] addCoinChecker;
-    private ArrayList<Tower> remainingColors;
 
     /**
      * Constructor of the class. It can handle games for 2 or 3 players
@@ -37,10 +37,6 @@ public class Board {
         entrance = new StudentsHandler(gameConstants.getEntranceSize());
         hall = new StudentsHandler(gameConstants.HALL_SIZE);
         numTower = gameConstants.getNumTowersOnBoard();
-        for(Tower color: Tower.values()){
-            remainingColors.add(color);
-        }
-
         addCoinChecker = new boolean[5][3]; //five colors, 3 checkPoint
         coinReserve = 1; //one coin for each player at the starting
     }
@@ -52,7 +48,6 @@ public class Board {
     public void chooseTower(Tower color){
         if(color != null) {
             this.towerColor = color;
-            remainingColors.remove(color);
         }
         else
             throw new NullPointerException();
@@ -302,7 +297,4 @@ public class Board {
             coinReserve -= numCoins;
     }
 
-    public ArrayList<Tower> getRemainingColors() {
-        return remainingColors;
-    }
 }

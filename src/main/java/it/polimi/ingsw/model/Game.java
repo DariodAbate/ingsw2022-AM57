@@ -1,10 +1,14 @@
 package it.polimi.ingsw.model;
 
+import it.polimi.ingsw.model.constantFactory.GameConstants;
+import it.polimi.ingsw.model.constantFactory.GameConstantsCreator;
+import it.polimi.ingsw.model.constantFactory.GameConstantsCreatorThreePlayers;
+import it.polimi.ingsw.model.constantFactory.GameConstantsCreatorTwoPlayers;
 import it.polimi.ingsw.model.statePattern.InfluenceCalculator;
 import it.polimi.ingsw.model.statePattern.StandardCalculator;
-import it.polimi.ingsw.model.constantFactory.*;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Random;
 
 /**
@@ -35,7 +39,7 @@ public class Game implements RoundObserver{
     protected InfluenceCalculator calc; //calculator for the influence
     protected boolean notAbsoluteMax; //flag used to implement an expertCard
 
-    protected ArrayList<CardBack> remainingCardsBack;
+    protected ArrayList<CardBack> availableCardsBack;
     /*
     Game creation rules, as indicated by specifications:
     If there are no games in the start phase, a new game is created, otherwise the user
@@ -62,12 +66,12 @@ public class Game implements RoundObserver{
             this.gameState = GameState.JOIN_STATE; //When the game is initialized, we wait for all the player to join
             this.maxNumStudMoves = gameConstants.getMaxNumStudMovements();
             actualNumStudMoves = 0;
-            for(CardBack card: CardBack.values()){
-                remainingCardsBack.add(card);
-            }
-            for(Tower color : Tower.values()){
-                availableTowerColor.add(color);
-            }
+
+            availableTowerColor = new ArrayList<>();
+            Collections.addAll(availableTowerColor,Tower.values());
+
+            availableCardsBack = new ArrayList<>();
+            Collections.addAll(availableCardsBack, CardBack.values());
 
         }
         else
@@ -212,12 +216,12 @@ public class Game implements RoundObserver{
     //in later version a player will be able to choose his own tower's color
     public void associatePlayerToCardsToBack(CardBack back, Player player){
         player.chooseBack(back);
-        remainingCardsBack.remove(back);
+        availableCardsBack.remove(back);
     }
     //in later version a player will be able to choose his own card's back
     public void associatePlayerToTower(Tower color, Player player){
         player.getBoard().chooseTower(color);
-        remainingCardsBack.remove(color);
+        availableTowerColor.remove(color);
     }
 
     protected void initEntrancePlayers(){
@@ -645,10 +649,10 @@ public class Game implements RoundObserver{
     }
 
     public ArrayList<Tower> getAvailableTowerColor() {
-        return availableTowerColor;
+        return new ArrayList<>(availableTowerColor);
     }
 
-    public ArrayList<CardBack> getRemainingCardsBack() {
-        return remainingCardsBack;
+    public ArrayList<CardBack> getAvailableCardsBack() {
+        return new ArrayList<>(availableCardsBack);
     }
 }
