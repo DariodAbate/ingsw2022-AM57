@@ -151,7 +151,7 @@ public class Game implements RoundObserver{
         //setGameState(GameState.PLANNING_STATE);TODO BISOGNA CAMBIARE DOPO LA SELEZIONE NON IN STARTGAME
     }
 
-    protected void setGameState(GameState state){
+    public void setGameState(GameState state){
         this.gameState = state;
     }
     //initialize  a round through which the current player can be selected

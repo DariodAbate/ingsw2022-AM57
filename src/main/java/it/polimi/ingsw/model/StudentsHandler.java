@@ -1,5 +1,6 @@
 package it.polimi.ingsw.model;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -198,6 +199,16 @@ public class StudentsHandler {
             throw new NullPointerException("Colore null");
         }
         return students.get(color);
+    }
+
+    public ArrayList<Color> colorsAvailable(){
+        ArrayList<Color> list = new ArrayList<>();
+        for(Color color : Color.values()){
+            if(students.get(color) > 0){
+                list.add(color);
+            }
+        }
+        return list;
     }
 }
 

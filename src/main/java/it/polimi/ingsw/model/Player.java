@@ -124,6 +124,18 @@ public class Player{
         return board;
     }
 
+    public ArrayList<AssistantCard> getHand() {
+        return hand;
+    }
+
+    public boolean isPriorityAvailable(int priority){
+        boolean isAvailable = false;
+        for(AssistantCard card : hand){
+            if(card.getPriority() == priority)
+                isAvailable= true;
+        }
+        return isAvailable;
+    }
 }
 
 
