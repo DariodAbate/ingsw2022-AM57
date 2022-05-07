@@ -29,7 +29,6 @@ public class Client {
     public void communicationWithServer() throws ClassNotFoundException, IOException {
 
         //THE CLIENT MUST SEND A MESSAGE AS FIRST THING
-        System.out.println("Type \"?\" to show commands");
         Thread inServer = new Thread(this::printServerMessage);
         inServer.start();
 
@@ -62,8 +61,8 @@ public class Client {
             }
             else if(userInput.equalsIgnoreCase("king") || userInput.equalsIgnoreCase("witch")
             || userInput.equalsIgnoreCase("sage") || userInput.equalsIgnoreCase("druid")){
-                //CardBack back = CardBack.valueOf(userInput.toUpperCase());
-                out.writeObject(new ChooseCardBack(userInput));
+                CardBack back = CardBack.valueOf(userInput.toUpperCase());
+                out.writeObject(new ChooseCardBack(back));
             }
             else{
                 out.writeObject(new GenericMessage(userInput));
