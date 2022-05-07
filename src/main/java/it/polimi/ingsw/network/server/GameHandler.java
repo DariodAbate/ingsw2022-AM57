@@ -129,7 +129,7 @@ public class GameHandler {
         Message message;
         while(game.getGameState() == GameState.PLANNING_STATE){
             ServerClientHandler client = playerToClient.get(game.getCurrentPlayer());
-            client.sendMessageToClient("Please select wich assistant card do you wanna play");
+            client.sendMessageToClient("Please select which assistant card do you wanna play");
             client.sendMessageToClient("The remaining assistant cards are:");
             for(AssistantCard card : game.getCurrentPlayer().getHand()){
                 client.sendMessageToClient(Integer.toString(card.getPriority()));
@@ -164,14 +164,15 @@ public class GameHandler {
         Message message;
         for(int i=0; i<numberOfMoves; i++){
             boolean correctMove = false;
-            client.sendMessageToClient("Select where you wanna move your students");
+            client.sendMessageToClient("Select where you want to move your students");
             while(!correctMove){
                 message = client.readMessageFromClient();
                 if(message instanceof EntranceToHall && game.getGameState() == GameState.MOVING_STUDENT_STATE){
-                    client.sendMessageToClient("This are the avaiable colors: ");
-                    for(Color color : game.getCurrentPlayer().getBoard().getEntrance().colorsAvailable()){
-                        client.sendMessageToClient(color.name());
-                    }
+                   availableEntranceColor(client);
+                }
+                else if(message instanceof EntranceToIsland && game.getGameState() == GameState.MOVING_STUDENT_STATE){
+                    availableEntranceColor(client);
+
                 }
                 else
                 {
@@ -181,6 +182,12 @@ public class GameHandler {
 
             }
 
+        }
+    }
+    private void availableEntranceColor(ServerClientHandler client) throws IOException, ClassNotFoundException{
+        client.sendMessageToClient("These are the available colors: ");
+        for(Color color : game.getCurrentPlayer().getBoard().getEntrance().colorsAvailable()){
+            client.sendMessageToClient(color.name());
         }
     }
     public int getNumPlayer() {
