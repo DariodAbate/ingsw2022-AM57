@@ -121,6 +121,7 @@ public class MultiServer {
         if (connectionList.size() == 1) {
             selectNumPlayer(clientHandler);
             selectGameMode(clientHandler);
+            clientHandler.sendMessageToClient("Wait for " + (this.requiredPlayer - connectionList.size()) + " players to join.");
         } else if (connectionList.size() == requiredPlayer) {
             broadcastMessage("Number of players reached. Starting a new game.");
 
@@ -131,13 +132,13 @@ public class MultiServer {
 
             currentGame.setup();
 
-            /*
+
             connectionList.clear();
             requiredPlayer = 0;
             expertMode = false;
             currentGame = null;
 
-             */
+
         } else {
             clientHandler.sendMessageToClient("Wait for " + (this.requiredPlayer - connectionList.size()) + " players to join.");
         }

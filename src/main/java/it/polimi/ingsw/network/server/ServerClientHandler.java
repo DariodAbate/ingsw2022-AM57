@@ -6,7 +6,7 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
-import java.util.Arrays;
+
 
 /**
  * This class contains the streams through witch the server communicates with a single client
@@ -19,17 +19,18 @@ public class ServerClientHandler implements Runnable {
     private ObjectOutputStream out;
     private ObjectInputStream in;
     private String nickname;
+    private volatile boolean active;
 
     private GameHandler gameHandler;
 
     /**
-     * Constructor of the class
-     * @param server
-     * @param socket
+     * @param server Server to which the client is connected
+     * @param socket Socket of the client
      */
     public ServerClientHandler(MultiServer server, Socket socket) {
         this.server = server;
         this.socket = socket;
+        active = true;
     }
 
     public void setGameHandler(GameHandler gameHandler) {
@@ -37,51 +38,47 @@ public class ServerClientHandler implements Runnable {
     }
 
     /**
-     * In this method the streams are instantiated and closed
+     * In this method the streams are instantiated and closed, Thus it handles the login of a player
      */
     public void run() {
         try{
             out = new ObjectOutputStream(socket.getOutputStream());
             in = new ObjectInputStream(socket.getInputStream());
+            sendMessageToClient("Welcome to the magic world of Eryantis!!");
+            initPlayer();
 
-            messageDispatcher();
+
+            while(active){
+               int i = 0;
+            }
+            sendMessageToClient("Disconnected");
+           // messageDispatcher();
+
 
             // Chiudo gli stream e il socket
             in.close();
             out.close();
             socket.close();
-        }catch (IOException | ClassNotFoundException e) {
-            System.err.println(e.getMessage());
-            e.printStackTrace();
+        }catch (IOException e) {
+            System.err.println("IOException in  run: " + e.getMessage());
+            System.exit(1);
         }
     }
 
-
     /**
-     *
-     * @throws IOException
+     * This method pass the login of a player to the server class
      */
-    public synchronized void messageDispatcher() throws IOException, ClassNotFoundException {
-    String[] messagesType = {"quit", "login"};
-        while (true) {
-            Object msg = readMessageFromClient();
-            if (msg instanceof Disconnect) {
-                server.removeFromLobby(this);
-                break;
-            }
-            else if(msg instanceof Help){
-                sendMessageToClient(Arrays.toString(messagesType));
-            }
-            else if(msg instanceof Login){
-                server.loginPlayer(this);
-            }
-            else if(msg instanceof GenericMessage){
-                sendMessageToClient("Received: " + ((GenericMessage) msg).getMessage());
-            }
-            else{
-                System.err.println("Unexpected message from client");
-            }
+    private synchronized void initPlayer(){
+        try {
+            server.loginPlayer(this);
+        } catch (IOException e) {
+            System.err.println("IOException in  initPlayer: " + e.getMessage());
+            System.exit(1);
+        } catch (ClassNotFoundException e) {
+            System.err.println("ClassNotFoundException in  initPlayer: " + e.getMessage());
+            System.exit(1);
         }
+
     }
 
     /**
@@ -89,21 +86,27 @@ public class ServerClientHandler implements Runnable {
      * @param message message to be sent
      */
     public void sendMessageToClient(String message) throws IOException {
+        out.reset();
         out.writeObject(new GenericAnswer(message));
         out.flush();
     }
 
     /**
-     * This method is used to receive a message from a client
-     * @return a message read from the client
+     * This method is used to receive a message from a client.
+     * @return returns a message read from the client. Returns null it receives an
+     * unexpected message.
      */
     public Message readMessageFromClient() throws IOException, ClassNotFoundException {
         Object msg = null;
         while(msg == null){
             msg =  in.readObject();
         }
-        if(msg instanceof Message)
+        if(msg instanceof Message) {
+            if(msg instanceof Disconnect) {
+                active = false;
+            }
             return (Message) msg;
+        }
         else{
             System.err.println("Unexpected message from client");
             return null;

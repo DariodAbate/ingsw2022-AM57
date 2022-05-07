@@ -38,12 +38,9 @@ public class GameHandler {
             clientToPlayer.put(playersConnections.get(i), game.getPlayers().get(i));
         }
         game.startGame();
-        /*for(ServerClientHandler client : playersConnections){
+        for(ServerClientHandler client : playersConnections){
             askCardsBackSetup(client);
         }
-
-        */
-        askCardsBackSetup(playersConnections.get(1));
     }
     private synchronized void askColorsSetup(ServerClientHandler client) throws IOException, ClassNotFoundException{
         client.sendMessageToClient("Seleziona il colore di torre desiderato");
@@ -99,11 +96,11 @@ public class GameHandler {
             System.out.println(message instanceof ChooseCardBack);
             System.out.println(game.getGameState());
             if(message instanceof ChooseCardBack && game.getGameState() == GameState.JOIN_STATE){
-
-                card = CardBack.valueOf(((ChooseCardBack)message).getMessage());
+                card = ((ChooseCardBack) message).getMessage();
+                //card = CardBack.valueOf(((ChooseCardBack)message).getMessage());
                 if(game.getAvailableCardsBack().contains(card)) {
                     game.associatePlayerToCardsToBack(card, clientToPlayer.get(client));
-                    client.sendMessageToClient("Il tuo personaggio è" + card.name());
+                    client.sendMessageToClient("Il tuo personaggio è " + card.name());
                     backChosen = true;
                 }
                 else{
