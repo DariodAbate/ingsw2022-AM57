@@ -141,8 +141,9 @@ public class GameHandler {
     }
     private synchronized void planningPhase() throws IOException, ClassNotFoundException{
         Message message;
+        ServerClientHandler client;
         while(game.getGameState() == GameState.PLANNING_STATE){
-            ServerClientHandler client = playerToClient.get(game.getCurrentPlayer());
+            client = playerToClient.get(game.getCurrentPlayer());
             client.sendMessageToClient("Please select which assistant card do you wanna play");
             client.sendMessageToClient("The remaining assistant cards are:");
 
@@ -157,7 +158,7 @@ public class GameHandler {
             if(message instanceof IntegerMessage && game.getGameState() == GameState.PLANNING_STATE){
                 if(game.getCurrentPlayer().isPriorityAvailable(((IntegerMessage) message).getMessage())) {
                     game.playCard(((IntegerMessage) message).getMessage() - 1);//FIXME
-                    client.sendMessageToClient("You have chosen your " + ((IntegerMessage) message).getMessage() + "card");
+                    client.sendMessageToClient("You have chosen your " + ((IntegerMessage) message).getMessage() + " card");
                 }
                 else{
                     client.sendMessageToClient("You've already played this card! Play another one!");
@@ -166,6 +167,7 @@ public class GameHandler {
             else{
                 client.sendMessageToClient("Wrong command, please insert a valid command");
             }
+            System.out.println(game.getGameState());
         }
 
     }

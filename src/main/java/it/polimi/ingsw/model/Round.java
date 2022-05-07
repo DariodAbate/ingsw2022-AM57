@@ -1,9 +1,11 @@
 package it.polimi.ingsw.model;
 
+import java.sql.SQLOutput;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.concurrent.ThreadLocalRandom;
+import java.util.Random;
 
 /**
  * The Round class incorporates the management of the different planning and action
@@ -75,9 +77,10 @@ public class Round {
     public void setRandomStartPlayer() {
         Player firstPlayer;
         int randomNum;
+        Random rand = new Random();
         planningPhaseOrder.removeAll(playersCopy);
         if (playersCopy.size() == 3) {
-            randomNum = ThreadLocalRandom.current().nextInt(0, 3);
+            randomNum = rand.nextInt(3);
             firstPlayer = playersCopy.get(randomNum);
             planningPhaseOrder.add(firstPlayer);
             int firstPlayerIndex = playersCopy.indexOf(firstPlayer);
@@ -85,10 +88,11 @@ public class Round {
             planningPhaseOrder.add(playersCopy.get((firstPlayerIndex + 2) % 3));
         }
         if (playersCopy.size() == 2) {
-            randomNum = ThreadLocalRandom.current().nextInt(0,2);
+            randomNum = rand.nextInt(2);
             firstPlayer = playersCopy.get(randomNum);
-            int firstPlayerIndex = playersCopy.indexOf(firstPlayer);
-            planningPhaseOrder.add(playersCopy.get((firstPlayerIndex + 1) % 2));
+            int firstPlayerIndex = (randomNum +1) % 2;
+            planningPhaseOrder.add(playersCopy.get(randomNum));
+            planningPhaseOrder.add(playersCopy.get(firstPlayerIndex));
         }
         currentTurn = planningPhaseOrder.get(0);
     }
@@ -147,8 +151,9 @@ public class Round {
      * or actionPhaseOrder list
      */
     public int getCurrentPlayerIndex() {
-        if (isPlanning)
+        if (isPlanning) {
             return planningPhaseOrder.indexOf(currentTurn);
+        }
         else
             return actionPhaseOrder.indexOf(currentTurn);
     }
@@ -157,18 +162,23 @@ public class Round {
      * This method modify the current player and indicates the start of a new turn.
      */
     public void nextTurn() {
+        int playerIdx;
         if (isPlanning && (getCurrentPlayerIndex() == (playersCopy.size() - 1))) {
+
             setActionPhaseOrder();
             return;
         }
         if (!isPlanning && (getCurrentPlayerIndex() == (playersCopy.size() - 1))) {
+
             nextRound();
             return;
         }
         if (isPlanning) {
-            currentTurn = planningPhaseOrder.get(getCurrentPlayerIndex() + 1);
+            playerIdx = getCurrentPlayerIndex();
+            currentTurn = planningPhaseOrder.get(playerIdx + 1);
         }
         if (!isPlanning) {
+
             currentTurn = actionPhaseOrder.get(getCurrentPlayerIndex() + 1);
         }
     }
@@ -205,7 +215,7 @@ public class Round {
     }
 
     public boolean isPlanningStart() {
-        return isPlanning && (getCurrentPlayerIndex() == 0);
+        return isPlanning;
     }
 
     /**
