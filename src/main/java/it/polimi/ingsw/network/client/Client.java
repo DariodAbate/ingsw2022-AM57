@@ -1,6 +1,6 @@
 package it.polimi.ingsw.network.client;
 
-import it.polimi.ingsw.model.CardBack;
+
 import it.polimi.ingsw.network.client.messages.*;
 import it.polimi.ingsw.network.server.answers.GenericAnswer;
 

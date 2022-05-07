@@ -297,4 +297,7 @@ public class Board {
             coinReserve -= numCoins;
     }
 
+    public StudentsHandler getEntrance() {
+        return entrance;
+    }
 }
