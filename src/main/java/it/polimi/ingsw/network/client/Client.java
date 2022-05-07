@@ -49,12 +49,10 @@ public class Client {
         String userInput;
         while ((userInput = stdIn.nextLine()) != null) {
 
-            if(userInput.equals("?")){
-                out.writeObject(new Help());
+            if(isNumeric(userInput)){
+                out.writeObject(new IntegerMessage(Integer.parseInt(userInput)));
             }
-            else if(userInput.equalsIgnoreCase("login")){
-                out.writeObject(new Login());
-            }
+
             else if(userInput.equalsIgnoreCase("quit")){
                 listenServer = false;
                 out.writeObject(new Disconnect());
@@ -80,6 +78,18 @@ public class Client {
         in.close();
         stdIn.close();
         echoSocket.close();
+    }
+
+    public static boolean isNumeric(String string){
+        if (string == null || string.equals(""))
+            return false;
+
+        try{
+            int intValue = Integer.parseInt(string);
+            return true;
+        }catch(NumberFormatException e){
+            return false;
+        }
     }
 
     public void printServerMessage(){

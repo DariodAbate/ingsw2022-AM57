@@ -48,7 +48,7 @@ public class ServerClientHandler implements Runnable {
             initPlayer();
 
 
-            while(active){
+            while(active){ //FIXME delete this loop
                int i = 0;
             }
             sendMessageToClient("Disconnected");

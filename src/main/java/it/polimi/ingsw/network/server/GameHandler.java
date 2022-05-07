@@ -29,7 +29,9 @@ public class GameHandler {
         }else
             game = new ExpertGame(playersConnections.get(0).getNickname(), numPlayer);
         clientToPlayer = new HashMap<>();
+        playerToClient = new HashMap<>();
     }
+
     public synchronized void setup() throws IOException, ClassNotFoundException {
 
         for(int i=1; i<numPlayer; i++){
@@ -39,20 +41,30 @@ public class GameHandler {
         for(int i=0; i<numPlayer; i++){
             clientToPlayer.put(playersConnections.get(i), game.getPlayers().get(i));
         }
+
+        for(int i=0; i<numPlayer; i++){
+            playerToClient.put(game.getPlayers().get(i), playersConnections.get(i));
+        }
+
         game.startGame();
         for(ServerClientHandler client : playersConnections){
             askCardsBackSetup(client);
             askColorsSetup(client);
         }
         game.setGameState(GameState.PLANNING_STATE);
+        gameTurns();
     }
 
     private synchronized void askColorsSetup(ServerClientHandler client) throws IOException, ClassNotFoundException{
         client.sendMessageToClient("Select the preferred tower color");
         client.sendMessageToClient("The available tower colors are: ");
+
+        ArrayList<String> towerColors = new ArrayList<>();
         for(int i=0; i<game.getAvailableTowerColor().size(); i++){
-            client.sendMessageToClient(game.getAvailableTowerColor().get(i).name());
+            //client.sendMessageToClient(game.getAvailableTowerColor().get(i).name());
+            towerColors.add(game.getAvailableTowerColor().get(i).name());
         }
+        client.sendMessageToClient(towerColors.toString());
         waitForColorsSetup(client);
     }
     private synchronized void waitForColorsSetup(ServerClientHandler client) throws IOException, ClassNotFoundException{
@@ -65,6 +77,7 @@ public class GameHandler {
                 color = ((ChooseTowerColor) message).getColor();
                 if(game.getAvailableTowerColor().contains(color)){
                     game.associatePlayerToTower(color, clientToPlayer.get(client));
+                    client.sendMessageToClient("Your color of tower is " + color.name());
                     towerChosen = true;
                 }
                 else{
@@ -81,10 +94,13 @@ public class GameHandler {
     private synchronized void askCardsBackSetup(ServerClientHandler client) throws IOException , ClassNotFoundException {
         client.sendMessageToClient("Insert the preferred card back");
         client.sendMessageToClient("The available card backs are: ");
-        //client.sendMessage(new RemainingCardBackMessage())
+
+        ArrayList<String> backs = new ArrayList<>();
         for(int i = 0; i<game.getAvailableCardsBack().size(); i++){
-            client.sendMessageToClient(game.getAvailableCardsBack().get(i).name());
+            //client.sendMessageToClient(game.getAvailableCardsBack().get(i).name());
+            backs.add(game.getAvailableCardsBack().get(i).name());
         }
+        client.sendMessageToClient(backs.toString());
         waitForCardBackAnswer(client);
     }
     private synchronized void waitForCardBackAnswer(ServerClientHandler client) throws IOException , ClassNotFoundException{
@@ -98,8 +114,6 @@ public class GameHandler {
             }catch (StreamCorruptedException e){
                 System.out.println(e.getMessage());
             }
-            System.out.println(message instanceof ChooseCardBack);
-            System.out.println(game.getGameState());
             if(message instanceof ChooseCardBack && game.getGameState() == GameState.JOIN_STATE){
                 card = ((ChooseCardBack) message).getMessage();
                 //card = CardBack.valueOf(((ChooseCardBack)message).getMessage());
@@ -129,16 +143,21 @@ public class GameHandler {
         Message message;
         while(game.getGameState() == GameState.PLANNING_STATE){
             ServerClientHandler client = playerToClient.get(game.getCurrentPlayer());
-            client.sendMessageToClient("Please select wich assistant card do you wanna play");
+            client.sendMessageToClient("Please select which assistant card do you wanna play");
             client.sendMessageToClient("The remaining assistant cards are:");
+
+            ArrayList<String> hand = new ArrayList<>();
             for(AssistantCard card : game.getCurrentPlayer().getHand()){
-                client.sendMessageToClient(Integer.toString(card.getPriority()));
+                hand.add(String.valueOf(card.getPriority()));
             }
+            client.sendMessageToClient(hand.toString());
+
+
             message = client.readMessageFromClient();
-            if(message instanceof PlayAssistantCard && game.getGameState() == GameState.PLANNING_STATE){
-                if(game.getCurrentPlayer().isPriorityAvailable(((PlayAssistantCard) message).getMessage())) {
-                    game.getCurrentPlayer().playCard(((PlayAssistantCard) message).getMessage());
-                    client.sendMessageToClient("You have chosen your " + ((PlayAssistantCard) message).getMessage() + "card");
+            if(message instanceof IntegerMessage && game.getGameState() == GameState.PLANNING_STATE){
+                if(game.getCurrentPlayer().isPriorityAvailable(((IntegerMessage) message).getMessage())) {
+                    game.playCard(((IntegerMessage) message).getMessage() - 1);//FIXME
+                    client.sendMessageToClient("You have chosen your " + ((IntegerMessage) message).getMessage() + "card");
                 }
                 else{
                     client.sendMessageToClient("You've already played this card! Play another one!");

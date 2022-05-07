@@ -1,6 +1,7 @@
 package it.polimi.ingsw.network.server;
 
 import it.polimi.ingsw.network.client.messages.GenericMessage;
+import it.polimi.ingsw.network.client.messages.IntegerMessage;
 import it.polimi.ingsw.network.client.messages.Message;
 
 import java.io.IOException;
@@ -22,15 +23,20 @@ public class MultiServer {
 
     private Map<Integer, String> loggedPlayersByNickname;
     private Map<Integer, ServerClientHandler> loggedPlayersByConnection;
-    private int nextId;
-    private GameHandler currentGame = null;
+    private int nextId; //next id for register a player
+    private GameHandler currentGame = null; //controller for a game
 
     private int requiredPlayer;
     private boolean expertMode;
-    /** List of clients waiting in the lobby. */
-    private final ArrayList<ServerClientHandler> connectionList;
+    private final ArrayList<ServerClientHandler> connectionList; //list of client waiting in the lobby
 
-
+    /*
+     * The management of multiple games is as follows. The first player connects to the server and decides
+     * the number of players for a specific game.
+     * When that number is reached, an instance of the controller is created and those players are connected
+     * to the GameHandler who will take care of the actual game. Once this is done, a new first player will be
+     * chosen and the same process follows.
+     */
 
 
     /**
@@ -125,7 +131,6 @@ public class MultiServer {
         } else if (connectionList.size() == requiredPlayer) {
             broadcastMessage("Number of players reached. Starting a new game.");
 
-            //passare la reference di gamehandler ai socket
             currentGame = new GameHandler(requiredPlayer, expertMode, new ArrayList<>(connectionList));
             for(ServerClientHandler client: connectionList)
                 client.setGameHandler(currentGame);
@@ -154,41 +159,38 @@ public class MultiServer {
         connectionList.remove(clientHandler);
     }
 
-
     /**
-     * This method set the number of player for a game
-     * @param numPlayer number of players that will connect to a game
-     * @return true if a player insert a valid number of player, false otherwise
+     * This method set a number of player for a specific game
+     * @param clientHandler client that communicates with server
      */
-    private boolean setRequiredPlayer(String numPlayer){
-        try {
-            int temp = Integer.parseInt(numPlayer);
-            if(temp <= 1 || temp > 3) return false;
-
-            this.requiredPlayer = temp;
-            return true;
-        }catch (NumberFormatException e){
-            return false;
-        }
-    }
-
     private void selectNumPlayer(ServerClientHandler clientHandler) throws IOException, ClassNotFoundException {
         clientHandler.sendMessageToClient("You are the first player; Please choose a number of players.");
-        boolean isNumber = false;
-        while(!isNumber) {
-            Message msg = clientHandler.readMessageFromClient();
-            if(msg instanceof GenericMessage) {
+        boolean valid = false;
 
-                String temp = ((GenericMessage) msg).getMessage();
-                if (!(isNumber = setRequiredPlayer(temp))) {
+        while(!valid) {
+            Message msg = clientHandler.readMessageFromClient();
+            if(msg instanceof IntegerMessage) {
+
+                int numPlayer = ((IntegerMessage) msg).getMessage();
+                valid = ! (numPlayer <= 1 || numPlayer > 3);
+                System.out.println("valid: " + valid);
+                if (!valid) {
                     clientHandler.sendMessageToClient("Please choose a valid number of players.");
 
-                } else
-                    clientHandler.sendMessageToClient("Number of players inserted: " + temp);
+                } else {
+                    this.requiredPlayer = numPlayer;
+                    clientHandler.sendMessageToClient("Number of players inserted: " + this.requiredPlayer);
+                }
+            }else{
+                clientHandler.sendMessageToClient("Please insert an integer.");
             }
         }
     }
 
+    /**
+     * This method sets a game mode for a specific game
+     * @param clientHandler client that communicates with server
+     */
     private void selectGameMode(ServerClientHandler clientHandler) throws IOException, ClassNotFoundException {
         clientHandler.sendMessageToClient("Do you want to play expert mode? [y/n]");
         boolean isCorrect = false;
@@ -217,7 +219,6 @@ public class MultiServer {
             clientHandler.sendMessageToClient(msg);
         }
     }
-
 
     /**
      * Main class of the server. It creates a MultiEchoServer class that will run on an executor
