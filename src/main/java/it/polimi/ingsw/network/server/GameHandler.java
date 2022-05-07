@@ -172,6 +172,7 @@ public class GameHandler {
     private synchronized void actionPhase() throws IOException, ClassNotFoundException{
         while(game.getGameState() != GameState.PLANNING_STATE){
             ServerClientHandler client = playerToClient.get(game.getCurrentPlayer());
+            client.sendMessageToClient("It's your turn!");
             moveStudents(client);
             //TODO MotherMovement
             //TODO Choose Cloud
@@ -183,14 +184,19 @@ public class GameHandler {
         Message message;
         for(int i=0; i<numberOfMoves; i++){
             boolean correctMove = false;
-            client.sendMessageToClient("Select where you wanna move your students");
+            client.sendMessageToClient("Select where you want to move your students");
             while(!correctMove){
                 message = client.readMessageFromClient();
                 if(message instanceof EntranceToHall && game.getGameState() == GameState.MOVING_STUDENT_STATE){
-                    client.sendMessageToClient("This are the avaiable colors: ");
-                    for(Color color : game.getCurrentPlayer().getBoard().getEntrance().colorsAvailable()){
-                        client.sendMessageToClient(color.name());
-                    }
+                   availableEntranceColor(client);
+                   toHall(client);
+                   correctMove= true;
+                }
+                else if(message instanceof EntranceToIsland && game.getGameState() == GameState.MOVING_STUDENT_STATE){
+                    availableEntranceColor(client);
+                    toIsland(client);
+                    correctMove = true;
+
                 }
                 else
                 {
@@ -200,6 +206,83 @@ public class GameHandler {
 
             }
 
+        }
+        game.setGameState(GameState.MOTHER_MOVEMENT_STATE);
+    }
+    private void availableEntranceColor(ServerClientHandler client) throws IOException, ClassNotFoundException{
+        client.sendMessageToClient("These are the available colors: ");
+        for(Color color : game.getCurrentPlayer().getBoard().getEntrance().colorsAvailable()){
+            client.sendMessageToClient(color.name());
+        }
+        client.sendMessageToClient("Please select one of these colors.");
+    }
+
+    private void toHall(ServerClientHandler client) throws IOException, ClassNotFoundException{
+        boolean isColorChosen = false;
+        Message message;
+        while(!isColorChosen){
+            message = client.readMessageFromClient();
+            if(message instanceof ColorChosen && game.getGameState()==GameState.MOVING_STUDENT_STATE){
+                if(game.getCurrentPlayer().getBoard().getEntrance().colorsAvailable().contains(((ColorChosen) message).getColor())
+                && game.getCurrentPlayer().getBoard().hallIsFillable(((ColorChosen) message).getColor())){
+                    game.entranceToHall(((ColorChosen) message).getColor());
+                    client.sendMessageToClient("You have placed a" + ((ColorChosen) message).getColor().name().toLowerCase()
+                            + "student in the hall");
+                    isColorChosen = true;
+                }
+                else{
+                    client.sendMessageToClient("Color not available, please select another color."); //TODO another custom message for the hall
+                }
+            }
+            else{
+                client.sendMessageToClient("Wrong command, please insert the color you want to move");
+            }
+
+        }
+
+    }
+    public void toIsland(ServerClientHandler client) throws IOException, ClassNotFoundException{
+        boolean isColorChosen = false;
+        Message message;
+        while(!isColorChosen){
+            message = client.readMessageFromClient();
+            if(message instanceof ColorChosen && game.getGameState()==GameState.MOVING_STUDENT_STATE){
+                if(game.getCurrentPlayer().getBoard().getEntrance().colorsAvailable().contains(((ColorChosen) message).getColor())){
+                    client.sendMessageToClient("Color selected " + ((ColorChosen) message).getColor().name());
+                    client.sendMessageToClient("Select the island where you want to place your student.");
+                    client.sendMessageToClient("There are " + game.getArchipelago().size() + "islands.");
+                    islandSelection(client, ((ColorChosen) message).getColor());
+                    isColorChosen = true;
+                }
+                else{
+                    client.sendMessageToClient("Color not available, please select another color.");
+                }
+            }
+            else{
+                client.sendMessageToClient("Wrong command, please insert the color you want to move");
+            }
+
+        }
+    }
+    private void islandSelection(ServerClientHandler client, Color color) throws IOException, ClassNotFoundException{
+        boolean isIdxChosen = false;
+        Message message;
+        while(!isIdxChosen){
+            message = client.readMessageFromClient();
+            if(message instanceof IndexIsland && game.getGameState()==GameState.MOVING_STUDENT_STATE){
+                if(((IndexIsland) message).getIdxIsland() <= game.getArchipelago().size() && ((IndexIsland) message).getIdxIsland() >0){
+                    game.entranceToIsland(((IndexIsland) message).getIdxIsland() -1, color);
+                    client.sendMessageToClient("You have placed a " + color.name()
+                            + "student on the island number" + ((IndexIsland) message).getIdxIsland());
+                    isIdxChosen = true;
+                }
+                else{
+                    client.sendMessageToClient("This island doesn't exists, please select another island.");
+                }
+            }
+            else{
+                client.sendMessageToClient("Wrong command, select the idx of the island");
+            }
         }
     }
     public int getNumPlayer() {
