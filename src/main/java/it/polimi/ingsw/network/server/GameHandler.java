@@ -137,7 +137,7 @@ public class GameHandler {
             message = client.readMessageFromClient();
             if(message instanceof PlayAssistantCard && game.getGameState() == GameState.PLANNING_STATE){
                 if(game.getCurrentPlayer().isPriorityAvailable(((PlayAssistantCard) message).getMessage())) {
-                    game.getCurrentPlayer().playCard(((PlayAssistantCard) message).getMessage());
+                    game.getCurrentPlayer().playCard(((PlayAssistantCard) message).getMessage()-1);
                     client.sendMessageToClient("You have chosen your " + ((PlayAssistantCard) message).getMessage() + "card");
                 }
                 else{
