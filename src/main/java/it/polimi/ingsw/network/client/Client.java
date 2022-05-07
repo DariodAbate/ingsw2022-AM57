@@ -1,6 +1,8 @@
 package it.polimi.ingsw.network.client;
 
 
+import it.polimi.ingsw.model.CardBack;
+import it.polimi.ingsw.model.Tower;
 import it.polimi.ingsw.network.client.messages.*;
 import it.polimi.ingsw.network.server.answers.GenericAnswer;
 
@@ -63,6 +65,11 @@ public class Client {
             || userInput.equalsIgnoreCase("sage") || userInput.equalsIgnoreCase("druid")){
                 CardBack back = CardBack.valueOf(userInput.toUpperCase());
                 out.writeObject(new ChooseCardBack(back));
+            }
+            else if(userInput.equalsIgnoreCase("black") || userInput.equalsIgnoreCase("white")
+                    || userInput.equalsIgnoreCase("gray")){
+                Tower tower = Tower.valueOf(userInput.toUpperCase());
+                out.writeObject(new ChooseTowerColor(tower));
             }
             else{
                 out.writeObject(new GenericMessage(userInput));
