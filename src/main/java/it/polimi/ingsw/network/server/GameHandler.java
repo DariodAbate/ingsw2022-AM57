@@ -169,7 +169,6 @@ public class GameHandler {
             else{
                 client.sendMessageToClient("Wrong command, please insert a valid command");
             }
-            System.out.println(game.getGameState());
         }
 
     }
@@ -179,7 +178,7 @@ public class GameHandler {
             client.sendMessageToClient("It's your turn!");
             moveStudents(client);
             motherMovement(client);
-            //TODO Choose Cloud
+            takeCloud(client);
         }
     }
 
@@ -188,19 +187,19 @@ public class GameHandler {
         Message message;
         for(int i=0; i<numberOfMoves; i++){
             boolean correctMove = false;
-            client.sendMessageToClient("Select where you want to move your students");
+            client.sendMessageToClient("Select where you want to move your students[\"hall/island\"]");
             while(!correctMove){
                 message = client.readMessageFromClient();
-                if(message instanceof EntranceToHall && game.getGameState() == GameState.MOVING_STUDENT_STATE){
-                   availableEntranceColor(client);
-                   toHall(client);
-                   correctMove= true;
-                }
-                else if(message instanceof EntranceToIsland && game.getGameState() == GameState.MOVING_STUDENT_STATE){
-                    availableEntranceColor(client);
-                    toIsland(client);
+                if(message instanceof MoveStudentMessage && game.getGameState() == GameState.MOVING_STUDENT_STATE) {
+                    String command = ((MoveStudentMessage) message).getMsg().toUpperCase();
+                    if (( command.equals("HALL"))){
+                        availableEntranceColor(client);
+                        toHall(client);
+                    } else{
+                        availableEntranceColor(client);
+                        toIsland(client);
+                    }
                     correctMove = true;
-
                 }
                 else
                 {
@@ -213,7 +212,7 @@ public class GameHandler {
         }
         game.setGameState(GameState.MOTHER_MOVEMENT_STATE);
     }
-    private void availableEntranceColor(ServerClientHandler client) throws IOException, ClassNotFoundException{
+    private void availableEntranceColor(ServerClientHandler client) throws IOException{
         client.sendMessageToClient("These are the available colors: ");
 
         ArrayList<String> colors = new ArrayList<>();
@@ -233,8 +232,8 @@ public class GameHandler {
                 if(game.getCurrentPlayer().getBoard().getEntrance().colorsAvailable().contains(((ColorChosen) message).getColor())
                 && game.getCurrentPlayer().getBoard().hallIsFillable(((ColorChosen) message).getColor())){
                     game.entranceToHall(((ColorChosen) message).getColor());
-                    client.sendMessageToClient("You have placed a" + ((ColorChosen) message).getColor().name().toLowerCase()
-                            + "student in the hall");
+                    client.sendMessageToClient("You have placed a " + ((ColorChosen) message).getColor().name().toLowerCase()
+                            + " student in the hall");
                     isColorChosen = true;
                 }
                 else{
@@ -257,7 +256,7 @@ public class GameHandler {
                 if(game.getCurrentPlayer().getBoard().getEntrance().colorsAvailable().contains(((ColorChosen) message).getColor())){
                     client.sendMessageToClient("Color selected " + ((ColorChosen) message).getColor().name());
                     client.sendMessageToClient("Select the island where you want to place your student.");
-                    client.sendMessageToClient("There are " + game.getArchipelago().size() + "islands.");
+                    client.sendMessageToClient("There are " + game.getArchipelago().size() + " islands.");
                     islandSelection(client, ((ColorChosen) message).getColor());
                     isColorChosen = true;
                 }
@@ -271,16 +270,17 @@ public class GameHandler {
 
         }
     }
+
     private void islandSelection(ServerClientHandler client, Color color) throws IOException, ClassNotFoundException{
         boolean isIdxChosen = false;
         Message message;
         while(!isIdxChosen){
             message = client.readMessageFromClient();
-            if(message instanceof IndexIsland && game.getGameState()==GameState.MOVING_STUDENT_STATE){
-                if(((IndexIsland) message).getIdxIsland() <= game.getArchipelago().size() && ((IndexIsland) message).getIdxIsland() >0){
-                    game.entranceToIsland(((IndexIsland) message).getIdxIsland() -1, color);
+            if(message instanceof IntegerMessage && game.getGameState()==GameState.MOVING_STUDENT_STATE){
+                if(((IntegerMessage) message).getMessage() <= game.getArchipelago().size() && ((IntegerMessage) message).getMessage() >0){
+                    game.entranceToIsland(((IntegerMessage) message).getMessage() -1, color);
                     client.sendMessageToClient("You have placed a " + color.name()
-                            + "student on the island number" + ((IndexIsland) message).getIdxIsland());
+                            + " student on the island number " + ((IntegerMessage) message).getMessage());
                     isIdxChosen = true;
                 }
                 else{
@@ -295,23 +295,25 @@ public class GameHandler {
     private void motherMovement(ServerClientHandler client) throws IOException, ClassNotFoundException{
         boolean isIdxChosen = false;
         Message message;
-        client.sendMessageToClient("Select the island where you want to place your student.");
-        client.sendMessageToClient("There are " + game.getArchipelago().size() + "islands.");
+        client.sendMessageToClient("Move mother nature. You can travel " + game.getMaxMovement() + " islands.");
+        client.sendMessageToClient("Now she is on the island number " + game.getMotherNature());
+
+        client.sendMessageToClient("Choose the number of islands you want to travel.");
         while(!isIdxChosen){
             message = client.readMessageFromClient();
             if(message instanceof IntegerMessage && game.getGameState()==GameState.MOTHER_MOVEMENT_STATE){
-                int islandIndex = ((IntegerMessage)message).getMessage();
-                if(islandIndex <= game.getArchipelago().size() && islandIndex > 0 && islandIndex <= game.getMaxMovement()){
-                    client.sendMessageToClient("You have selected the island number " + ((IntegerMessage) message).getMessage());
-                    game.motherMovement(islandIndex-1);
+                int step = ((IntegerMessage)message).getMessage();
+                if(step <= game.getArchipelago().size() && step > 0 && step <= game.getMaxMovement()){
+                    client.sendMessageToClient("Mother nature will travel " + ((IntegerMessage) message).getMessage() + " islands.");
+                    game.motherMovement(step);
                     isIdxChosen = true;
                 }
                 else{
-                    client.sendMessageToClient("Island not available, please select another island.");
+                    client.sendMessageToClient("Please select a valid number of steps.");
                 }
             }
             else{
-                client.sendMessageToClient("Wrong command, please insert the number of the island you want to move on");
+                client.sendMessageToClient("Wrong command, please insert the number of islands you want to travel");
             }
         }
     }
@@ -326,19 +328,20 @@ public class GameHandler {
         int cloudIdx = 0;
         for(int i=0; i<game.getCloudTiles().size(); i++){
             cloudIdx++;
+
             if(!game.getCloudTiles().get(i).isEmpty()){
-                for(Color color: game.getCloudTiles().get(i).getTile().colorsAvailable()){
-                    students.put(color, game.getCloudTiles().get(i).getTile().numStudents(color));
+                for(Color color: game.getCloudTiles().get(i).colorsAvailable()){
+                    students.put(color, game.getCloudTiles().get(i).numStudOn(color));
                 }
-                client.sendMessageToClient("Island" + cloudIdx + " " + students.toString());
+                client.sendMessageToClient("Cloud " + cloudIdx + " " + students);
             }
         }
         while(!cloudTaken){
             message = client.readMessageFromClient();
             if(message instanceof IntegerMessage && game.getGameState()==GameState.CLOUD_TO_ENTRANCE_STATE){
                 int temp = ((IntegerMessage) message).getMessage();
-                if(temp > 0 && temp<= numPlayer &&  !game.getCloudTiles().get(temp).isEmpty()){
-                    game.cloudToBoard(temp);
+                if(temp > 0 && temp<= numPlayer &&  !game.getCloudTiles().get(temp-1).isEmpty()){
+                    game.cloudToBoard(temp - 1);
                     client.sendMessageToClient("You've chosen the cloud number " + temp);
                     cloudTaken = true;
                 }

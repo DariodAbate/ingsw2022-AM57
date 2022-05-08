@@ -44,7 +44,8 @@ public class ServerClientHandler implements Runnable {
         try{
             out = new ObjectOutputStream(socket.getOutputStream());
             in = new ObjectInputStream(socket.getInputStream());
-            sendMessageToClient("Welcome to the magic world of Eryantis!!");
+
+            sendMessageToClient("Welcome to the magical world of Eryantis!!");
             initPlayer();
 
 
@@ -99,7 +100,7 @@ public class ServerClientHandler implements Runnable {
     public Message readMessageFromClient() throws IOException, ClassNotFoundException {
         Object msg = null;
         while(msg == null){
-            msg =  in.readObject();
+                msg =  in.readObject();
         }
         if(msg instanceof Message) {
             if(msg instanceof Disconnect) {

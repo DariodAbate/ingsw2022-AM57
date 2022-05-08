@@ -2,8 +2,8 @@ package it.polimi.ingsw.network.client.messages;
 
 import it.polimi.ingsw.model.Color;
 
-public class ColorChosen {
-    private Color color;
+public class ColorChosen implements Message{
+    private final Color color;
 
     public ColorChosen(Color color) {
         this.color = color;

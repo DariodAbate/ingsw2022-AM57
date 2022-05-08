@@ -3,6 +3,7 @@ package it.polimi.ingsw.network.server;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.net.SocketTimeoutException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -46,7 +47,7 @@ public class SocketServer implements Runnable{
                 Socket socket = serverSocket.accept();
                 ServerClientHandler clientHandler = new ServerClientHandler(server, socket);
                 executor.submit(clientHandler);
-            }catch(IOException e){
+            } catch(IOException e){
                 System.out.println("Error." + e.getMessage());
             }
         }

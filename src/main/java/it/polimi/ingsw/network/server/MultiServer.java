@@ -24,7 +24,7 @@ public class MultiServer {
     private Map<Integer, String> loggedPlayersByNickname;
     private Map<Integer, ServerClientHandler> loggedPlayersByConnection;
     private int nextId; //next id for register a player
-    private GameHandler currentGame = null; //controller for a game
+   // private GameHandler currentGame = null; //controller for a game
 
     private int requiredPlayer;
     private boolean expertMode;
@@ -131,18 +131,23 @@ public class MultiServer {
         } else if (connectionList.size() == requiredPlayer) {
             broadcastMessage("Number of players reached. Starting a new game.");
 
-            currentGame = new GameHandler(requiredPlayer, expertMode, new ArrayList<>(connectionList));
+            GameHandler game = new GameHandler(requiredPlayer, expertMode, new ArrayList<>(connectionList));
             for(ServerClientHandler client: connectionList)
-                client.setGameHandler(currentGame);
+                client.setGameHandler(game);
 
-            currentGame.setup();
+            Thread t = new Thread(() -> {
+                try {
+                    game.setup();
+                } catch (IOException | ClassNotFoundException e) {
+                    e.printStackTrace();
+                }
+            });
+            t.start();
 
 
             connectionList.clear();
             requiredPlayer = 0;
             expertMode = false;
-            currentGame = null;
-
 
         } else {
             clientHandler.sendMessageToClient("Wait for " + (this.requiredPlayer - connectionList.size()) + " players to join.");
@@ -150,14 +155,6 @@ public class MultiServer {
     }
 
 
-
-    /**
-     * This method removes a client from a lobby before the maximum number is reached.
-     * @param clientHandler client handler associated to a player.
-     */
-    public synchronized void removeFromLobby(ServerClientHandler clientHandler){
-        connectionList.remove(clientHandler);
-    }
 
     /**
      * This method set a number of player for a specific game
@@ -173,7 +170,6 @@ public class MultiServer {
 
                 int numPlayer = ((IntegerMessage) msg).getMessage();
                 valid = ! (numPlayer <= 1 || numPlayer > 3);
-                System.out.println("valid: " + valid);
                 if (!valid) {
                     clientHandler.sendMessageToClient("Please choose a valid number of players.");
 
