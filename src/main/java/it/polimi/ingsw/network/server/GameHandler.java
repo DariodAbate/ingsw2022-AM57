@@ -11,6 +11,7 @@ import java.io.IOException;
 import java.io.StreamCorruptedException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 //all method synchronized
@@ -137,6 +138,7 @@ public class GameHandler {
         boolean endgame = false;
         while(!endgame){
             planningPhase();
+            actionPhase();
         }
     }
     private synchronized void planningPhase() throws IOException, ClassNotFoundException{
@@ -176,7 +178,7 @@ public class GameHandler {
             ServerClientHandler client = playerToClient.get(game.getCurrentPlayer());
             client.sendMessageToClient("It's your turn!");
             moveStudents(client);
-            //TODO MotherMovement
+            motherMovement(client);
             //TODO Choose Cloud
         }
     }
@@ -213,9 +215,12 @@ public class GameHandler {
     }
     private void availableEntranceColor(ServerClientHandler client) throws IOException, ClassNotFoundException{
         client.sendMessageToClient("These are the available colors: ");
+
+        ArrayList<String> colors = new ArrayList<>();
         for(Color color : game.getCurrentPlayer().getBoard().getEntrance().colorsAvailable()){
-            client.sendMessageToClient(color.name());
+            colors.add(color.name());
         }
+        client.sendMessageToClient(colors.toString());
         client.sendMessageToClient("Please select one of these colors.");
     }
 
@@ -285,6 +290,66 @@ public class GameHandler {
             else{
                 client.sendMessageToClient("Wrong command, select the idx of the island");
             }
+        }
+    }
+    private void motherMovement(ServerClientHandler client) throws IOException, ClassNotFoundException{
+        boolean isIdxChosen = false;
+        Message message;
+        client.sendMessageToClient("Select the island where you want to place your student.");
+        client.sendMessageToClient("There are " + game.getArchipelago().size() + "islands.");
+        while(!isIdxChosen){
+            message = client.readMessageFromClient();
+            if(message instanceof IntegerMessage && game.getGameState()==GameState.MOTHER_MOVEMENT_STATE){
+                int islandIndex = ((IntegerMessage)message).getMessage();
+                if(islandIndex <= game.getArchipelago().size() && islandIndex > 0 && islandIndex <= game.getMaxMovement()){
+                    client.sendMessageToClient("You have selected the island number " + ((IntegerMessage) message).getMessage());
+                    game.motherMovement(islandIndex-1);
+                    isIdxChosen = true;
+                }
+                else{
+                    client.sendMessageToClient("Island not available, please select another island.");
+                }
+            }
+            else{
+                client.sendMessageToClient("Wrong command, please insert the number of the island you want to move on");
+            }
+        }
+    }
+
+    private void takeCloud(ServerClientHandler client) throws IOException, ClassNotFoundException{
+        boolean cloudTaken = false;
+        Message message;
+        client.sendMessageToClient("Select one of the clouds: ");
+
+        ArrayList<String> clouds = new ArrayList<>();
+        Map<Color, Integer> students = new LinkedHashMap<>();
+        int cloudIdx = 0;
+        for(int i=0; i<game.getCloudTiles().size(); i++){
+            cloudIdx++;
+            if(!game.getCloudTiles().get(i).isEmpty()){
+                for(Color color: game.getCloudTiles().get(i).getTile().colorsAvailable()){
+                    students.put(color, game.getCloudTiles().get(i).getTile().numStudents(color));
+                }
+                client.sendMessageToClient("Island" + cloudIdx + " " + students.toString());
+            }
+        }
+        while(!cloudTaken){
+            message = client.readMessageFromClient();
+            if(message instanceof IntegerMessage && game.getGameState()==GameState.CLOUD_TO_ENTRANCE_STATE){
+                int temp = ((IntegerMessage) message).getMessage();
+                if(temp > 0 && temp<= numPlayer &&  !game.getCloudTiles().get(temp).isEmpty()){
+                    game.cloudToBoard(temp);
+                    client.sendMessageToClient("You've chosen the cloud number " + temp);
+                    cloudTaken = true;
+                }
+                else{
+                    client.sendMessageToClient("Cloud not valid, please insert a new cloud.");
+                }
+            }
+            else{
+                client.sendMessageToClient("Wrong command, insert the number of the cloud you want to take.");
+            }
+
         }
     }
     public int getNumPlayer() {
