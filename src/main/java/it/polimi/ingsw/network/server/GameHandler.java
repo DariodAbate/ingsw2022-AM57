@@ -138,12 +138,13 @@ public class GameHandler {
         boolean endgame = false;
         while(!endgame){
             planningPhase();
-            actionPhase();
+            //actionPhase();
         }
     }
     private synchronized void planningPhase() throws IOException, ClassNotFoundException{
         Message message;
         ServerClientHandler client;
+        ArrayList<Integer> cardsPlayed = new ArrayList<>();
         while(game.getGameState() == GameState.PLANNING_STATE){
             client = playerToClient.get(game.getCurrentPlayer());
             client.sendMessageToClient("Please select which assistant card do you wanna play");
@@ -154,22 +155,24 @@ public class GameHandler {
                 hand.add(String.valueOf(card.getPriority()));
             }
             client.sendMessageToClient(hand.toString());
-
-
             message = client.readMessageFromClient();
             if(message instanceof IntegerMessage && game.getGameState() == GameState.PLANNING_STATE){
-                if(game.getCurrentPlayer().isPriorityAvailable(((IntegerMessage) message).getMessage())) {
-                    game.playCard(((IntegerMessage) message).getMessage() - 1);//FIXME
+                if(game.getCurrentPlayer().isPriorityAvailable(((IntegerMessage) message).getMessage()) &&
+                        (!cardsPlayed.contains(((IntegerMessage) message).getMessage()) || cardsPlayed.containsAll(hand))){
+                    game.playCard(((IntegerMessage) message).getMessage() - 1);
                     client.sendMessageToClient("You have chosen your " + ((IntegerMessage) message).getMessage() + " card");
+                    cardsPlayed.add(((IntegerMessage) message).getMessage());
+                }
+                else if(!game.getCurrentPlayer().isPriorityAvailable(((IntegerMessage) message).getMessage())){
+                    client.sendMessageToClient("You've already played this card! Play another one!");
                 }
                 else{
-                    client.sendMessageToClient("You've already played this card! Play another one!");
+                    client.sendMessageToClient("This card is already been played!");
                 }
             }
             else{
                 client.sendMessageToClient("Wrong command, please insert a valid command");
             }
-            System.out.println(game.getGameState());
         }
 
     }
