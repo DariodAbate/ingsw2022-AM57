@@ -19,7 +19,7 @@ import java.util.Random;
  * @author Dario d'Abate
  * @author Lorenzo Corrado
  */
-public class Game implements RoundObserver{
+public class Game implements RoundObserver, RefillInterface{
     protected GameConstants gameConstants;//contains all the game's constants
     protected ArrayList<Player> players;
     protected final int numGamePlayers; //number of players for a particular game
@@ -158,7 +158,10 @@ public class Game implements RoundObserver{
         this.gameState = state;
     }
     //initialize  a round through which the current player can be selected
-    protected void initRound(){round = new Round(players);}
+    protected void initRound(){
+        round = new Round(players);
+        round.setRefillInterface(this);
+    }
 
 
 

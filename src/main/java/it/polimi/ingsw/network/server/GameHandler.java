@@ -167,7 +167,7 @@ public class GameHandler {
                     client.sendMessageToClient("You've already played this card! Play another one!");
                 }
                 else{
-                    client.sendMessageToClient("This card is already been played!");
+                    client.sendMessageToClient("This card has already been played by another player!");
                 }
             }
             else{

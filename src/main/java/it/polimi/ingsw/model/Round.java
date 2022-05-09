@@ -22,6 +22,7 @@ public class Round {
     private Player currentTurn;
     private boolean isPlanning;
     private boolean isEnding;
+    private RefillInterface game;
 
     /**
      * Constructor of the class. Given the Arraylist of the players that are playing it
@@ -37,6 +38,14 @@ public class Round {
         planningPhaseOrder = new ArrayList<>(players);
         isPlanning = true;
         setRandomStartPlayer();
+    }
+
+    /**
+     * This method is used to provide a method of game inside this class
+     * @param game interface that expose a method of game class
+     */
+    public void setRefillInterface(RefillInterface game){
+        this.game = game;
     }
 
     /**
@@ -194,8 +203,10 @@ public class Round {
             return;
         }
         roundNumber += 1;
-            isPlanning = true;
-            setPlanningPhaseOrder();
+
+        isPlanning = true;
+        setPlanningPhaseOrder();
+        game.bagToClouds();//refill the cloud tiles at the end of a round
     }
 
     public void setIsEnding ( boolean isEnding){ //this method sets a condition for the endgame
