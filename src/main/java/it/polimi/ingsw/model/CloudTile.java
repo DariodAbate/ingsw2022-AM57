@@ -2,6 +2,8 @@ package it.polimi.ingsw.model;
 
 import it.polimi.ingsw.model.constantFactory.GameConstants;
 
+import java.util.ArrayList;
+
 /**
  * This class represent the cloud tile, shared by every player.
  * It contains an attribute that represent the sets of students and the maximum size
@@ -68,9 +70,9 @@ public class CloudTile {
     //we can obtain students from a tile iff the tile is full, otherwise unchanged
 
     /**
-     *Getter method for the sets of students on a tile.
-     *Students are obtainable from a tile iff the tile is full,
-     *otherwise the sets of students is unchanged
+     * Getter method for the sets of students on a tile, thus it removes them from a tile.
+     * Students are obtainable from a tile iff the tile is full,
+     * otherwise the sets of students is unchanged
      * @return Sets of students on a tile
      * @throws IllegalStateException when a tile is not full of students
      */
@@ -86,5 +88,12 @@ public class CloudTile {
             }
         }
         return temp;
+    }
+
+    /**
+     * @return returns the color of students that are on a cloud tile
+     */
+    public ArrayList<Color> colorsAvailable() {
+        return cloudStud.colorsAvailable();
     }
 }

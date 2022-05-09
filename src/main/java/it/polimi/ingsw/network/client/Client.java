@@ -2,6 +2,7 @@ package it.polimi.ingsw.network.client;
 
 
 import it.polimi.ingsw.model.CardBack;
+import it.polimi.ingsw.model.Color;
 import it.polimi.ingsw.model.Tower;
 import it.polimi.ingsw.network.client.messages.*;
 import it.polimi.ingsw.network.server.answers.GenericAnswer;
@@ -34,21 +35,9 @@ public class Client {
         Thread inServer = new Thread(this::printServerMessage);
         inServer.start();
 
-        /*
-            Thread outPing = new Thread(()-> {
-                try {
-                    sendPing();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            });
-            outPing.start();
-
-         */
-
         String userInput;
         while ((userInput = stdIn.nextLine()) != null) {
-
+            System.out.println();
             if(isNumeric(userInput)){
                 out.writeObject(new IntegerMessage(Integer.parseInt(userInput)));
             }
@@ -68,6 +57,15 @@ public class Client {
                     || userInput.equalsIgnoreCase("gray")){
                 Tower tower = Tower.valueOf(userInput.toUpperCase());
                 out.writeObject(new ChooseTowerColor(tower));
+            }
+            else if(userInput.equalsIgnoreCase("hall") || userInput.equalsIgnoreCase("island")){
+                out.writeObject(new MoveStudentMessage(userInput));
+            }
+            else if(userInput.equalsIgnoreCase("blue") || userInput.equalsIgnoreCase("pink")
+            ||userInput.equalsIgnoreCase("red")||userInput.equalsIgnoreCase("yellow")||
+                    userInput.equalsIgnoreCase("green")){
+                Color color = Color.valueOf(userInput.toUpperCase());
+                out.writeObject(new ColorChosen(color));
             }
             else{
                 out.writeObject(new GenericMessage(userInput));
@@ -108,20 +106,6 @@ public class Client {
 
     }
 
-    /*
-    public void sendPing() throws IOException {
-        while(listenServer) {
-            out.writeObject(new Ping());
-            out.flush();
-            try{
-                Thread.sleep(8000);
-            }catch(InterruptedException e){
-                e.printStackTrace();
-            }
-        }
-    }
-
-     */
 
     public static void main(String[] args) throws IOException {
 

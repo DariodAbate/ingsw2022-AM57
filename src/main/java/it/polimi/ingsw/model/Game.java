@@ -142,6 +142,9 @@ public class Game implements RoundObserver{
         //initialize clouds
         initClouds();
 
+        //fill clouds with students
+        bagToClouds();
+
         //fill entrance for each player's board
         initEntrancePlayers();
 

@@ -86,7 +86,7 @@ class GameTest {
 
         //clouds initially empty
         for (CloudTile c : g.getCloudTiles()) {
-            assertEquals(0, c.numStudOn());
+            assertTrue( c.numStudOn() > 0);
         }
 
     }
@@ -144,6 +144,11 @@ class GameTest {
     void bagToCloudEmpty() {
         setupFullPlayer();
         g.startGame();
+        g.getCloudTiles();
+
+        for(CloudTile cloudTile: g.getCloudTiles()){
+            cloudTile.getTile();
+        }
 
         for (CloudTile cloudTile : g.getCloudTiles())
             assertTrue(cloudTile.isEmpty());
@@ -182,7 +187,7 @@ class GameTest {
     void cloudToBoard() {
         setupFullPlayer();
         g.startGame();
-        g.bagToClouds();
+   //     g.bagToClouds();
         //all clouds filled
 
         Board boardCurrentPlayer = g.getCurrentPlayer().getBoard();
@@ -211,7 +216,7 @@ class GameTest {
     void cloudToBoard2() {
         setupFullPlayer();
         g.startGame();
-        g.bagToClouds();
+       // g.bagToClouds();
         //all clouds filled
 
         Board boardCurrentPlayer = g.getCurrentPlayer().getBoard();
@@ -240,7 +245,7 @@ class GameTest {
     void cloudToBoard3() {
         setupFullPlayer();
         g.startGame();
-        g.bagToClouds();
+      //  g.bagToClouds();
         //all clouds filled
 
         Board boardCurrentPlayer = g.getCurrentPlayer().getBoard();
