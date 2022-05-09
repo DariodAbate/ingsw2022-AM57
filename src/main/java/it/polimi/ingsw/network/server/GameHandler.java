@@ -138,7 +138,7 @@ public class GameHandler {
         boolean endgame = false;
         while(!endgame){
             planningPhase();
-            //actionPhase();
+            actionPhase();
         }
     }
     private synchronized void planningPhase() throws IOException, ClassNotFoundException{
