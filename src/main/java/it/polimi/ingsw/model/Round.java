@@ -1,10 +1,7 @@
 package it.polimi.ingsw.model;
 
-import java.sql.SQLOutput;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Comparator;
-import java.util.concurrent.ThreadLocalRandom;
 import java.util.Random;
 
 /**
@@ -23,6 +20,8 @@ public class Round {
     private boolean isPlanning;
     private boolean isEnding;
     private RefillInterface game;
+    private Player firstPlanningPlayer;
+
 
     /**
      * Constructor of the class. Given the Arraylist of the players that are playing it
@@ -113,12 +112,7 @@ public class Round {
      */
     public void setPlanningPhaseOrder() {
         planningPhaseOrder.removeAll(playersCopy);
-        Player firstPlayer = Collections.min(playersCopy, (player1, player2) -> {
-                if (player1.viewLastCard().getPriority() < player2.viewLastCard().getPriority())
-                    return -1;
-                else
-                    return 1;
-            });
+        Player firstPlayer = firstPlanningPlayer;
         planningPhaseOrder.add(firstPlayer);
         int firstPlayerIndex = playersCopy.indexOf(firstPlayer);
         if (playersCopy.size() == 3) {
@@ -137,11 +131,12 @@ public class Round {
      * priority card. The method also set the boolean variable isPlanning to false that
      * indicates the beginning of the action phase.
      */
-    //TODO Case of same priority card to be added
     public void setActionPhaseOrder() {
+        actionPhaseOrder = planningPhaseOrder;
         actionPhaseOrder.sort(Comparator.comparingInt(player -> player.viewLastCard().getPriority()));
         currentTurn = actionPhaseOrder.get(0);
         isPlanning = false;
+        firstPlanningPlayer = actionPhaseOrder.get(0);
     }
 
     /**
