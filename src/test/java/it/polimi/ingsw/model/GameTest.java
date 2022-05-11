@@ -602,4 +602,10 @@ class GameTest {
         assertThrows(IllegalArgumentException.class, ()-> g.playCard(-1));
     }
 
+    @Test
+    void testerini(){
+        System.out.println("\u001B[37mciao");
+        System.out.println("\u001B[4;34mciao");
+        System.out.println("\u001B[38;5;232mciao");
+    }
 }

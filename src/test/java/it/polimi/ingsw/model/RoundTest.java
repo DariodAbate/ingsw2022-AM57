@@ -18,6 +18,15 @@ import static org.junit.jupiter.api.Assertions.*;
  */
 class RoundTest {
     GameConstantsCreator g;
+    GameConstants gc;
+    ArrayList<Player> players = new ArrayList<>();
+    Round r;
+
+    @BeforeEach
+    void setup() {
+        g = new GameConstantsCreatorThreePlayers();
+        gc = g.create();
+    }
 
     /**
      * This method tests the correct working of the method setActionPhaseOrder()
@@ -25,10 +34,6 @@ class RoundTest {
      */
     @Test
     void setActionPhaseOrderTest3Player() {
-        g = new GameConstantsCreatorThreePlayers();
-        GameConstants gc = g.create();
-        ArrayList<Player> players = new ArrayList<>();
-        Round r;
         Player p1 = new Player(1, gc);
         Player p2 = new Player(2, gc);
         Player p3 = new Player(3, gc);
@@ -61,8 +66,6 @@ class RoundTest {
     void setActionPhaseOrderTest2Player() {
         g = new GameConstantsCreatorTwoPlayers();
         GameConstants gc = g.create();
-        ArrayList<Player> players = new ArrayList<>();
-        Round r;
         Player p1 = new Player(1, gc);
         Player p2 = new Player(2, gc);
         p1.playCard(8);
@@ -80,26 +83,24 @@ class RoundTest {
      */
     @Test
     void planningPhaseOrderTest3Player() {
-        g = new GameConstantsCreatorThreePlayers();
-        GameConstants gc = g.create();
-        ArrayList<Player> players = new ArrayList<>();
-        Round r;
         Player p1 = new Player(1, gc);
         Player p2 = new Player(2, gc);
         Player p3 = new Player(3, gc);
-        p1.playCard(4);
-        p2.playCard(0);
-        p3.playCard(9);
         players.add(p1);
         players.add(p2);
         players.add(p3);
-        r = new Round(players);
-        r.setPlanningPhaseOrder();
+        r = new Round(players);           //Planning order = random first player
+        p1.playCard(4);
+        p2.playCard(0);
+        p3.playCard(9);
+        r.setActionPhaseOrder();          //Action order = 213
+        r.setPlanningPhaseOrder();        //Planning order = 231
         assertEquals(3, r.getPlanningPhaseOrder().get(1).getId());
         p1.playCard(8);
         p2.playCard(1);
         p3.playCard(0);
-        r.setPlanningPhaseOrder();
+        r.setActionPhaseOrder();          //Action order = 321
+        r.setPlanningPhaseOrder();        //Planning order = 312
         assertEquals(2, r.getPlanningPhaseOrder().get(2).getId());
     }
 
@@ -111,8 +112,6 @@ class RoundTest {
     void planningPhaseOrderTest2Player() {
         g = new GameConstantsCreatorTwoPlayers();
         GameConstants gc = g.create();
-        ArrayList<Player> players = new ArrayList<>();
-        Round r;
         Player p1 = new Player(27, gc);
         Player p2 = new Player(10, gc);
         p1.playCard(4);
@@ -124,45 +123,9 @@ class RoundTest {
         assertEquals(27, r.getPlanningPhaseOrder().get(1).getId());
     }
 
-    /**
-     * This method tests the correct working of the method nextTurn.
-     */
-    @Test
-    void nextTurnTest() {
-        g = new GameConstantsCreatorThreePlayers();
-        GameConstants gc = g.create();
-        ArrayList<Player> players = new ArrayList<>();
-        Round r;
-        Player p1 = new Player(1, gc);
-        Player p2 = new Player(2, gc);
-        Player p3 = new Player(3, gc);
-        p1.playCard(4);
-        p2.playCard(0);
-        p3.playCard(8);
-        players.add(p1);
-        players.add(p2);
-        players.add(p3);
-        r = new Round(players);
-        r.setPlanningPhaseOrder(); //setPlanningPhaseOrder --> 231
-        assertEquals(2, r.getCurrentPlayer().getId());
-        r.nextTurn();
-        assertEquals(3,r.getCurrentPlayer().getId());
-        r.nextTurn();
-        assertEquals(1, r.getCurrentPlayer().getId());
-        r.nextTurn();              //setActionPhaseOrder --> 213
-        assertEquals(2, r.getCurrentPlayer().getId());
-        r.nextTurn();
-        assertEquals(1, r.getCurrentPlayer().getId());
-        r.nextTurn();
-        assertEquals(3, r.getCurrentPlayer().getId());
-    }
 
     @Test
-    void nextTurnTest1() {
-        g = new GameConstantsCreatorThreePlayers();
-        GameConstants gc = g.create();
-        ArrayList<Player> players = new ArrayList<>();
-        Round r;
+    void nextTurnTest() {
         Player p1 = new Player(1, gc);
         Player p2 = new Player(2, gc);
         Player p3 = new Player(3, gc);
@@ -182,22 +145,5 @@ class RoundTest {
         r.nextTurn();
         assertEquals(3, r.getCurrentPlayer().getId());
         assertTrue(r.isRoundEnding());
-        r.nextTurn();
-        //New round, Planning order = 231
-        assertEquals(1, r.getRoundNumber());
-        assertEquals(2, r.getCurrentPlayer().getId());
-        p2.playCard(4);
-        r.nextTurn();
-        assertEquals(3, r.getCurrentPlayer().getId());
-        p3.playCard(2);
-        r.nextTurn();
-        assertEquals(1, r.getCurrentPlayer().getId());
-        p1.playCard(0);
-        r.nextTurn();                  //Action order = 132
-        assertEquals(1, r.getCurrentPlayer().getId());
-        r.nextTurn();
-        assertEquals(3, r.getCurrentPlayer().getId());
-        r.nextTurn();
-        assertEquals(2, r.getCurrentPlayer().getId());
     }
 }
