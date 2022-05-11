@@ -7,8 +7,6 @@ import it.polimi.ingsw.network.client.messages.Message;
 import java.io.IOException;
 import java.net.SocketTimeoutException;
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Scanner;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -22,15 +20,11 @@ import java.util.concurrent.Executors;
 public class MultiServer {
     private final SocketServer socketServer;
 
-    private final Map<Integer, String> loggedPlayersByNickname;
-    private final Map<Integer, ServerClientHandler> loggedPlayersByConnection;
-
-    private int nextId; //next id for register a player
-   // private GameHandler currentGame = null; //controller for a game
+    private final ArrayList<String> loggedPlayers;//list of all the nicknames used in the server
+    private final ArrayList<ServerClientHandler> connectionList; //list of client waiting in the lobby
 
     private int requiredPlayer;
     private boolean expertMode;
-    private final ArrayList<ServerClientHandler> connectionList; //list of client waiting in the lobby
 
     /*
      * The management of multiple games is as follows. The first player connects to the server and decides
@@ -51,10 +45,8 @@ public class MultiServer {
         Thread thread = new Thread(this::stopServer); //thread that listen for quitting
         thread.start();
         connectionList = new ArrayList<>();
+        loggedPlayers = new ArrayList<>();//contains all the nickname
 
-        loggedPlayersByNickname = new HashMap<>();
-        loggedPlayersByConnection = new HashMap<>();
-        nextId = -1;
         expertMode = false;
         requiredPlayer = -1;
     }
@@ -79,18 +71,15 @@ public class MultiServer {
      * @param clientHandler client handler associated to a player.
      */
     public void loginPlayer(ServerClientHandler clientHandler) throws IOException, ClassNotFoundException {
-        if(!loggedPlayersByConnection.containsValue(clientHandler)) {
-            boolean hasRegistered = registerPlayer(clientHandler);
-            if(hasRegistered)
-                addToLobby(clientHandler);
-        }
-        else
-            clientHandler.sendMessageToClient("User already logged.");
+        boolean hasRegistered = registerPlayer(clientHandler);
+        if(hasRegistered)
+            addToLobby(clientHandler);
     }
 
     /**
-     * This method register a player in the server, associating to it an integer id. The player will choose
+     * This method register a player in the server, saving his nickname. The player will choose
      * a unique nickname.
+     * If a player disconnects as soon as it connects to the server, it is disconnected and not registered on the server.
      * @param clientHandler client handler associated to a player.
      */
     private synchronized boolean registerPlayer(ServerClientHandler clientHandler) throws IOException, ClassNotFoundException {
@@ -108,10 +97,8 @@ public class MultiServer {
             }
             if (nick instanceof GenericMessage) {
                 String nickName = ((GenericMessage) nick).getMessage();
-                if (!loggedPlayersByNickname.containsValue(nickName)) {
-                    ++nextId;
-                    loggedPlayersByNickname.put(nextId, nickName);
-                    loggedPlayersByConnection.put(nextId, clientHandler);
+                if(!loggedPlayers.contains(nickName)){
+                    loggedPlayers.add(nickName);
                     correctNick = true;
                     clientHandler.setNickname(nickName);
                     clientHandler.sendMessageToClient("Welcome " + nickName);
@@ -128,7 +115,8 @@ public class MultiServer {
     /**
      * This method add a player to a lobby. If that player is the first, it will set a game parameters, otherwise it will
      * wait until all the players are connected. When the required number of player is reached, a new game starts.
-     *
+     * If the first player enters the nickname and then disconnects, he is removed from the server and any parameters he has
+     * set for a game are reset, furthermore his track on the server is deleted
      * @param clientHandler client handler associated to a player.
      */
     private synchronized void addToLobby(ServerClientHandler clientHandler) throws IOException, ClassNotFoundException {
@@ -140,15 +128,12 @@ public class MultiServer {
                 selectGameMode(clientHandler);
                 clientHandler.sendMessageToClient("Wait for " + (this.requiredPlayer - connectionList.size()) + " players to join.");
 
-            }catch(SocketTimeoutException e){//if the first player disconnects, we cannot accept the setup and
+            }catch(SocketTimeoutException e){
                 clientHandler.sendShutDownToClient();
-                connectionList.remove(clientHandler);
-                loggedPlayersByNickname.remove(nextId);
-                loggedPlayersByConnection.remove(nextId);
-                --nextId;
                 expertMode = false;
                 requiredPlayer = -1;
-
+                connectionList.remove(clientHandler);
+                loggedPlayers.remove(clientHandler.getNickname());
             }
         } else if (connectionList.size() == requiredPlayer) {
             broadcastMessage("Number of players reached. Starting a new game.");

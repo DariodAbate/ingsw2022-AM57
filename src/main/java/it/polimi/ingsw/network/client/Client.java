@@ -51,17 +51,20 @@ public class Client {
         Thread inServer = new Thread(this::printServerMessage);
         inServer.start();
 
-
+/*
             Thread outPing = new Thread(()-> {
                 try {
                     sendPing();
                 } catch (IOException e) {
                     System.err.println("IoException in outPing: "+ e.getMessage());
+                    e.printStackTrace();
                 }
             });
             outPing.start();
 
 
+
+ */
 
 
         String userInput;
