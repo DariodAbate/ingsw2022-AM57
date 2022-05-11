@@ -2,13 +2,14 @@ package it.polimi.ingsw.model;
 
 import it.polimi.ingsw.model.constantFactory.GameConstants;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 /**
  * The Player class contains all the information about the player and the methods to actually play the game.
  *
  * @author Luca Bresciani
  */
-public class Player{
+public class Player implements Serializable {
     private GameConstants gameConstants;
     private String nickname;
     private ArrayList<AssistantCard> hand = new ArrayList<>();

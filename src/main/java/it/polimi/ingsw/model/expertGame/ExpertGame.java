@@ -3,6 +3,7 @@ package it.polimi.ingsw.model.expertGame;
 import it.polimi.ingsw.model.*;
 import it.polimi.ingsw.model.statePattern.InfluenceCalculator;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Random;
 
@@ -10,7 +11,7 @@ import java.util.Random;
  * This subclass of game is instantiated when selecting Expert Mode, it adds the coin and expert cards system
  * @author Lorenzo Corrado
  */
-public class ExpertGame extends Game implements PseudoMotherNature, IncrementMaxMovement, InfluenceCluster, StudentsBufferCluster, SwapStudents, BannedIsland, PutThreeStudentsInTheBag, TakeProfessorEqualStudents, BanTile{
+public class ExpertGame extends Game implements Serializable, PseudoMotherNature, IncrementMaxMovement, InfluenceCluster, StudentsBufferCluster, SwapStudents, BannedIsland, PutThreeStudentsInTheBag, TakeProfessorEqualStudents, BanTile{
 
     private final static int NUMBER_OF_EXPERT_CARDS = 3;
     private int coinBank;

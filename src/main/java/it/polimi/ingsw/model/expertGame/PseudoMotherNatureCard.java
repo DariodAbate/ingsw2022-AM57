@@ -1,10 +1,12 @@
 package it.polimi.ingsw.model.expertGame;
 
+import java.io.Serializable;
+
 /**
  * This class represents the PseudoMotherNature card
  * @author Lorenzo Corrado
  */
-public class PseudoMotherNatureCard extends ExpertCard {
+public class PseudoMotherNatureCard extends ExpertCard implements Serializable {
     private int islandIndex;
     private final PseudoMotherNature game;
 

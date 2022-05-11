@@ -5,12 +5,14 @@ import it.polimi.ingsw.model.Color;
 import it.polimi.ingsw.model.IslandTile;
 import it.polimi.ingsw.model.Player;
 
+import java.io.Serializable;
+
 /** The Standard checkInfluence calculator state
  * @author Lorenzo Corrado
  *
  */
 
-public class StandardCalculator implements InfluenceCalculator {
+public class StandardCalculator implements InfluenceCalculator, Serializable {
     protected IslandTile island;
 
     public StandardCalculator(){

@@ -2,6 +2,7 @@ package it.polimi.ingsw.model;
 
 import it.polimi.ingsw.model.constantFactory.GameConstants;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
@@ -15,7 +16,7 @@ import java.util.Set;
  *
  * @author Dario d'Abate
  */
-public class Board {
+public class Board implements Serializable {
     private Tower towerColor;
     private int numTower;//actual number of towers
     private StudentsHandler entrance;

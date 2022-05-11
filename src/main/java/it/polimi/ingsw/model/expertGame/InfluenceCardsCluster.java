@@ -8,11 +8,13 @@ import it.polimi.ingsw.model.statePattern.InfluenceCalculator;
 import it.polimi.ingsw.model.statePattern.NoTowerCalculator;
 import it.polimi.ingsw.model.statePattern.TwoMoreCalculator;
 
+import java.io.Serializable;
+
 /**
  * This class implements three expert cards that change the way influence is calculated
  * @author Lorenzo Corrado
  */
-public class InfluenceCardsCluster extends ExpertCard{
+public class InfluenceCardsCluster extends ExpertCard implements Serializable {
     private final int INDEX_TWO_MORE = 1;
     private final int INDEX_COLOR_EXCEPTION = 2;
     private InfluenceCalculator[] cards = new InfluenceCalculator[]{

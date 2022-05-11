@@ -2,12 +2,14 @@ package it.polimi.ingsw.model.expertGame;
 
 import it.polimi.ingsw.model.Color;
 
+import java.io.Serializable;
+
 /**
  * This class represents the card that allows the player to swap a maximum of two students
  * from the entrance to the hall and vice versa.
  * @author Luca Bresciani
  */
-public class SwapStudentsCard extends ExpertCard {
+public class SwapStudentsCard extends ExpertCard implements Serializable {
     private final SwapStudents board;
     private  int numOfStudentsToMove;
     private Color student1InEntranceColor;

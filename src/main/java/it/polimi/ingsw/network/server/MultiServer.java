@@ -66,6 +66,15 @@ public class MultiServer {
     }
 
     /**
+     * This method unregister a player from the serve, deleting his nickname in the database.
+     * If that nickname is not registered in the server, nothing happen
+     * @param nickname nickname of the player to be deleted from the server
+     */
+    public void unregisterPlayer(String nickname){
+        loggedPlayers.remove(nickname);
+    }
+
+    /**
      * This method logs a player in the server the first time it connects.
      *
      * @param clientHandler client handler associated to a player.
@@ -138,7 +147,7 @@ public class MultiServer {
         } else if (connectionList.size() == requiredPlayer) {
             broadcastMessage("Number of players reached. Starting a new game.");
 
-            GameHandler game = new GameHandler(requiredPlayer, expertMode, new ArrayList<>(connectionList));
+            GameHandler game = new GameHandler(requiredPlayer, expertMode, new ArrayList<>(connectionList), this);
             for(ServerClientHandler client: connectionList)
                 client.setGameHandler(game);
 
@@ -147,6 +156,8 @@ public class MultiServer {
                     game.setup();
                 } catch (IOException | ClassNotFoundException e) {
                     e.printStackTrace();
+                }catch (SetupGameDisconnectionException e1){
+                    System.err.println("Players disconnected during setup of a game!");
                 }
             });
             t.start();

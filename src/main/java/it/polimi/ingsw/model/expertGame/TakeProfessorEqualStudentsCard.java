@@ -1,10 +1,12 @@
 package it.polimi.ingsw.model.expertGame;
 
+import java.io.Serializable;
+
 /**
  * This class implements a single expert card
  * @author Dario d'Abate
  */
-public class TakeProfessorEqualStudentsCard  extends ExpertCard{
+public class TakeProfessorEqualStudentsCard  extends ExpertCard implements Serializable {
    private final TakeProfessorEqualStudents game;
 
     /**

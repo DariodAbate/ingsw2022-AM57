@@ -2,11 +2,13 @@ package it.polimi.ingsw.model.expertGame;
 
 import it.polimi.ingsw.model.Color;
 
+import java.io.Serializable;
+
 /**
  * This class implements the expert card system
  * @author Lorenzo Corrado
  */
-public abstract class ExpertCard {
+public abstract class ExpertCard implements Serializable {
     protected int price;
     protected boolean played = false;
     public ExpertCard(int price){

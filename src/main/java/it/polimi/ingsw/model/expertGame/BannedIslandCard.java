@@ -1,6 +1,8 @@
 package it.polimi.ingsw.model.expertGame;
 
-public class BannedIslandCard extends ExpertCard {
+import java.io.Serializable;
+
+public class BannedIslandCard extends ExpertCard implements Serializable {
     private final BannedIsland game;
     private int islandIndex;
 

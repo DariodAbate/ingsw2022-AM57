@@ -1,10 +1,12 @@
 package it.polimi.ingsw.model.expertGame;
 
+import java.io.Serializable;
+
 /**
  * This class represents the Increment Max Movement Card, which effect is to increment the maximum movement possible
  * for the player in that turn.
  */
-public class IncrementMaxMovementCard extends ExpertCard {
+public class IncrementMaxMovementCard extends ExpertCard implements Serializable {
     private final IncrementMaxMovement game;
 
     /**

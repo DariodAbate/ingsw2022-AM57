@@ -3,11 +3,13 @@ package it.polimi.ingsw.model.expertGame;
 import it.polimi.ingsw.model.Color;
 import it.polimi.ingsw.model.StudentsHandler;
 
+import java.io.Serializable;
+
 /**
  * This class implements the expert card system by clustering three cards
  * @author Dario d'Abate
  */
-public class StudentsBufferCardsCluster extends ExpertCard {
+public class StudentsBufferCardsCluster extends ExpertCard implements Serializable {
     private static final int MAN_CARD_INDEX = 0;
     private static final int MAN_CARD_COST = 1;
     private static final int MAN_CARD_BUFFER_SIZE = 4;

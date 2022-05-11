@@ -23,7 +23,10 @@ public class GameHandler {
     private Map<ServerClientHandler, Player> clientToPlayer;
     private Map<Player, ServerClientHandler> playerToClient;
 
-    public GameHandler(int numPlayer, boolean expertGame, ArrayList<ServerClientHandler> playersConnections) {
+    MultiServer server;
+
+    public GameHandler(int numPlayer, boolean expertGame, ArrayList<ServerClientHandler> playersConnections, MultiServer server) {
+        this.server = server;
         this.numPlayer = numPlayer;
         this.playersConnections = playersConnections;
         if(!expertGame) {
@@ -46,7 +49,9 @@ public class GameHandler {
         return nickNamePlayers;
     }
 
-    public synchronized void setup() throws IOException, ClassNotFoundException {
+    // Se un giocatore si disconnette mentre sta scegliendo la torre o il retro della carta,
+    // viene cancellata quella lobby di gioco e i player saranno costretti a fare il login nel server
+    public synchronized void setup() throws IOException, ClassNotFoundException, SetupGameDisconnectionException {
 
         for(int i=1; i<numPlayer; i++){
             game.addPlayer(playersConnections.get(i).getNickname());
@@ -66,13 +71,17 @@ public class GameHandler {
                 askCardsBackSetup(client);
                 askColorsSetup(client);
             }
-            game.setGameState(GameState.PLANNING_STATE);
-            gameTurns();
         }catch (SocketTimeoutException e){
             broadcastMessage("A player has disconnected. Closing this game...");
+            broadcastMessage("Please login another time on the server to play.");
             broadcastShutDown();
-
+            for(String player: getNicknamePlayers()){
+                server.unregisterPlayer(player);
+            }
+            throw new SetupGameDisconnectionException();
         }
+        game.setGameState(GameState.PLANNING_STATE);
+        gameTurns();
     }
     private void broadcastMessage(String message) throws IOException {
         for (ServerClientHandler client : playersConnections)

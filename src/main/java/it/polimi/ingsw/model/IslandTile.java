@@ -3,6 +3,7 @@ package it.polimi.ingsw.model;
 import it.polimi.ingsw.model.expertGame.BanTile;
 import it.polimi.ingsw.model.statePattern.InfluenceCalculator;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
 /**
@@ -13,7 +14,7 @@ import java.util.ArrayList;
  *
  * @author Lorenzo Corrado
  */
-public class IslandTile {
+public class IslandTile implements Serializable {
     private StudentsHandler islandStudents;
     private int numTowers;
     private Tower towerColor;
