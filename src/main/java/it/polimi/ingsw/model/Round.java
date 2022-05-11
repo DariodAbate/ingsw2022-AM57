@@ -1,10 +1,7 @@
 package it.polimi.ingsw.model;
 
-import java.sql.SQLOutput;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Comparator;
-import java.util.concurrent.ThreadLocalRandom;
 import java.util.Random;
 
 /**
@@ -22,6 +19,9 @@ public class Round {
     private Player currentTurn;
     private boolean isPlanning;
     private boolean isEnding;
+    private RefillInterface game;
+    private Player firstPlanningPlayer;
+
 
     /**
      * Constructor of the class. Given the Arraylist of the players that are playing it
@@ -37,6 +37,14 @@ public class Round {
         planningPhaseOrder = new ArrayList<>(players);
         isPlanning = true;
         setRandomStartPlayer();
+    }
+
+    /**
+     * This method is used to provide a method of game inside this class
+     * @param game interface that expose a method of game class
+     */
+    public void setRefillInterface(RefillInterface game){
+        this.game = game;
     }
 
     /**
@@ -104,12 +112,7 @@ public class Round {
      */
     public void setPlanningPhaseOrder() {
         planningPhaseOrder.removeAll(playersCopy);
-        Player firstPlayer = Collections.min(playersCopy, (player1, player2) -> {
-                if (player1.viewLastCard().getPriority() < player2.viewLastCard().getPriority())
-                    return -1;
-                else
-                    return 1;
-            });
+        Player firstPlayer = firstPlanningPlayer;
         planningPhaseOrder.add(firstPlayer);
         int firstPlayerIndex = playersCopy.indexOf(firstPlayer);
         if (playersCopy.size() == 3) {
@@ -128,11 +131,12 @@ public class Round {
      * priority card. The method also set the boolean variable isPlanning to false that
      * indicates the beginning of the action phase.
      */
-    //TODO Case of same priority card to be added
     public void setActionPhaseOrder() {
+        actionPhaseOrder = planningPhaseOrder;
         actionPhaseOrder.sort(Comparator.comparingInt(player -> player.viewLastCard().getPriority()));
         currentTurn = actionPhaseOrder.get(0);
         isPlanning = false;
+        firstPlanningPlayer = actionPhaseOrder.get(0);
     }
 
     /**
@@ -194,8 +198,10 @@ public class Round {
             return;
         }
         roundNumber += 1;
-            isPlanning = true;
-            setPlanningPhaseOrder();
+
+        isPlanning = true;
+        setPlanningPhaseOrder();
+        game.bagToClouds();//refill the cloud tiles at the end of a round
     }
 
     public void setIsEnding ( boolean isEnding){ //this method sets a condition for the endgame
