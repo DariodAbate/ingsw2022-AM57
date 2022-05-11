@@ -114,6 +114,8 @@ class CloudTileTest {
                 c1.fill(Color.GREEN);
         }
         assertEquals(3, c1.numStudOn());
+        assertFalse(c1.isFillable());
+
 
         StudentsHandler s = c1.getTile();
         assertEquals(3, s.numStudents());

@@ -6,6 +6,7 @@ import it.polimi.ingsw.model.Color;
 import it.polimi.ingsw.model.Tower;
 import it.polimi.ingsw.network.client.messages.*;
 import it.polimi.ingsw.network.server.answers.GenericAnswer;
+import it.polimi.ingsw.network.server.answers.Shutdown;
 
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -29,14 +30,42 @@ public class Client {
         listenServer = true;
     }
 
+
+    public void sendPing() throws IOException {
+        while(listenServer) {
+            out.writeObject(new Ping());
+            out.flush();
+            try{
+                Thread.sleep(3* 1000);//ping every 3 second
+            }catch(InterruptedException e){
+                System.err.println("InterruptedException in sendPing: " + e.getMessage());
+            }
+        }
+    }
+
+
+
     public void communicationWithServer() throws ClassNotFoundException, IOException {
 
         //THE CLIENT MUST SEND A MESSAGE AS FIRST THING
         Thread inServer = new Thread(this::printServerMessage);
         inServer.start();
 
+
+            Thread outPing = new Thread(()-> {
+                try {
+                    sendPing();
+                } catch (IOException e) {
+                    System.err.println("IoException in outPing: "+ e.getMessage());
+                }
+            });
+            outPing.start();
+
+
+
+
         String userInput;
-        while ((userInput = stdIn.nextLine()) != null) {
+        while ((userInput = stdIn.nextLine()) != null && listenServer) {
             System.out.println();
             if(isNumeric(userInput)){
                 out.writeObject(new IntegerMessage(Integer.parseInt(userInput)));
@@ -46,7 +75,7 @@ public class Client {
                 listenServer = false;
                 out.writeObject(new Disconnect());
                 out.flush();
-                break;
+                //break;
             }
             else if(userInput.equalsIgnoreCase("king") || userInput.equalsIgnoreCase("witch")
             || userInput.equalsIgnoreCase("sage") || userInput.equalsIgnoreCase("druid")){
@@ -96,6 +125,10 @@ public class Client {
             while(listenServer && (msg = in.readObject())!= null) {
                 if (msg instanceof GenericAnswer)
                     System.out.println(((GenericAnswer) msg).getMessage());
+                else if(msg instanceof Shutdown){
+                    System.err.println(((Shutdown) msg).getMessage());
+                    listenServer = false;
+                }
                 else
                     System.err.println("Unexpected message from server");
             }

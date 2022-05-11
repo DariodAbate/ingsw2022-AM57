@@ -9,6 +9,7 @@ import it.polimi.ingsw.network.client.messages.*;
 
 import java.io.IOException;
 import java.io.StreamCorruptedException;
+import java.net.SocketTimeoutException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -33,6 +34,18 @@ public class GameHandler {
         playerToClient = new HashMap<>();
     }
 
+
+    /**
+     * @return nickname of players in this game
+     */
+    public ArrayList<String> getNicknamePlayers(){
+        ArrayList<String> nickNamePlayers = new ArrayList<>();
+        for(ServerClientHandler client: playersConnections){
+            nickNamePlayers.add(client.getNickname());
+        }
+        return nickNamePlayers;
+    }
+
     public synchronized void setup() throws IOException, ClassNotFoundException {
 
         for(int i=1; i<numPlayer; i++){
@@ -48,12 +61,27 @@ public class GameHandler {
         }
 
         game.startGame();
-        for(ServerClientHandler client : playersConnections){
-            askCardsBackSetup(client);
-            askColorsSetup(client);
+        try {
+            for (ServerClientHandler client : playersConnections) {
+                askCardsBackSetup(client);
+                askColorsSetup(client);
+            }
+            game.setGameState(GameState.PLANNING_STATE);
+            gameTurns();
+        }catch (SocketTimeoutException e){
+            broadcastMessage("A player has disconnected. Closing this game...");
+            broadcastShutDown();
+
         }
-        game.setGameState(GameState.PLANNING_STATE);
-        gameTurns();
+    }
+    private void broadcastMessage(String message) throws IOException {
+        for (ServerClientHandler client : playersConnections)
+            client.sendMessageToClient(message);
+    }
+
+    private void broadcastShutDown() throws IOException {
+        for (ServerClientHandler client : playersConnections)
+            client.sendShutDownToClient();
     }
 
     private synchronized void askColorsSetup(ServerClientHandler client) throws IOException, ClassNotFoundException{
@@ -333,6 +361,7 @@ public class GameHandler {
         for(int i=0; i<game.getCloudTiles().size(); i++){
             cloudIdx++;
 
+            students.clear();
             if(!game.getCloudTiles().get(i).isEmpty()){
                 for(Color color: game.getCloudTiles().get(i).colorsAvailable()){
                     students.put(color, game.getCloudTiles().get(i).numStudOn(color));

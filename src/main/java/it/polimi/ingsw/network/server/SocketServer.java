@@ -45,6 +45,7 @@ public class SocketServer implements Runnable{
         while(operating){
             try{
                 Socket socket = serverSocket.accept();
+                socket.setSoTimeout(10 * 1000);
                 ServerClientHandler clientHandler = new ServerClientHandler(server, socket);
                 executor.submit(clientHandler);
             } catch(IOException e){

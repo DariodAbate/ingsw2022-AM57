@@ -2,10 +2,13 @@ package it.polimi.ingsw.network.server;
 
 import it.polimi.ingsw.network.client.messages.*;
 import it.polimi.ingsw.network.server.answers.GenericAnswer;
+import it.polimi.ingsw.network.server.answers.Shutdown;
+
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
+import java.net.SocketTimeoutException;
 
 
 /**
@@ -46,20 +49,25 @@ public class ServerClientHandler implements Runnable {
             in = new ObjectInputStream(socket.getInputStream());
 
             sendMessageToClient("Welcome to the magical world of Eryantis!!");
-            initPlayer();
+            try{
 
+                initPlayer();
+                while(active){ //FIXME delete this loop
+                    int i = 0;
+                }
 
-            while(active){ //FIXME delete this loop
-               int i = 0;
+            }catch(SocketTimeoutException e){
+                System.err.println(e.getMessage());
+                System.out.println("Disconnecting: " + socket.getLocalAddress());
+                sendShutDownToClient();
+            }finally {
+                in.close();
+                out.close();
+                socket.close();
             }
-            sendMessageToClient("Disconnected");
+            //sendMessageToClient("Disconnected");
            // messageDispatcher();
 
-
-            // Chiudo gli stream e il socket
-            in.close();
-            out.close();
-            socket.close();
         }catch (IOException e) {
             System.err.println("IOException in  run: " + e.getMessage());
             System.exit(1);
@@ -69,10 +77,14 @@ public class ServerClientHandler implements Runnable {
     /**
      * This method pass the login of a player to the server class
      */
-    private synchronized void initPlayer(){
+    private synchronized void initPlayer() throws SocketTimeoutException {
         try {
             server.loginPlayer(this);
-        } catch (IOException e) {
+        }
+        catch(SocketTimeoutException e){
+            throw new SocketTimeoutException(e.getMessage());
+        }
+        catch (IOException e) {
             System.err.println("IOException in  initPlayer: " + e.getMessage());
             System.exit(1);
         } catch (ClassNotFoundException e) {
@@ -92,6 +104,12 @@ public class ServerClientHandler implements Runnable {
         out.flush();
     }
 
+    public void sendShutDownToClient() throws IOException{
+        out.reset();
+        out.writeObject(new Shutdown("You are disconnected from the server"));
+        out.flush();
+    }
+
     /**
      * This method is used to receive a message from a client.
      * @return returns a message read from the client. Returns null it receives an
@@ -100,7 +118,15 @@ public class ServerClientHandler implements Runnable {
     public Message readMessageFromClient() throws IOException, ClassNotFoundException {
         Object msg = null;
         while(msg == null){
-                msg =  in.readObject();
+            try {
+
+                if( (msg = in.readObject()) instanceof Ping ){
+                    //System.out.println("ping from client  " +  socket.getLocalAddress());
+                    msg = null;
+                }
+            }catch(SocketTimeoutException e){
+                throw new SocketTimeoutException("Client disconnected");
+            }
         }
         if(msg instanceof Message) {
             if(msg instanceof Disconnect) {

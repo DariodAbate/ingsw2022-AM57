@@ -5,6 +5,7 @@ import it.polimi.ingsw.network.client.messages.IntegerMessage;
 import it.polimi.ingsw.network.client.messages.Message;
 
 import java.io.IOException;
+import java.net.SocketTimeoutException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -19,10 +20,11 @@ import java.util.concurrent.Executors;
  * @author Dario d'Abate
  */
 public class MultiServer {
-    private SocketServer socketServer;
+    private final SocketServer socketServer;
 
-    private Map<Integer, String> loggedPlayersByNickname;
-    private Map<Integer, ServerClientHandler> loggedPlayersByConnection;
+    private final Map<Integer, String> loggedPlayersByNickname;
+    private final Map<Integer, ServerClientHandler> loggedPlayersByConnection;
+
     private int nextId; //next id for register a player
    // private GameHandler currentGame = null; //controller for a game
 
@@ -54,6 +56,7 @@ public class MultiServer {
         loggedPlayersByConnection = new HashMap<>();
         nextId = -1;
         expertMode = false;
+        requiredPlayer = -1;
     }
 
     /**
@@ -90,12 +93,19 @@ public class MultiServer {
      * a unique nickname.
      * @param clientHandler client handler associated to a player.
      */
-    public synchronized boolean registerPlayer(ServerClientHandler clientHandler) throws IOException, ClassNotFoundException {
+    private synchronized boolean registerPlayer(ServerClientHandler clientHandler) throws IOException, ClassNotFoundException {
         clientHandler.sendMessageToClient("Set a nickname.");
 
         boolean correctNick = false;
         while(!correctNick) {
-            Message nick = clientHandler.readMessageFromClient();
+            Message nick;
+            try {
+                nick = clientHandler.readMessageFromClient();
+            } catch (SocketTimeoutException e) {
+                //a disconnection at this stage means that the player is not registered on the server
+                clientHandler.sendShutDownToClient();
+                return false;
+            }
             if (nick instanceof GenericMessage) {
                 String nickName = ((GenericMessage) nick).getMessage();
                 if (!loggedPlayersByNickname.containsValue(nickName)) {
@@ -108,8 +118,8 @@ public class MultiServer {
                 } else {
                     clientHandler.sendMessageToClient("Username not available, please try again.");
                 }
-            }else{//malicious client
-                return false;
+            } else {//nickname not valid
+                clientHandler.sendMessageToClient("Set a valid nickname");
             }
         }
         return true;
@@ -121,13 +131,25 @@ public class MultiServer {
      *
      * @param clientHandler client handler associated to a player.
      */
-    public synchronized void addToLobby(ServerClientHandler clientHandler) throws IOException, ClassNotFoundException {
+    private synchronized void addToLobby(ServerClientHandler clientHandler) throws IOException, ClassNotFoundException {
         connectionList.add(clientHandler);
 
         if (connectionList.size() == 1) {
-            selectNumPlayer(clientHandler);
-            selectGameMode(clientHandler);
-            clientHandler.sendMessageToClient("Wait for " + (this.requiredPlayer - connectionList.size()) + " players to join.");
+            try {
+                selectNumPlayer(clientHandler);
+                selectGameMode(clientHandler);
+                clientHandler.sendMessageToClient("Wait for " + (this.requiredPlayer - connectionList.size()) + " players to join.");
+
+            }catch(SocketTimeoutException e){//if the first player disconnects, we cannot accept the setup and
+                clientHandler.sendShutDownToClient();
+                connectionList.remove(clientHandler);
+                loggedPlayersByNickname.remove(nextId);
+                loggedPlayersByConnection.remove(nextId);
+                --nextId;
+                expertMode = false;
+                requiredPlayer = -1;
+
+            }
         } else if (connectionList.size() == requiredPlayer) {
             broadcastMessage("Number of players reached. Starting a new game.");
 
@@ -165,11 +187,18 @@ public class MultiServer {
         boolean valid = false;
 
         while(!valid) {
-            Message msg = clientHandler.readMessageFromClient();
-            if(msg instanceof IntegerMessage) {
+            Message msg;
+            try {
+                msg = clientHandler.readMessageFromClient();
+            } catch (SocketTimeoutException e) {
+                throw new SocketTimeoutException(e.getMessage());
+            }
+
+
+            if (msg instanceof IntegerMessage) {
 
                 int numPlayer = ((IntegerMessage) msg).getMessage();
-                valid = ! (numPlayer <= 1 || numPlayer > 3);
+                valid = !(numPlayer <= 1 || numPlayer > 3);
                 if (!valid) {
                     clientHandler.sendMessageToClient("Please choose a valid number of players.");
 
@@ -177,7 +206,7 @@ public class MultiServer {
                     this.requiredPlayer = numPlayer;
                     clientHandler.sendMessageToClient("Number of players inserted: " + this.requiredPlayer);
                 }
-            }else{
+            } else {
                 clientHandler.sendMessageToClient("Please insert an integer.");
             }
         }
@@ -191,8 +220,14 @@ public class MultiServer {
         clientHandler.sendMessageToClient("Do you want to play expert mode? [y/n]");
         boolean isCorrect = false;
         while(!isCorrect) {
-            Message msg = clientHandler.readMessageFromClient();
-            if(msg instanceof GenericMessage) {
+            Message msg;
+            try {
+                msg = clientHandler.readMessageFromClient();
+            } catch (SocketTimeoutException e) {
+                throw new SocketTimeoutException(e.getMessage());
+            }
+
+            if (msg instanceof GenericMessage) {
 
                 String temp = ((GenericMessage) msg).getMessage();
                 if (!(isCorrect = temp.equalsIgnoreCase("y") || temp.equalsIgnoreCase("n"))) {
