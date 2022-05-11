@@ -136,6 +136,15 @@ public class Player{
         }
         return isAvailable;
     }
+    public int priorityToIndex(int priority){
+        int temp = 0;
+        for(AssistantCard card : hand){
+            if(card.getPriority() == priority){
+                temp = hand.indexOf(card);
+            }
+        }
+        return temp;
+    }
 }
 
 

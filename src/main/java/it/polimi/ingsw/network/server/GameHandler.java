@@ -159,7 +159,8 @@ public class GameHandler {
             if(message instanceof IntegerMessage && game.getGameState() == GameState.PLANNING_STATE){
                 if(game.getCurrentPlayer().isPriorityAvailable(((IntegerMessage) message).getMessage()) &&
                         (!cardsPlayed.contains(((IntegerMessage) message).getMessage()) || cardsPlayed.containsAll(hand))){
-                    game.playCard(((IntegerMessage) message).getMessage() - 1);
+                    int index = game.getCurrentPlayer().priorityToIndex(((IntegerMessage) message).getMessage());
+                    game.playCard(index);
                     client.sendMessageToClient("You have chosen your " + ((IntegerMessage) message).getMessage() + " card");
                     cardsPlayed.add(((IntegerMessage) message).getMessage());
                 }
@@ -189,6 +190,8 @@ public class GameHandler {
     private synchronized void moveStudents(ServerClientHandler client) throws IOException, ClassNotFoundException{
         int numberOfMoves = numPlayer == 3 ? new ThreePlayersConstants().getMaxNumStudMovements() : new TwoPlayersConstants().getMaxNumStudMovements();
         Message message;
+        drawBoard(client, game.getCurrentPlayer());
+        drawArchipelago(client);
         for(int i=0; i<numberOfMoves; i++){
             boolean correctMove = false;
             client.sendMessageToClient("Select where you want to move your students[\"hall/island\"]");
@@ -214,6 +217,7 @@ public class GameHandler {
             }
 
         }
+        drawArchipelago(client);
         game.setGameState(GameState.MOTHER_MOVEMENT_STATE);
     }
     private void availableEntranceColor(ServerClientHandler client) throws IOException{
@@ -310,6 +314,8 @@ public class GameHandler {
                 if(step <= game.getArchipelago().size() && step > 0 && step <= game.getMaxMovement()){
                     client.sendMessageToClient("Mother nature will travel " + ((IntegerMessage) message).getMessage() + " islands.");
                     game.motherMovement(step);
+                    drawBoard(client, game.getCurrentPlayer());
+                    drawArchipelago(client);
                     isIdxChosen = true;
                 }
                 else{
@@ -332,7 +338,7 @@ public class GameHandler {
         int cloudIdx = 0;
         for(int i=0; i<game.getCloudTiles().size(); i++){
             cloudIdx++;
-
+            students.clear();
             if(!game.getCloudTiles().get(i).isEmpty()){
                 for(Color color: game.getCloudTiles().get(i).colorsAvailable()){
                     students.put(color, game.getCloudTiles().get(i).numStudOn(color));
@@ -359,6 +365,115 @@ public class GameHandler {
 
         }
     }
+    private void drawArchipelago(ServerClientHandler client) throws IOException, ClassNotFoundException{
+        StringBuilder stringStudents = new StringBuilder(100);
+        StringBuilder towerColor = new StringBuilder(100);
+        StringBuilder string = new StringBuilder(100);
+        StringBuilder mother = new StringBuilder(100);
+        int stringCounter = 0;
+        int motherCounter = 0;
+        int towerCounter = 0;
+        int studentsCounter = 0;
+        for(IslandTile island : game.getArchipelago()) {
+
+            for(int i=0; i< Math.max(island.getIslandStudents().numStudents()+3, 6); i++){
+                string.append("-");
+                stringCounter++;
+            }
+
+
+            stringStudents.append("\u001B[0m|");
+            studentsCounter++;
+
+                for (int i = 0; i < island.getIslandStudents().numStudents(Color.BLUE); i++) {
+                    stringStudents.append("\u001B[34mS");
+                    studentsCounter++;
+                }
+                for (int i = 0; i < island.getIslandStudents().numStudents(Color.YELLOW); i++) {
+                    stringStudents.append("\u001B[33mS");
+                    studentsCounter++;
+                }
+                for (int i = 0; i < island.getIslandStudents().numStudents(Color.RED); i++) {
+                    stringStudents.append("\u001B[31mS");
+                    studentsCounter++;
+                }
+                for (int i = 0; i < island.getIslandStudents().numStudents(Color.GREEN); i++) {
+                    stringStudents.append("\u001B[32mS");
+                    studentsCounter++;
+                }
+                for (int i = 0; i < island.getIslandStudents().numStudents(Color.PINK); i++) {
+                    stringStudents.append("\u001B[35mS");
+                    studentsCounter++;
+                }
+                while(stringCounter > studentsCounter){
+                    stringStudents.append(" ");
+                    studentsCounter++;
+                }
+                towerColor.append("\u001B[0m|");
+                towerCounter++;
+                mother.append("\u001B[0m|");
+                motherCounter++;
+                if(island.getNumTowers()>0) {
+                    switch (island.getTowerColor()) {
+                        case WHITE -> towerColor.append("\u001B[37m");
+                        case BLACK -> towerColor.append("\u001B[4;34m");
+                        case GRAY -> towerColor.append("\u001B[38;5;232m");
+                    }
+                }
+                for(int i=0; i<island.getNumTowers(); i++){
+                    towerColor.append("T\u001B[0m");
+                    towerCounter++;
+                }
+                if(game.getArchipelago().indexOf(island) == game.getMotherNature()){
+                    mother.append("o");
+                    motherCounter++;
+                }
+            while(studentsCounter>towerCounter){
+                towerColor.append(" ");
+                towerCounter++;
+            }
+            while(towerCounter>motherCounter){
+                mother.append(" ");
+                motherCounter++;
+            }
+            towerColor.append("\u001B[0m|/");
+            towerCounter++;
+            towerCounter++;
+            stringStudents.append("\u001B[0m|/");
+            studentsCounter++;
+            studentsCounter++;
+            mother.append("\u001B[0m|/");
+            motherCounter++;
+            motherCounter++;
+
+        }
+        client.sendMessageToClient(string.toString());
+        client.sendMessageToClient(stringStudents.toString());
+        client.sendMessageToClient(towerColor.toString());
+        client.sendMessageToClient(mother.toString());
+        client.sendMessageToClient(string.toString());
+
+    }
+
+    private void drawBoard(ServerClientHandler client, Player player) throws IOException{
+        Map<Color, Integer> entranceStudents = new HashMap<>();
+        Map<Color, Integer> hallStudents = new HashMap<>();
+        Board playerBoard = player.getBoard();
+        for(Color color : player.getBoard().getEntrance().colorsAvailable()){
+            entranceStudents.put(color, playerBoard.getEntrance().numStudents(color));
+        }
+        for(Color color : Color.values()){
+            hallStudents.put(color, playerBoard.getHall().numStudents(color));
+        }
+        client.sendMessageToClient("Your board:");
+        client.sendMessageToClient("Entrance = " + entranceStudents);
+        client.sendMessageToClient("Hall = " + hallStudents);
+        client.sendMessageToClient("Professors = " + playerBoard.getProfessors());
+        client.sendMessageToClient("Tower Color = " + playerBoard.getTowerColor());
+        client.sendMessageToClient("Number of Towers = " + playerBoard.getNumTower());
+
+    }
+
     public int getNumPlayer() {
         return numPlayer;
     }

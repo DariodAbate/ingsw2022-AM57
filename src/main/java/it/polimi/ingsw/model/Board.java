@@ -300,4 +300,8 @@ public class Board {
     public StudentsHandler getEntrance() {
         return entrance;
     }
+
+    public StudentsHandler getHall() {
+        return hall;
+    }
 }
