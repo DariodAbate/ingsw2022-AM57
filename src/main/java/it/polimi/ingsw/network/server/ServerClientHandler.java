@@ -61,8 +61,6 @@ public class ServerClientHandler implements Runnable {
                 out.close();
                 socket.close();
             }
-            //sendMessageToClient("Disconnected");
-           // messageDispatcher();
 
         }catch (IOException e) {
             System.err.println("IOException in  run: " + e.getMessage());
@@ -117,7 +115,6 @@ public class ServerClientHandler implements Runnable {
             try {
 
                 if( (msg = in.readObject()) instanceof Ping ){
-                    //System.out.println("ping from client  " +  socket.getLocalAddress());
                     msg = null;
                 }
             }catch(SocketTimeoutException e){
