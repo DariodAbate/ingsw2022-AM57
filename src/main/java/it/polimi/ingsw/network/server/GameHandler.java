@@ -23,7 +23,7 @@ public class GameHandler {
     private Map<ServerClientHandler, Player> clientToPlayer;
     private Map<Player, ServerClientHandler> playerToClient;
 
-    MultiServer server;
+    private MultiServer server;
 
     public GameHandler(int numPlayer, boolean expertGame, ArrayList<ServerClientHandler> playersConnections, MultiServer server) {
         this.server = server;
@@ -35,6 +35,25 @@ public class GameHandler {
             game = new ExpertGame(playersConnections.get(0).getNickname(), numPlayer);
         clientToPlayer = new HashMap<>();
         playerToClient = new HashMap<>();
+    }
+
+    //used only for restarting a match
+    //WARNING: playersConnections should have the same order as the arraylist of players saved in the game
+    public GameHandler(Game restartedGame, ArrayList<ServerClientHandler> playersConnections, MultiServer server){
+        this.server = server;
+        this.game = restartedGame;
+        this.playersConnections = playersConnections;
+        this.numPlayer = game.getNumPlayers();
+        clientToPlayer = new HashMap<>();
+        playerToClient = new HashMap<>();
+
+        for(int i=0; i < numPlayer; i++){
+            clientToPlayer.put(playersConnections.get(i), game.getPlayers().get(i));
+        }
+
+        for(int i=0; i < numPlayer; i++){
+            playerToClient.put(game.getPlayers().get(i), playersConnections.get(i));
+        }
     }
 
 
@@ -171,7 +190,7 @@ public class GameHandler {
         }
     }
 
-    private synchronized void gameTurns() throws IOException, ClassNotFoundException{
+    public  synchronized void gameTurns() throws IOException, ClassNotFoundException{
         boolean endgame = false;
         while(!endgame){
             planningPhase();

@@ -1,5 +1,6 @@
 package it.polimi.ingsw.network.server;
 
+import it.polimi.ingsw.model.Game;
 import it.polimi.ingsw.network.client.messages.GenericMessage;
 import it.polimi.ingsw.network.client.messages.IntegerMessage;
 import it.polimi.ingsw.network.client.messages.Message;
@@ -19,7 +20,8 @@ import java.util.concurrent.Executors;
  */
 public class MultiServer {
     private final SocketServer socketServer;
-
+    private final ReconnectionHandler reconnectionHandler;
+    
     private final ArrayList<String> loggedPlayers;//list of all the nicknames used in the server
     private final ArrayList<ServerClientHandler> connectionList; //list of client waiting in the lobby
 
@@ -49,6 +51,8 @@ public class MultiServer {
 
         expertMode = false;
         requiredPlayer = -1;
+
+        reconnectionHandler = new ReconnectionHandler(this);
     }
 
     /**
@@ -106,6 +110,15 @@ public class MultiServer {
             }
             if (nick instanceof GenericMessage) {
                 String nickName = ((GenericMessage) nick).getMessage();
+                if(reconnectionHandler.containPlayer(nickName) ){//user logged after a disconnection
+                    if(!reconnectionHandler.alreadyLogged(nickName)){//user not yet reconnected
+                        clientHandler.setNickname(nickName);
+                        reconnectionHandler.reconnectPlayer(clientHandler);
+                        correctNick = true;
+                    } else{//inserted user of player already reconnected
+                        clientHandler.sendMessageToClient("That user has already reconnected. Please insert a valid nickname");
+                    }
+                }
                 if(!loggedPlayers.contains(nickName)){
                     loggedPlayers.add(nickName);
                     correctNick = true;
@@ -147,21 +160,7 @@ public class MultiServer {
         } else if (connectionList.size() == requiredPlayer) {
             broadcastMessage("Number of players reached. Starting a new game.");
 
-            GameHandler game = new GameHandler(requiredPlayer, expertMode, new ArrayList<>(connectionList), this);
-            for(ServerClientHandler client: connectionList)
-                client.setGameHandler(game);
-
-            Thread t = new Thread(() -> {
-                try {
-                    game.setup();
-                } catch (IOException | ClassNotFoundException e) {
-                    e.printStackTrace();
-                }catch (SetupGameDisconnectionException e1){
-                    System.err.println("Players disconnected during setup of a game!");
-                }
-            });
-            t.start();
-
+            startGame(requiredPlayer, expertMode, this);
 
             connectionList.clear();
             requiredPlayer = 0;
@@ -172,6 +171,46 @@ public class MultiServer {
         }
     }
 
+    /**
+     * This method is used to instantiate a gameHandler that run oh his own thread
+     * @param requiredPlayer required number of player for a match
+     * @param expertMode true for expert mode, false otherwise
+     * @param server reference to the server
+     */
+    private synchronized void startGame(int requiredPlayer, boolean expertMode, MultiServer server){
+        GameHandler gameHandler = new GameHandler(requiredPlayer, expertMode, new ArrayList<>(connectionList), server);
+
+        //capire se servirà
+        for(ServerClientHandler client: connectionList)
+            client.setGameHandler(gameHandler);
+
+        Thread t = new Thread(() -> {
+            try {
+                gameHandler.setup();
+            } catch (IOException | ClassNotFoundException e) {
+                e.printStackTrace();
+            }catch (SetupGameDisconnectionException e1){
+                System.err.println("Players disconnected during setup of a game!");
+            }
+        });
+        t.start();
+    }
+
+    public synchronized void restartGame(Game game, ArrayList<ServerClientHandler> playersConnections){
+        GameHandler gameHandler = new GameHandler(game, playersConnections,this);
+        //capire se servirà
+        for(ServerClientHandler client: playersConnections)
+            client.setGameHandler(gameHandler);
+
+        Thread t = new Thread(() -> {
+            try {
+                gameHandler.gameTurns(); //restart a game at the point where a player has disconnected
+            } catch (IOException | ClassNotFoundException e) {
+                e.printStackTrace();
+            }
+        });
+        t.start();
+    }
 
 
     /**
