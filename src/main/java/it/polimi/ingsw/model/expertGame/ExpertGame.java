@@ -157,7 +157,7 @@ public class ExpertGame extends Game implements PseudoMotherNature, IncrementMax
      */
         public void playEffect(int indexCard){
             if(indexCard < 0 || indexCard > NUMBER_OF_EXPERT_CARDS)
-                throw new IllegalArgumentException("Such a card does not exists");
+                throw new IllegalArgumentException("Such card does not exists");
 
             int cardCost = expertCards.get(indexCard).getPrice();
             if(getCurrentPlayer().getBoard().hasCoin(cardCost)) {
@@ -362,6 +362,7 @@ public class ExpertGame extends Game implements PseudoMotherNature, IncrementMax
         return expertCards;
     }
 
-
-
+    public boolean isCardHasBeenPlayed() {
+        return cardHasBeenPlayed;
+    }
 }

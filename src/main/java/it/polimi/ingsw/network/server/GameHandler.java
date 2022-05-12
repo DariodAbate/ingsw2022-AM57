@@ -3,7 +3,7 @@ package it.polimi.ingsw.network.server;
 import it.polimi.ingsw.model.*;
 import it.polimi.ingsw.model.constantFactory.ThreePlayersConstants;
 import it.polimi.ingsw.model.constantFactory.TwoPlayersConstants;
-import it.polimi.ingsw.model.expertGame.ExpertGame;
+import it.polimi.ingsw.model.expertGame.*;
 import it.polimi.ingsw.network.client.messages.*;
 
 
@@ -15,17 +15,29 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-//all method synchronized
+/**
+ * This is the controller of the game, handles all the messages from the players, sending messages and request for any object
+ * It also handles the various phases of the game, the wrong input of the parameters and the endgame condition
+ * @author Lorenzo Corrado
+ */
 public class GameHandler {
-    private final int numPlayer;
-    private ArrayList<ServerClientHandler> playersConnections;
-    private Game game;
-    private Map<ServerClientHandler, Player> clientToPlayer;
+    private final int numPlayer; //number of players in the game
+    private ArrayList<ServerClientHandler> playersConnections; //list of the sockets
+    private Game game; //reference to the model
+    private boolean expertGame; //the mode of the game
+    private Map<ServerClientHandler, Player> clientToPlayer; //this two maps connect the Player object to their client
     private Map<Player, ServerClientHandler> playerToClient;
 
+    /**
+     * This is the constructor of GameHandler
+     * @param numPlayer is the number of player in the game
+     * @param expertGame is the game mode
+     * @param playersConnections the reference to the connected players
+     */
     public GameHandler(int numPlayer, boolean expertGame, ArrayList<ServerClientHandler> playersConnections) {
         this.numPlayer = numPlayer;
         this.playersConnections = playersConnections;
+        this.expertGame = expertGame;
         if(!expertGame) {
             game = new Game(playersConnections.get(0).getNickname(), numPlayer);
         }else
@@ -46,6 +58,12 @@ public class GameHandler {
         return nickNamePlayers;
     }
 
+    /**
+     * This method handles the first phase after all the players
+     * are connected, makes every player choose a Card Back anda Tower.
+     * Then it starts the real game
+     * @see ServerClientHandler for exceptions
+     */
     public synchronized void setup() throws IOException, ClassNotFoundException {
 
         for(int i=1; i<numPlayer; i++){
@@ -74,16 +92,33 @@ public class GameHandler {
 
         }
     }
+
+    /**
+     * Helper method, send a message to all the players in the game
+     * @param message
+     * @throws IOException
+     */
     private void broadcastMessage(String message) throws IOException {
         for (ServerClientHandler client : playersConnections)
             client.sendMessageToClient(message);
     }
 
+    /**
+     * Break connection with all the players
+     * @throws IOException
+     */
     private void broadcastShutDown() throws IOException {
         for (ServerClientHandler client : playersConnections)
             client.sendShutDownToClient();
     }
 
+    /**
+     * Helper method that helps with the choice of the Tower Color
+     * It will ask the player to send a message until a correct message with correct parameters is sent
+     * Needs a ColorChosen type of message
+     * @param client the current player
+     * @see ServerClientHandler for exceptions
+     */
     private synchronized void askColorsSetup(ServerClientHandler client) throws IOException, ClassNotFoundException{
         client.sendMessageToClient("Select the preferred tower color");
         client.sendMessageToClient("The available tower colors are: ");
@@ -96,6 +131,7 @@ public class GameHandler {
         client.sendMessageToClient(towerColors.toString());
         waitForColorsSetup(client);
     }
+
     private synchronized void waitForColorsSetup(ServerClientHandler client) throws IOException, ClassNotFoundException{
         boolean towerChosen = false;
         Object message;
@@ -119,7 +155,13 @@ public class GameHandler {
             }
         }
     }
-
+    /**
+     * Helper method that helps with the choice of the Card Back
+     * It will ask the player to send a message until a correct message with correct parameters is sent
+     * Needs a ColorChosen type of message
+     * @param client the current player
+     * @see ServerClientHandler for exceptions
+     */
     private synchronized void askCardsBackSetup(ServerClientHandler client) throws IOException , ClassNotFoundException {
         client.sendMessageToClient("Insert the preferred card back");
         client.sendMessageToClient("The available card backs are: ");
@@ -220,6 +262,7 @@ public class GameHandler {
         Message message;
         drawBoard(client, game.getCurrentPlayer());
         drawArchipelago(client);
+        drawExpertCards(client);
         for(int i=0; i<numberOfMoves; i++){
             boolean correctMove = false;
             client.sendMessageToClient("Select where you want to move your students[\"hall/island\"]");
@@ -235,6 +278,16 @@ public class GameHandler {
                         toIsland(client);
                     }
                     correctMove = true;
+                }
+                else if(message instanceof PlayExpertCard && expertGame){
+                    if(((ExpertGame) game).isCardHasBeenPlayed())
+                        correctMove = playCard(client);
+                    else{
+                        client.sendMessageToClient("You have already played a card this turn!");
+                    }
+                }
+                else if(message instanceof PlayExpertCard){
+                    client.sendMessageToClient("Not in an expert game");
                 }
                 else
                 {
@@ -361,7 +414,6 @@ public class GameHandler {
         Message message;
         client.sendMessageToClient("Select one of the clouds: ");
 
-        ArrayList<String> clouds = new ArrayList<>();
         Map<Color, Integer> students = new LinkedHashMap<>();
         int cloudIdx = 0;
         for(int i=0; i<game.getCloudTiles().size(); i++){
@@ -394,7 +446,7 @@ public class GameHandler {
 
         }
     }
-    private void drawArchipelago(ServerClientHandler client) throws IOException, ClassNotFoundException{
+    private void drawArchipelago(ServerClientHandler client) throws IOException{
         StringBuilder stringStudents = new StringBuilder(100);
         StringBuilder towerColor = new StringBuilder(100);
         StringBuilder string = new StringBuilder(100);
@@ -497,12 +549,139 @@ public class GameHandler {
         client.sendMessageToClient("Your board:");
         client.sendMessageToClient("Entrance = " + entranceStudents);
         client.sendMessageToClient("Hall = " + hallStudents);
+        if(expertGame) client.sendMessageToClient("Coin: " + playerBoard.getNumCoin());
         client.sendMessageToClient("Professors = " + playerBoard.getProfessors());
         client.sendMessageToClient("Tower Color = " + playerBoard.getTowerColor());
         client.sendMessageToClient("Number of Towers = " + playerBoard.getNumTower());
 
     }
+    private void drawExpertCards(ServerClientHandler client) throws IOException{
+        if(expertGame) {
+            StringBuilder cards = new StringBuilder();
+            cards.append("Expert Cards:");
+            for(int i=0; i<3; i++){
+                ExpertCard card = game.getExpertCards().get(i);
+                if(card instanceof IncrementMaxMovementCard){
+                    cards.append("IncrementMaxMov:").append(card.getPrice()).append(", ");
+                }
+                else if(card instanceof TakeProfessorEqualStudentsCard){
+                    cards.append("TakeProfessor:").append(card.getPrice()).append(", ");
+                }
+                else if(card instanceof SwapStudentsCard card1){
+                    cards.append("SwapStudents:").append(card1.getPrice()).append(", ");
+                }
+                else if(card instanceof  StudentsBufferCardsCluster){
+                    cards.append("StudentsBuffer:").append(card.getPrice()).append(", ");
+                }
+                else if (card instanceof PutThreeStudentsInTheBagCard){
+                    cards.append("PutThreeStudents:").append(card.getPrice()).append(", ");
+                }
+                else if (card instanceof  PseudoMotherNatureCard){
+                    cards.append("PseudoMother:").append(card.getPrice()).append(", ");
+                }
+                else if (card instanceof  InfluenceCardsCluster){
+                    if(((InfluenceCardsCluster) card).getIndex() == 0)
+                        cards.append("NoTower:").append(card.getPrice()).append(", ");
+                    if(((InfluenceCardsCluster) card).getIndex() == 1)
+                        cards.append("TwoMore:").append(card.getPrice()).append(", ");
+                    if(((InfluenceCardsCluster) card).getIndex()== 2)
+                        cards.append("NoColor:").append(card.getPrice()).append(", ");
 
+                }
+                else if (card instanceof BannedIslandCard){
+                    cards.append("BannedIsland:").append(card.getPrice()).append(", ");
+                }
+            }
+            client.sendMessageToClient(cards.toString());
+        }
+    }
+    private boolean playCard(ServerClientHandler client) throws IOException, ClassNotFoundException{
+        Message message;
+        client.sendMessageToClient("Select the card you want to play!");
+        while(true){
+            message = client.readMessageFromClient();
+            if(message instanceof IntegerMessage){
+                if(((IntegerMessage) message).getMessage()>0 && ((IntegerMessage) message).getMessage()<=3){
+                    ArrayList<ExpertCard> cards = game.getExpertCards();
+                    ExpertCard card = cards.get(((IntegerMessage) message).getMessage()-1);
+                    if(game.getCurrentPlayer().getBoard().getNumCoin() < card.getPrice()){
+                        return false;
+                    }
+                    if(card instanceof IncrementMaxMovementCard || card instanceof TakeProfessorEqualStudentsCard){
+                        game.playEffect(((IntegerMessage) message).getMessage());
+                    }
+                    else if(card instanceof SwapStudentsCard card1){
+                        swapStudents(client, card1);
+                        game.playEffect(((IntegerMessage) message).getMessage());
+                    }
+                    else if(card instanceof  StudentsBufferCardsCluster){
+                        //TODO
+                    }
+                    else if (card instanceof PutThreeStudentsInTheBagCard){
+                        //TODO
+                    }
+                    else if (card instanceof  PseudoMotherNatureCard){
+                        //TODO
+                    }
+                    else if (card instanceof  InfluenceCardsCluster){
+                        //TODO
+                    }
+                    else if (card instanceof BannedIslandCard){
+                        //TODO
+                    }
+                    return true;
+                }
+                else{
+                    client.sendMessageToClient("Please select a card from to 1 to 3");
+                }
+            }
+            else{
+                client.sendMessageToClient("Wrong command, please select which card you want to play");
+            }
+        }
+    }
+    private void swapStudents(ServerClientHandler client, ExpertCard card) throws IOException, ClassNotFoundException{
+        client.sendMessageToClient("Now choose the color you want to swap from your entrance");
+        Message message;
+        Board board = game.getCurrentPlayer().getBoard();
+        boolean hallColor = false;
+        boolean entranceColor = false;
+        while(!entranceColor){
+            message = client.readMessageFromClient();
+            if(message instanceof ColorChosen){
+                if(board.getEntrance().colorsAvailable().contains(((ColorChosen) message).getColor())){
+                    client.sendMessageToClient("Now choose the color you want to swap from your hall");
+                    card.setStudentColorInEntrance(((ColorChosen) message).getColor());
+                    entranceColor = true;
+                }
+                else{
+                    client.sendMessageToClient("Select an available color");
+                }
+            }
+            else{
+                client.sendMessageToClient("Wrong command, select a color");
+            }
+
+        }
+
+        while(!hallColor){
+            message = client.readMessageFromClient();
+            if(message instanceof ColorChosen){
+                if(board.getEntrance().colorsAvailable().contains(((ColorChosen) message).getColor())){
+                    client.sendMessageToClient("Your color has been swapped");
+                    card.setStudentColorToBeMoved(((ColorChosen) message).getColor());
+                    hallColor= true;
+                }
+                else{
+                    client.sendMessageToClient("Select an available color");
+                }
+            }
+            else{
+                client.sendMessageToClient("Wrong command, select a color");
+            }
+
+        }
+    }
     public int getNumPlayer() {
         return numPlayer;
     }

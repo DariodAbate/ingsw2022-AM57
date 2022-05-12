@@ -67,6 +67,10 @@ public class InfluenceCardsCluster extends ExpertCard{
     public RoundObserver getRound(){
         return round;
     }
+
+    public int getIndex() {
+        return index;
+    }
 }
 
 
