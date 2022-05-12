@@ -5,6 +5,8 @@ import it.polimi.ingsw.model.constantFactory.ThreePlayersConstants;
 import it.polimi.ingsw.model.constantFactory.TwoPlayersConstants;
 import it.polimi.ingsw.model.expertGame.ExpertGame;
 import it.polimi.ingsw.network.client.messages.*;
+import it.polimi.ingsw.network.server.exception.GameDisconnectionException;
+import it.polimi.ingsw.network.server.exception.SetupGameDisconnectionException;
 
 
 import java.io.IOException;
@@ -17,13 +19,15 @@ import java.util.Map;
 
 //all method synchronized
 public class GameHandler {
-    private final int numPlayer;
-    private ArrayList<ServerClientHandler> playersConnections;
-    private Game game;
-    private Map<ServerClientHandler, Player> clientToPlayer;
-    private Map<Player, ServerClientHandler> playerToClient;
+    private final MultiServer server;
+    private final ArrayList<ServerClientHandler> playersConnections;
 
-    private MultiServer server;
+    private final Map<ServerClientHandler, Player> clientToPlayer;
+    private final Map<Player, ServerClientHandler> playerToClient;
+
+    private final int numPlayer;
+    private final Game game;
+
 
     public GameHandler(int numPlayer, boolean expertGame, ArrayList<ServerClientHandler> playersConnections, MultiServer server) {
         this.server = server;
@@ -37,8 +41,17 @@ public class GameHandler {
         playerToClient = new HashMap<>();
     }
 
-    //used only for restarting a match
-    //WARNING: playersConnections should have the same order as the arraylist of players saved in the game
+
+    public Game getGame() {
+        return game;
+    }
+
+    /**
+     * This constructor is used for restarting an already started game
+     * @param restartedGame game to be restarted
+     * @param playersConnections list of client handler that belongs to that game
+     * @param server server instance
+     */
     public GameHandler(Game restartedGame, ArrayList<ServerClientHandler> playersConnections, MultiServer server){
         this.server = server;
         this.game = restartedGame;
@@ -54,11 +67,12 @@ public class GameHandler {
         for(int i=0; i < numPlayer; i++){
             playerToClient.put(game.getPlayers().get(i), playersConnections.get(i));
         }
+        //WARNING: playersConnections should have the same order as the arraylist of players saved in the game
     }
 
-
     /**
-     * @return nickname of players in this game
+     * Helper method used to get a list of nickname of the players in this game
+     * @return arrayList of nicknames of players in this game
      */
     public ArrayList<String> getNicknamePlayers(){
         ArrayList<String> nickNamePlayers = new ArrayList<>();
@@ -68,9 +82,8 @@ public class GameHandler {
         return nickNamePlayers;
     }
 
-    // Se un giocatore si disconnette mentre sta scegliendo la torre o il retro della carta,
-    // viene cancellata quella lobby di gioco e i player saranno costretti a fare il login nel server
-    public synchronized void setup() throws IOException, ClassNotFoundException, SetupGameDisconnectionException {
+
+    public synchronized void setup() throws IOException, ClassNotFoundException, SetupGameDisconnectionException, GameDisconnectionException {
 
         for(int i=1; i<numPlayer; i++){
             game.addPlayer(playersConnections.get(i).getNickname());
@@ -85,6 +98,9 @@ public class GameHandler {
         }
 
         game.startGame();
+
+        // If a player logs out while choosing the tower or the back of the card,
+        // that game lobby is cleared and players will be forced to log into the server.
         try {
             for (ServerClientHandler client : playersConnections) {
                 askCardsBackSetup(client);
@@ -99,14 +115,34 @@ public class GameHandler {
             }
             throw new SetupGameDisconnectionException();
         }
+
         game.setGameState(GameState.PLANNING_STATE);
-        gameTurns();
+
+
+        // If a player disconnects after logging into the server, he is kept on the server
+        // and the game reconnection policy is initiated.
+        try {
+            gameTurns();
+        }catch (GameDisconnectionException e){//do not save the game
+            broadcastMessage("A player has disconnected. Closing this game...");
+            broadcastMessage("Please reconnect to restart this game!");
+            broadcastShutDown();
+            throw new GameDisconnectionException();
+        }
     }
+
+    /**
+     * This method is used to send a message in broadcast to all the players connected to this game handler
+     * @param message message to be sent
+     */
     private void broadcastMessage(String message) throws IOException {
         for (ServerClientHandler client : playersConnections)
             client.sendMessageToClient(message);
     }
 
+    /**
+     * This method is used to send a message of shutdown to the client, so that it will terminate
+     */
     private void broadcastShutDown() throws IOException {
         for (ServerClientHandler client : playersConnections)
             client.sendShutDownToClient();
@@ -190,11 +226,18 @@ public class GameHandler {
         }
     }
 
-    public  synchronized void gameTurns() throws IOException, ClassNotFoundException{
+    public  synchronized void gameTurns() throws IOException, ClassNotFoundException, GameDisconnectionException {
         boolean endgame = false;
         while(!endgame){
+            try{
             planningPhase();
             actionPhase();
+            }catch(SocketTimeoutException e){//start the mechanism to save the game
+                broadcastMessage("A player has disconnected. Closing this game...");
+                broadcastMessage("Please reconnect to restart this game!");
+                broadcastShutDown();
+                throw new GameDisconnectionException();
+            }
         }
     }
     private synchronized void planningPhase() throws IOException, ClassNotFoundException{

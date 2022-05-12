@@ -3,27 +3,22 @@ package it.polimi.ingsw.network.server;
 import it.polimi.ingsw.model.Game;
 
 import java.io.*;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
-//TODO implementing mechanism to save a game after a disconnection
 /**
- * This class is used to reconnect disconnected players to an existing game
+ * This class is used to manage the persistence mechanism
  */
 public class ReconnectionHandler {
     private final MultiServer server;
 
     private final Map<ArrayList<String>, Integer> gameIdByUserMap; //associate a players' session  with a progressive integer
-    private final Map<Integer,Integer> numReconnectedPlayer; //associate the id of gameIdByUser to the number of player that has reconnected
-    private final Map<Integer,ArrayList<ServerClientHandler>> reconnectedPlayer;//associate the id of gameIdByUser to the client handler
+    private final Map<Integer,ArrayList<ServerClientHandler>> reconnectedPlayerMap;//associate the id of gameIdByUser to the client handler
     private int nextId;
 
     public ReconnectionHandler(MultiServer server){
         this.server = server;
         gameIdByUserMap = new HashMap<>();
-        numReconnectedPlayer = new HashMap<>();
-        reconnectedPlayer = new HashMap<>();
+        reconnectedPlayerMap = new HashMap<>();
         nextId = -1;
     }
 
@@ -56,8 +51,8 @@ public class ReconnectionHandler {
      * @param clientHandler client that has just reconnected
      */
     private void manageRestarting(int idOfAGame, ServerClientHandler clientHandler) throws IOException {
-        int numPlayerReconnected = reconnectedPlayer.get(idOfAGame).size();
-        int numPlayerToReconnect = numReconnectedPlayer.get(idOfAGame);
+        int numPlayerReconnected = reconnectedPlayerMap.get(idOfAGame).size();
+        int numPlayerToReconnect = getInitialOrder(clientHandler.getNickname()).size();
 
         if(numPlayerReconnected < numPlayerToReconnect){
             clientHandler.sendMessageToClient("Wait for "+ (numPlayerToReconnect - numPlayerReconnected) + " players to join.");
@@ -75,7 +70,7 @@ public class ReconnectionHandler {
      * @param msg message sent
      */
     public void broadcastMessage(int idOfAGame, String msg) throws IOException {
-        for(ServerClientHandler clientHandler: reconnectedPlayer.get(idOfAGame)){
+        for(ServerClientHandler clientHandler: reconnectedPlayerMap.get(idOfAGame)){
             clientHandler.sendMessageToClient(msg);
         }
     }
@@ -88,18 +83,15 @@ public class ReconnectionHandler {
     private void insertClientHandler(int idOfAGame, ServerClientHandler clientHandler) throws IOException {
         //Putting a value into a map with a key which is already present in that map will overwrite the previous value.
         //So you have to put the list only the first time you find a new Keyword
-        ArrayList<ServerClientHandler> clientHandlers = reconnectedPlayer.get(idOfAGame);
+        ArrayList<ServerClientHandler> clientHandlers = reconnectedPlayerMap.get(idOfAGame);
         if(clientHandlers == null){//first player to reconnect
             clientHandlers = new ArrayList<>();
             clientHandlers.add(clientHandler);
-            reconnectedPlayer.put(idOfAGame, clientHandlers);
+            reconnectedPlayerMap.put(idOfAGame, clientHandlers);
         }else{//other player that reconnect
             clientHandlers.add(clientHandler);
         }
-
-        numReconnectedPlayer.merge(idOfAGame, 1, Integer::sum);//if key do not exist, put 1 as value otherwise sum 1 to the value linked to key
         clientHandler.sendMessageToClient("Welcome back "+clientHandler.getNickname());
-
     }
 
     /**
@@ -110,7 +102,7 @@ public class ReconnectionHandler {
     public boolean alreadyLogged(String nickname){
         //containPlayer(nickName) control already done
         int idOfAGame = getIdByNickname(nickname);
-        ArrayList<ServerClientHandler> clientHandlers = reconnectedPlayer.get(idOfAGame);
+        ArrayList<ServerClientHandler> clientHandlers = reconnectedPlayerMap.get(idOfAGame);
         if(clientHandlers == null)//that nickname belongs to the first player that reconnected
             return false;
         for(ServerClientHandler clientHandler: clientHandlers){
@@ -131,6 +123,19 @@ public class ReconnectionHandler {
                 return true;
         }
         return false;
+    }
+
+    /**
+     * This method is used to retrieve the list of players that was originally disconnected
+     * @param nickname nickname of one of the players
+     * @return list of players that was originally disconnected if the nick has correspondence, null otherwise
+     */
+    public ArrayList<String> getInitialOrder(String nickname){
+        for(ArrayList<String> players : gameIdByUserMap.keySet()){
+            if(players.contains(nickname))
+                return new ArrayList<>(players);
+        }
+        return null;
     }
 
     /**
@@ -164,7 +169,7 @@ public class ReconnectionHandler {
      */
     private void writeGame(Game game){
         try{
-            String path = "src/main/resources/SavedGames/testSerializationGame" + nextId +".ser";
+            String path = "src/main/resources/SavedGames/SerializationGame" + nextId +".ser";
             FileOutputStream f = new FileOutputStream(path);
             ObjectOutputStream o = new ObjectOutputStream(f);
 
@@ -178,15 +183,32 @@ public class ReconnectionHandler {
         }
     }
 
-
-
+    /**
+     * This method restarts a game session by a callback to the server
+     * @param idOfAGame id of the game that will be restarted
+     */
     private void restartGame(int idOfAGame) {
         Game game = readGame(idOfAGame);
-        ArrayList<ServerClientHandler> playersToRestart = reconnectedPlayer.get(idOfAGame);
-        //TODO rearrange arraylist of client handler to the original order with a comparator
+        ArrayList<ServerClientHandler> playersToRestart = reconnectedPlayerMap.get(idOfAGame);
+        orderPlayer(playersToRestart);
         if(game != null){
             server.restartGame(game, playersToRestart);
         }
+    }
+
+
+    /**
+     * This method is used to sort lhe list of clientHandler with the same order of the initial login
+     * of players
+     * @param playersToRestart list of clientHandler that reconnected
+     */
+    private void orderPlayer(ArrayList<ServerClientHandler> playersToRestart) {
+        //to find the list of player you need only a player
+        ArrayList<String> initialOrder = getInitialOrder(playersToRestart.get(0).getNickname());
+
+        playersToRestart.sort(Comparator.comparing(
+                item -> initialOrder.indexOf(item.getNickname())
+        ));
     }
 
 
@@ -198,7 +220,7 @@ public class ReconnectionHandler {
     private Game readGame(int idOfAGame) {
         Game g = null;
         try {
-            String path = "src/main/resources/SavedGames/testSerializationGame" + idOfAGame + ".ser";
+            String path = "src/main/resources/SavedGames/SerializationGame" + idOfAGame + ".ser";
             FileInputStream fi = new FileInputStream(path);
             ObjectInputStream oi = new ObjectInputStream(fi);
 
@@ -212,37 +234,5 @@ public class ReconnectionHandler {
         }
         return g;
     }
-
-/*
-    public static void main(String[] args) {
-        ReconnectionHandler reconnectionHandler = new ReconnectionHandler();
-        Game game = new Game("Dario", 2);
-        game.addPlayer("Lerry");
-        game.startGame();
-
-        ArrayList<String> nickPlayer = new ArrayList<>();
-        for(Player player: game.getPlayers())
-            nickPlayer.add(player.getNickname());
-
-        reconnectionHandler.addGame(game, nickPlayer);
-
-        Game game1 = new Game("Samu", 3);
-        game1.addPlayer("Fede");
-        game1.addPlayer("Giulia");
-        game1.startGame();
-
-        ArrayList<String> nickPlayer1 = new ArrayList<>();
-        for(Player player: game1.getPlayers())
-            nickPlayer1.add(player.getNickname());
-
-        reconnectionHandler.addGame(game1, nickPlayer1);
-
-
-        reconnectionHandler.readGame("Fede");
-    }
-
-
- */
-
 
 }
