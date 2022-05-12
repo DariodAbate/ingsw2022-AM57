@@ -12,8 +12,8 @@
 | GUI                             | 🔴 |
 | CLI                             | 🟡 |
 | Character cards                 | 🟡 |
-| Multiple games                  | 🟡 |
-| Persistence                     | 🟡 |
+| Multiple games                  | 🟢 |
+| Persistence                     | 🟢 |
 | Resilience to disconnections    | 🔴 |
 
 #### Legend
