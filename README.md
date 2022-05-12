@@ -6,14 +6,14 @@
 
 | Functionality                   |                       State                        |
 |:--------------------------------|:--------------------------------------------------:|
-| Basic rules                     | 🟡 |
+| Basic rules                     | 🟢 |
 | Complete rules                  | 🟡 |
 | Socket                          | 🟡 |
 | GUI                             | 🔴 |
-| CLI                             | 🔴 |
+| CLI                             | 🟡 |
 | Character cards                 | 🟡 |
 | Multiple games                  | 🟡 |
-| Persistence                     | 🔴 |
+| Persistence                     | 🟡 |
 | Resilience to disconnections    | 🔴 |
 
 #### Legend

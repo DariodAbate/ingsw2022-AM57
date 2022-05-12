@@ -4,6 +4,7 @@ import it.polimi.ingsw.model.constantFactory.GameConstants;
 import it.polimi.ingsw.model.constantFactory.GameConstantsCreator;
 import it.polimi.ingsw.model.constantFactory.GameConstantsCreatorThreePlayers;
 import it.polimi.ingsw.model.constantFactory.GameConstantsCreatorTwoPlayers;
+import it.polimi.ingsw.model.expertGame.ExpertCard;
 import it.polimi.ingsw.model.statePattern.InfluenceCalculator;
 import it.polimi.ingsw.model.statePattern.StandardCalculator;
 
@@ -152,7 +153,7 @@ public class Game implements RoundObserver, RefillInterface, Serializable {
         //TODO determine casually the first player
 
         //set planning state
-        //setGameState(GameState.PLANNING_STATE);TODO BISOGNA CAMBIARE DOPO LA SELEZIONE NON IN STARTGAME
+
     }
 
     public void setGameState(GameState state){
@@ -662,4 +663,15 @@ public class Game implements RoundObserver, RefillInterface, Serializable {
     public ArrayList<CardBack> getAvailableCardsBack() {
         return new ArrayList<>(availableCardsBack);
     }
+
+    @Override
+    public void resetCalc() {
+        this.calc = new StandardCalculator();
+    }
+
+    //expertcard methods
+    public ArrayList<ExpertCard> getExpertCards(){return new ArrayList<>();}
+    public void playEffect(int indexCard){}
+    public boolean CardHasBeenPlayed(){return true;}
+
 }

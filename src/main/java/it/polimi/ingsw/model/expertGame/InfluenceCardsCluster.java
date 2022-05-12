@@ -69,6 +69,10 @@ public class InfluenceCardsCluster extends ExpertCard implements Serializable {
     public RoundObserver getRound(){
         return round;
     }
+
+    public int getIndex() {
+        return index;
+    }
 }
 
 

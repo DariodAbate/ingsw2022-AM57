@@ -5,4 +5,5 @@ package it.polimi.ingsw.model;
  */
 public interface RefillInterface {
     public void bagToClouds();
+    void resetCalc();
 }

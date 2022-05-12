@@ -174,7 +174,7 @@ public class Round implements Serializable {
             return;
         }
         if (!isPlanning && (getCurrentPlayerIndex() == (playersCopy.size() - 1))) {
-
+            game.resetCalc();
             nextRound();
             return;
         }
@@ -183,7 +183,7 @@ public class Round implements Serializable {
             currentTurn = planningPhaseOrder.get(playerIdx + 1);
         }
         if (!isPlanning) {
-
+            game.resetCalc();
             currentTurn = actionPhaseOrder.get(getCurrentPlayerIndex() + 1);
         }
     }
