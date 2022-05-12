@@ -50,6 +50,9 @@ public class ExpertGame extends Game implements Serializable, PseudoMotherNature
         //initialize clouds
         initClouds();
 
+        //fill clouds with students
+        bagToClouds();
+
         //fill entrance for each player's board
         initEntrancePlayers();
 
