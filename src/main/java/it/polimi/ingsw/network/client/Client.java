@@ -96,6 +96,9 @@ public class Client {
                 Color color = Color.valueOf(userInput.toUpperCase());
                 out.writeObject(new ColorChosen(color));
             }
+            else if(userInput.equalsIgnoreCase("play")){
+                out.writeObject(new PlayExpertCard());
+            }
             else{
                 out.writeObject(new GenericMessage(userInput));
             }

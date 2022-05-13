@@ -230,5 +230,8 @@ public class Round {
     public boolean isPlanning() {
         return  isPlanning;
     }
+    public void setGame(Game game){
+        this.game = game;
+    }
 }
 

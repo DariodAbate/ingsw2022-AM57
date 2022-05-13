@@ -132,7 +132,8 @@ class RoundTest {
         players.add(p1);
         players.add(p2);
         players.add(p3);
-        r = new Round(players);        //Planning order = random first player
+        r = new Round(players);
+        r.setGame(new Game("Lerry", 3));//Planning order = random first player
         p1.playCard(5);
         r.nextTurn();
         p2.playCard(0);

@@ -1,12 +1,14 @@
 package it.polimi.ingsw.network.server;
 
 import it.polimi.ingsw.model.*;
+import it.polimi.ingsw.model.Color;
 import it.polimi.ingsw.model.constantFactory.ThreePlayersConstants;
 import it.polimi.ingsw.model.constantFactory.TwoPlayersConstants;
 import it.polimi.ingsw.model.expertGame.*;
 import it.polimi.ingsw.network.client.messages.*;
 
 
+import java.awt.*;
 import java.io.IOException;
 import java.io.StreamCorruptedException;
 import java.net.SocketTimeoutException;
@@ -280,8 +282,10 @@ public class GameHandler {
                     correctMove = true;
                 }
                 else if(message instanceof PlayExpertCard && expertGame){
-                    if(((ExpertGame) game).isCardHasBeenPlayed())
+                    if(!((ExpertGame) game).isCardHasBeenPlayed()) {
                         correctMove = playCard(client);
+                        i--;
+                    }
                     else{
                         client.sendMessageToClient("You have already played a card this turn!");
                     }
@@ -509,6 +513,10 @@ public class GameHandler {
                     mother.append("o");
                     motherCounter++;
                 }
+                if(island.getIsBanned()){
+                    mother.append("!");
+                    motherCounter++;
+                }
             while(studentsCounter>towerCounter){
                 towerColor.append(" ");
                 towerCounter++;
@@ -604,30 +612,45 @@ public class GameHandler {
                 if(((IntegerMessage) message).getMessage()>0 && ((IntegerMessage) message).getMessage()<=3){
                     ArrayList<ExpertCard> cards = game.getExpertCards();
                     ExpertCard card = cards.get(((IntegerMessage) message).getMessage()-1);
+
                     if(game.getCurrentPlayer().getBoard().getNumCoin() < card.getPrice()){
+                        client.sendMessageToClient("You don't have enough coin!");
                         return false;
                     }
                     if(card instanceof IncrementMaxMovementCard || card instanceof TakeProfessorEqualStudentsCard){
-                        game.playEffect(((IntegerMessage) message).getMessage());
+                        game.playEffect(((IntegerMessage) message).getMessage()-1);
                     }
                     else if(card instanceof SwapStudentsCard card1){
                         swapStudents(client, card1);
-                        game.playEffect(((IntegerMessage) message).getMessage());
+                        game.playEffect(((IntegerMessage) message).getMessage()-1);
                     }
                     else if(card instanceof  StudentsBufferCardsCluster){
                         //TODO
                     }
                     else if (card instanceof PutThreeStudentsInTheBagCard){
-                        //TODO
+                        putThreeStudentsInBagColor(client, card);
+                        game.playEffect(((IntegerMessage) message).getMessage());
                     }
                     else if (card instanceof  PseudoMotherNatureCard){
-                        //TODO
+                        pseudoMotherIslandSelector(client, card);
+                        game.playEffect(((IntegerMessage) message).getMessage()-1);
                     }
-                    else if (card instanceof  InfluenceCardsCluster){
-                        //TODO
+                    else if (card instanceof  InfluenceCardsCluster card1){
+                        int idx = card1.getIndex();
+                        if(idx == 0){
+                            game.playEffect(((IntegerMessage) message).getMessage()-1);
+                        }
+                        else if(idx ==1){
+                            game.playEffect(((IntegerMessage) message).getMessage()-1);
+                        }
+                        else if(idx == 2){
+                            choseColorInfluenceCalculator(client, card1);
+                            game.playEffect(((IntegerMessage) message).getMessage()-1);
+                        }
                     }
                     else if (card instanceof BannedIslandCard){
-                        //TODO
+                        bannedIslandSelector(client, card);
+                        game.playEffect(((IntegerMessage) message).getMessage()-1);
                     }
                     return true;
                 }
@@ -637,6 +660,68 @@ public class GameHandler {
             }
             else{
                 client.sendMessageToClient("Wrong command, please select which card you want to play");
+            }
+        }
+    }
+    private void putThreeStudentsInBagColor(ServerClientHandler client, ExpertCard card) throws IOException, ClassNotFoundException{
+        client.sendMessageToClient("Please select the color to put in the bag");
+        Message message;
+        boolean colorChosen = false;
+        while(!colorChosen){
+            message = client.readMessageFromClient();
+            if(message instanceof ColorChosen){
+                if(((ColorChosen) message).getColor() != null){
+                    ((PutThreeStudentsInTheBagCard) card).setStudentColor(((ColorChosen) message).getColor());
+                    colorChosen = true;
+                }
+                else{
+                    client.sendMessageToClient("!!!!ALARM!!!!! MALEFIC CLIENT DETECTED!!!!");
+                    client.sendShutDownToClient();
+                }
+            }
+            else{
+                client.sendMessageToClient("Wrong command, please select a color to put in the bag");
+            }
+
+        }
+    }
+    private void bannedIslandSelector(ServerClientHandler client, ExpertCard card) throws IOException,ClassNotFoundException{
+        client.sendMessageToClient("Please select the island where you want to put your ban token");
+        Message message;
+        boolean idxIsland = false;
+        while(!idxIsland){
+            message = client.readMessageFromClient();
+            if(message instanceof IntegerMessage && ((ExpertGame)game).getBanTile()>0){
+                if(((IntegerMessage) message).getMessage()>0 && ((IntegerMessage) message).getMessage()<=game.getArchipelago().size()){
+                    card.changeIslandIndex(((IntegerMessage) message).getMessage()-1);
+                    idxIsland=true;
+                }
+                else{
+                    client.sendMessageToClient("This island does not exists");
+                }
+            }
+            else{
+                client.sendMessageToClient("Wrong command, needed the number of island that you want to ban");
+            }
+        }
+    }
+    private void pseudoMotherIslandSelector(ServerClientHandler client, ExpertCard card) throws IOException,ClassNotFoundException{
+        client.sendMessageToClient("Please select the island where you want to calculate your influence");
+        Message message;
+        boolean idxIsland = false;
+        while(!idxIsland){
+            message = client.readMessageFromClient();
+            if(message instanceof IntegerMessage){
+                if(((IntegerMessage) message).getMessage()>0 && ((IntegerMessage) message).getMessage()<=game.getArchipelago().size()){
+                    card.changeIslandIndex(((IntegerMessage) message).getMessage()-1);
+                    idxIsland=true;
+                }
+                else{
+                    client.sendMessageToClient("This island does not exists");
+                }
+            }
+            else{
+                client.sendMessageToClient("Wrong command, needed the number of island where you want to calculate influence");
             }
         }
     }
@@ -680,6 +765,27 @@ public class GameHandler {
                 client.sendMessageToClient("Wrong command, select a color");
             }
 
+        }
+    }
+    private void choseColorInfluenceCalculator(ServerClientHandler client, InfluenceCardsCluster card) throws IOException, ClassNotFoundException{
+        boolean choseColor = false;
+        Message message;
+        client.sendMessageToClient("Please select the color to ignore for the influence calculation");
+        while(!choseColor){
+            message = client.readMessageFromClient();
+            if(message instanceof ColorChosen){
+                if(((ColorChosen) message).getColor()!=null) {
+                    card.changeColor(((ColorChosen) message).getColor());
+                    choseColor = true;
+                }
+                else{
+                    client.sendMessageToClient("!!!!ALARM!!!!! MALEFIC CLIENT DETECTED!!!!");
+                    client.sendShutDownToClient();
+                }
+            }
+            else{
+                client.sendMessageToClient("Please select a valid color");
+            }
         }
     }
     public int getNumPlayer() {

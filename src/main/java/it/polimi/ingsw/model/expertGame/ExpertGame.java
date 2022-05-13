@@ -2,6 +2,7 @@ package it.polimi.ingsw.model.expertGame;
 
 import it.polimi.ingsw.model.*;
 import it.polimi.ingsw.model.statePattern.InfluenceCalculator;
+import it.polimi.ingsw.model.statePattern.StandardCalculator;
 
 import java.util.ArrayList;
 import java.util.Random;
@@ -86,7 +87,8 @@ public class ExpertGame extends Game implements PseudoMotherNature, IncrementMax
         for (int j = 1; j <= 12; j++) {
             cardsPlaceHolder.add(j);
         }
-        for(int i=0; i<NUMBER_OF_EXPERT_CARDS; i++){
+        //expertCards.add(new IncrementMaxMovementCard(this));
+        for(int i=0; i<NUMBER_OF_EXPERT_CARDS; i++){//per testare una carta mettere i ad 1 e cambiare il tipo di carta sopra
             temp = rand.nextInt((cardsPlaceHolder.size()));
             switch (cardsPlaceHolder.get(temp)) {
                 case 1 -> expertCards.add(new BannedIslandCard(this));
@@ -205,6 +207,7 @@ public class ExpertGame extends Game implements PseudoMotherNature, IncrementMax
         int tempMotherNature = motherNature;//store the initial motherNature
         IslandTile tempIsland = getCurrentIsland();
         motherNature = i;
+        getCurrentIsland().changeCalculator(new StandardCalculator());
         getCurrentIsland().conquer(players);
         mergeIslandTile();
         if(archipelago.contains(tempIsland)){
