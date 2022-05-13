@@ -1,10 +1,12 @@
 package it.polimi.ingsw.model;
 
+import java.io.Serializable;
+
 /**
  * This class represents the bag of the game: the two constructors initialize the bag with the specified number of tokens
  * @author Lorenzo Corrado
  */
-public class Bag {
+public class Bag implements Serializable {
     private StudentsHandler studentsHandlerToken;
     //2 constructor: the first is very specific, the second is a generic one
     public Bag(int red, int blue, int green, int pink, int yellow){

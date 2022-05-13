@@ -16,7 +16,7 @@ import java.net.Socket;
 import java.util.Scanner;
 
 public class Client {
-    private Socket echoSocket ;
+    private final Socket echoSocket ;
     private ObjectOutputStream out ;
     private ObjectInputStream in ;
     private Scanner stdIn ;
@@ -30,20 +30,17 @@ public class Client {
         listenServer = true;
     }
 
-
     public void sendPing() throws IOException {
         while(listenServer) {
             out.writeObject(new Ping());
             out.flush();
             try{
-                Thread.sleep(3* 1000);//ping every 3 second
+                Thread.sleep(3 * 1000);//ping every 3 second
             }catch(InterruptedException e){
                 System.err.println("InterruptedException in sendPing: " + e.getMessage());
             }
         }
     }
-
-
 
     public void communicationWithServer() throws ClassNotFoundException, IOException {
 
@@ -57,12 +54,10 @@ public class Client {
                     sendPing();
                 } catch (IOException e) {
                     System.err.println("IoException in outPing: "+ e.getMessage());
+                    e.printStackTrace();
                 }
             });
             outPing.start();
-
-
-
 
         String userInput;
         while ((userInput = stdIn.nextLine()) != null && listenServer) {

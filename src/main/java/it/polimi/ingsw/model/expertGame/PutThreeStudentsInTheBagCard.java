@@ -2,7 +2,9 @@ package it.polimi.ingsw.model.expertGame;
 
 import it.polimi.ingsw.model.Color;
 
-public class PutThreeStudentsInTheBagCard extends ExpertCard {
+import java.io.Serializable;
+
+public class PutThreeStudentsInTheBagCard extends ExpertCard implements Serializable {
     private final PutThreeStudentsInTheBag game;
     private Color studentColor;
 

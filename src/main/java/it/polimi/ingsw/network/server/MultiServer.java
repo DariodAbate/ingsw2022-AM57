@@ -1,14 +1,15 @@
 package it.polimi.ingsw.network.server;
 
+import it.polimi.ingsw.model.Game;
 import it.polimi.ingsw.network.client.messages.GenericMessage;
 import it.polimi.ingsw.network.client.messages.IntegerMessage;
 import it.polimi.ingsw.network.client.messages.Message;
+import it.polimi.ingsw.network.server.exception.GameDisconnectionException;
+import it.polimi.ingsw.network.server.exception.SetupGameDisconnectionException;
 
 import java.io.IOException;
 import java.net.SocketTimeoutException;
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Scanner;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -21,16 +22,13 @@ import java.util.concurrent.Executors;
  */
 public class MultiServer {
     private final SocketServer socketServer;
-
-    private final Map<Integer, String> loggedPlayersByNickname;
-    private final Map<Integer, ServerClientHandler> loggedPlayersByConnection;
-
-    private int nextId; //next id for register a player
-   // private GameHandler currentGame = null; //controller for a game
+    private final ReconnectionHandler reconnectionHandler;
+    
+    private final ArrayList<String> loggedPlayers;//list of all the nicknames used in the server
+    private final ArrayList<ServerClientHandler> connectionList; //list of client waiting in the lobby
 
     private int requiredPlayer;
     private boolean expertMode;
-    private final ArrayList<ServerClientHandler> connectionList; //list of client waiting in the lobby
 
     /*
      * The management of multiple games is as follows. The first player connects to the server and decides
@@ -51,12 +49,12 @@ public class MultiServer {
         Thread thread = new Thread(this::stopServer); //thread that listen for quitting
         thread.start();
         connectionList = new ArrayList<>();
+        loggedPlayers = new ArrayList<>();//contains all the nickname
 
-        loggedPlayersByNickname = new HashMap<>();
-        loggedPlayersByConnection = new HashMap<>();
-        nextId = -1;
         expertMode = false;
         requiredPlayer = -1;
+
+        reconnectionHandler = new ReconnectionHandler(this);
     }
 
     /**
@@ -74,23 +72,29 @@ public class MultiServer {
     }
 
     /**
+     * This method unregister a player from the serve, deleting his nickname in the database.
+     * If that nickname is not registered in the server, nothing happen
+     * @param nickname nickname of the player to be deleted from the server
+     */
+    public void unregisterPlayer(String nickname){
+        loggedPlayers.remove(nickname);
+    }
+
+    /**
      * This method logs a player in the server the first time it connects.
      *
      * @param clientHandler client handler associated to a player.
      */
     public void loginPlayer(ServerClientHandler clientHandler) throws IOException, ClassNotFoundException {
-        if(!loggedPlayersByConnection.containsValue(clientHandler)) {
-            boolean hasRegistered = registerPlayer(clientHandler);
-            if(hasRegistered)
-                addToLobby(clientHandler);
-        }
-        else
-            clientHandler.sendMessageToClient("User already logged.");
+        boolean hasRegistered = registerPlayer(clientHandler);
+        if(hasRegistered)
+            addToLobby(clientHandler);
     }
 
     /**
-     * This method register a player in the server, associating to it an integer id. The player will choose
+     * This method register a player in the server, saving his nickname. The player will choose
      * a unique nickname.
+     * If a player disconnects as soon as it connects to the server, it is disconnected and not registered on the server.
      * @param clientHandler client handler associated to a player.
      */
     private synchronized boolean registerPlayer(ServerClientHandler clientHandler) throws IOException, ClassNotFoundException {
@@ -108,10 +112,18 @@ public class MultiServer {
             }
             if (nick instanceof GenericMessage) {
                 String nickName = ((GenericMessage) nick).getMessage();
-                if (!loggedPlayersByNickname.containsValue(nickName)) {
-                    ++nextId;
-                    loggedPlayersByNickname.put(nextId, nickName);
-                    loggedPlayersByConnection.put(nextId, clientHandler);
+                if(reconnectionHandler.containPlayer(nickName) ){//user logged after a disconnection
+                    if(!reconnectionHandler.alreadyLogged(nickName)){//user not yet reconnected
+                        clientHandler.setNickname(nickName);
+                        reconnectionHandler.reconnectPlayer(clientHandler);
+                        return false;//user already logged
+
+                    } else{//inserted user of player already reconnected
+                        clientHandler.sendMessageToClient("That user has already reconnected. Please insert a valid nickname");
+                    }
+                }
+                if(!loggedPlayers.contains(nickName)){
+                    loggedPlayers.add(nickName);
                     correctNick = true;
                     clientHandler.setNickname(nickName);
                     clientHandler.sendMessageToClient("Welcome " + nickName);
@@ -128,7 +140,8 @@ public class MultiServer {
     /**
      * This method add a player to a lobby. If that player is the first, it will set a game parameters, otherwise it will
      * wait until all the players are connected. When the required number of player is reached, a new game starts.
-     *
+     * If the first player enters the nickname and then disconnects, he is removed from the server and any parameters he has
+     * set for a game are reset, furthermore his track on the server is deleted
      * @param clientHandler client handler associated to a player.
      */
     private synchronized void addToLobby(ServerClientHandler clientHandler) throws IOException, ClassNotFoundException {
@@ -140,32 +153,17 @@ public class MultiServer {
                 selectGameMode(clientHandler);
                 clientHandler.sendMessageToClient("Wait for " + (this.requiredPlayer - connectionList.size()) + " players to join.");
 
-            }catch(SocketTimeoutException e){//if the first player disconnects, we cannot accept the setup and
+            }catch(SocketTimeoutException e){
                 clientHandler.sendShutDownToClient();
-                connectionList.remove(clientHandler);
-                loggedPlayersByNickname.remove(nextId);
-                loggedPlayersByConnection.remove(nextId);
-                --nextId;
                 expertMode = false;
                 requiredPlayer = -1;
-
+                connectionList.remove(clientHandler);
+                loggedPlayers.remove(clientHandler.getNickname());
             }
         } else if (connectionList.size() == requiredPlayer) {
             broadcastMessage("Number of players reached. Starting a new game.");
 
-            GameHandler game = new GameHandler(requiredPlayer, expertMode, new ArrayList<>(connectionList));
-            for(ServerClientHandler client: connectionList)
-                client.setGameHandler(game);
-
-            Thread t = new Thread(() -> {
-                try {
-                    game.setup();
-                } catch (IOException | ClassNotFoundException e) {
-                    e.printStackTrace();
-                }
-            });
-            t.start();
-
+            startGame(requiredPlayer, expertMode, this);
 
             connectionList.clear();
             requiredPlayer = 0;
@@ -176,13 +174,70 @@ public class MultiServer {
         }
     }
 
+    /**
+     * This method is used to instantiate a gameHandler that run oh his own thread. It also calls the method save game when
+     * a player disconnects during a game.
+     * @param requiredPlayer required number of player for a match
+     * @param expertMode true for expert mode, false otherwise
+     * @param server reference to the server
+     */
+    private synchronized void startGame(int requiredPlayer, boolean expertMode, MultiServer server){
+        GameHandler gameHandler = new GameHandler(requiredPlayer, expertMode, new ArrayList<>(connectionList), server);
+
+        Thread t = new Thread(() -> {
+            try {
+                gameHandler.setup();
+            } catch (IOException | ClassNotFoundException e) {
+                e.printStackTrace();
+            }catch (SetupGameDisconnectionException e1){
+                System.err.println("Players disconnected during setup of a game!");
+            }catch(GameDisconnectionException e2){
+                System.err.println("Players disconnected during a game!");
+                saveGame(gameHandler);
+            }
+        });
+        t.start();
+    }
+
+    /**
+     * This method is used to instantiate a gameHandler that run oh his own thread. This method is used by
+     * the reconnection mechanism
+     * @param game game object that was created before
+     * @param playersConnections list of client handler that was originally disconnected
+     */
+    public synchronized void restartGame(Game game, ArrayList<ServerClientHandler> playersConnections){
+        GameHandler gameHandler = new GameHandler(game, playersConnections,this);
+
+        Thread t = new Thread(() -> {
+            try {
+                gameHandler.gameTurns(); //restart a game at the point where a player has disconnected
+            } catch (IOException | ClassNotFoundException e) {
+                e.printStackTrace();
+            } catch(GameDisconnectionException e1){
+                System.err.println("Players disconnected during a game!");
+                saveGame(gameHandler);
+            }
+        });
+        t.start();
+    }
+
+    /**
+     * This method is used to save a game into the disk
+     * @param gameHandler game handler object associated to the game that will be saved
+     */
+    private synchronized void saveGame(GameHandler gameHandler) {
+        ArrayList<String> playersNick = gameHandler.getNicknamePlayers();
+        Game game = gameHandler.getGame();
+        reconnectionHandler.addGame(game, playersNick);
+        System.out.println("Game saved!");
+    }
 
 
     /**
      * This method set a number of player for a specific game
      * @param clientHandler client that communicates with server
      */
-    private void selectNumPlayer(ServerClientHandler clientHandler) throws IOException, ClassNotFoundException {
+    private synchronized void selectNumPlayer(ServerClientHandler clientHandler) throws IOException, ClassNotFoundException {
         clientHandler.sendMessageToClient("You are the first player; Please choose a number of players.");
         boolean valid = false;
 

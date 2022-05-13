@@ -6,11 +6,13 @@ import it.polimi.ingsw.model.IslandTile;
 import it.polimi.ingsw.model.Player;
 import it.polimi.ingsw.model.expertGame.InfluenceCardsCluster;
 
+import java.io.Serializable;
+
 /**
  * This class implements a calculator that ignores one single kind of color in the checkInfluence method
  * @author Lorenzo Corrado
  */
-public class ExceptOneColorCalculator implements InfluenceCalculator{
+public class ExceptOneColorCalculator implements InfluenceCalculator, Serializable {
     private IslandTile island;
     private Color color;
     private final InfluenceCardsCluster card;

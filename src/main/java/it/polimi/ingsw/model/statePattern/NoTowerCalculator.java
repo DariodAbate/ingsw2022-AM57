@@ -5,12 +5,14 @@ import it.polimi.ingsw.model.Color;
 import it.polimi.ingsw.model.IslandTile;
 import it.polimi.ingsw.model.Player;
 
+import java.io.Serializable;
+
 /**
  * This class implements the influence calculator that ignores towers
  * @author Lorenzo Corrado
  */
 
-public class NoTowerCalculator implements InfluenceCalculator{
+public class NoTowerCalculator implements InfluenceCalculator, Serializable {
     private IslandTile island;
 
     public NoTowerCalculator(){

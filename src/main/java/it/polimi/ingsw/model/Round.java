@@ -1,5 +1,6 @@
 package it.polimi.ingsw.model;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.Random;
@@ -11,7 +12,7 @@ import java.util.Random;
  *
  * @author Luca Bresciani
  */
-public class Round {
+public class Round implements Serializable {
     private int roundNumber;
     private ArrayList<Player> planningPhaseOrder;
     private ArrayList<Player> actionPhaseOrder;

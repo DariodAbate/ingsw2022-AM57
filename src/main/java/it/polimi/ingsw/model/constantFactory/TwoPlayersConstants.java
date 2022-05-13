@@ -1,11 +1,13 @@
 package it.polimi.ingsw.model.constantFactory;
 
+import java.io.Serializable;
+
 /**
  * This class is a concrete implementation of the interface GameConstants.
  * The methods return constants for a 2-player game
  * @author Dario d'Abate
  */
-public class TwoPlayersConstants implements GameConstants{
+public class TwoPlayersConstants implements GameConstants, Serializable {
     private final static int ENTRANCE_SIZE = 7;
     private final static int NUM_TOWERS = 8;
     private final static int NUM_CLOUDS = 2;

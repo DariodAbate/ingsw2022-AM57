@@ -126,6 +126,7 @@ class RoundTest {
 
     @Test
     void nextTurnTest() {
+        Game g = new Game("luca", 3);
         Player p1 = new Player(1, gc);
         Player p2 = new Player(2, gc);
         Player p3 = new Player(3, gc);
@@ -133,7 +134,8 @@ class RoundTest {
         players.add(p2);
         players.add(p3);
         r = new Round(players);
-        r.setGame(new Game("Lerry", 3));//Planning order = random first player
+        r.setGame(g);//Planning order = random first player//Planning order = random first player
+        r.setRefillInterface(g);
         p1.playCard(5);
         r.nextTurn();
         p2.playCard(0);

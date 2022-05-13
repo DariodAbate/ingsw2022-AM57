@@ -1,11 +1,13 @@
 package it.polimi.ingsw.model;
 
+import java.io.Serializable;
+
 /**
  * The AssistantCard class represent the card of the game.
  *
  * @author Luca Bresciani.
  */
-public class AssistantCard {
+public class AssistantCard implements Serializable {
     private final int movement;
     private final int priority;
     private CardBack back;

@@ -6,11 +6,13 @@ import it.polimi.ingsw.model.RoundObserver;
 import it.polimi.ingsw.model.expertGame.ExpertCard;
 import it.polimi.ingsw.model.expertGame.InfluenceCardsCluster;
 
+import java.io.Serializable;
+
 /**
  * This class extends a standard calculator adding 2 more influence point to the count
  * @author Lorenzo Corrado
  */
-public class TwoMoreCalculator extends StandardCalculator{
+public class TwoMoreCalculator extends StandardCalculator implements Serializable {
     private Player currentPlayer;
     private InfluenceCardsCluster card;
     public TwoMoreCalculator(InfluenceCardsCluster card){

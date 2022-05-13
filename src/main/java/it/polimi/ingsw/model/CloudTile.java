@@ -2,6 +2,7 @@ package it.polimi.ingsw.model;
 
 import it.polimi.ingsw.model.constantFactory.GameConstants;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
 /**
@@ -10,7 +11,7 @@ import java.util.ArrayList;
  * of this set
  * @author Dario d'Abate
  */
-public class CloudTile {
+public class CloudTile implements Serializable {
     private StudentsHandler cloudStud;
     GameConstants gameConstants;
 

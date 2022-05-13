@@ -17,14 +17,13 @@ import java.net.SocketTimeoutException;
  * @author Dario d'Abate
  */
 public class ServerClientHandler implements Runnable {
-    private MultiServer server;
-    private Socket socket;
+    private final MultiServer server;
+    private final Socket socket;
     private ObjectOutputStream out;
     private ObjectInputStream in;
     private String nickname;
     private volatile boolean active;
 
-    private GameHandler gameHandler;
 
     /**
      * @param server Server to which the client is connected
@@ -36,9 +35,6 @@ public class ServerClientHandler implements Runnable {
         active = true;
     }
 
-    public void setGameHandler(GameHandler gameHandler) {
-        this.gameHandler = gameHandler;
-    }
 
     /**
      * In this method the streams are instantiated and closed, Thus it handles the login of a player
@@ -65,8 +61,6 @@ public class ServerClientHandler implements Runnable {
                 out.close();
                 socket.close();
             }
-            //sendMessageToClient("Disconnected");
-           // messageDispatcher();
 
         }catch (IOException e) {
             System.err.println("IOException in  run: " + e.getMessage());
@@ -121,7 +115,6 @@ public class ServerClientHandler implements Runnable {
             try {
 
                 if( (msg = in.readObject()) instanceof Ping ){
-                    //System.out.println("ping from client  " +  socket.getLocalAddress());
                     msg = null;
                 }
             }catch(SocketTimeoutException e){

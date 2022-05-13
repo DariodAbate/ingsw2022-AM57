@@ -8,6 +8,7 @@ import it.polimi.ingsw.model.expertGame.ExpertCard;
 import it.polimi.ingsw.model.statePattern.InfluenceCalculator;
 import it.polimi.ingsw.model.statePattern.StandardCalculator;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Random;
@@ -20,7 +21,7 @@ import java.util.Random;
  * @author Dario d'Abate
  * @author Lorenzo Corrado
  */
-public class Game implements RoundObserver, RefillInterface{
+public class Game implements RoundObserver, RefillInterface, Serializable {
     protected GameConstants gameConstants;//contains all the game's constants
     protected ArrayList<Player> players;
     protected final int numGamePlayers; //number of players for a particular game

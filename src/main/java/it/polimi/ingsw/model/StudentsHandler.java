@@ -1,5 +1,6 @@
 package it.polimi.ingsw.model;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -9,7 +10,7 @@ import java.util.Map;
  * number of students for each color
  * @author Lorenzo Corrado
  */
-public class StudentsHandler {
+public class StudentsHandler implements Serializable {
     private static final int MAXSIZE = 26;
     private Map<Color, Integer> students;
     //maximum size that you can have for every single color, if not specified it is 26

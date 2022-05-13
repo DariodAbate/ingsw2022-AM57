@@ -14,10 +14,11 @@ import java.util.concurrent.Executors;
  * @author Dario d'Abate
  */
 public class SocketServer implements Runnable{
-    private MultiServer server;
+    private final MultiServer server;
     private final int port;
     private final ExecutorService executor;
     private volatile boolean operating; // becomes visible to all readers when written
+    private final int SECONDS_TIMEOUT = 15;
 
     /**
      * Constructor of the class
@@ -38,14 +39,15 @@ public class SocketServer implements Runnable{
     public void setOperating(boolean state){operating = state;}
 
     /**
-     * This method accepts connections from clients, and for each connection creates a new thread
+     * This method accepts connections from clients, and for each connection creates a new thread.
+     * Thus, it sets a timeout for the socket
      * @param serverSocket socket of the server associated with a port
      */
     public void acceptConnections(ServerSocket serverSocket){
         while(operating){
             try{
                 Socket socket = serverSocket.accept();
-                socket.setSoTimeout(10 * 1000);
+                socket.setSoTimeout(SECONDS_TIMEOUT * 1000);
                 ServerClientHandler clientHandler = new ServerClientHandler(server, socket);
                 executor.submit(clientHandler);
             } catch(IOException e){
