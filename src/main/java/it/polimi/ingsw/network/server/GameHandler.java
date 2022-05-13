@@ -10,7 +10,6 @@ import it.polimi.ingsw.network.server.exception.GameDisconnectionException;
 import it.polimi.ingsw.network.server.exception.SetupGameDisconnectionException;
 
 
-import java.awt.*;
 import java.io.IOException;
 import java.io.StreamCorruptedException;
 import java.net.SocketTimeoutException;
@@ -640,7 +639,17 @@ public class GameHandler {
                     cards.append("SwapStudents:").append(card1.getPrice()).append(", ");
                 }
                 else if(card instanceof  StudentsBufferCardsCluster){
-                    cards.append("StudentsBuffer:").append(card.getPrice()).append(", ");
+                    Map<Color, Integer> students = new HashMap<>();
+                    for(Color color : Color.values()){
+                        students.put(color, ((StudentsBufferCardsCluster) card).getStudBuffer().numStudents(color));
+                    }
+                    if(((StudentsBufferCardsCluster)card).getIndex() == 0)
+                        cards.append("ManStudBuffer:").append(students).append(card.getPrice()).append(", ");
+                    if(((StudentsBufferCardsCluster)card).getIndex() == 1)
+                        cards.append("ClownStudBuffer:").append(students).append(card.getPrice()).append(", ");
+                    if(((StudentsBufferCardsCluster)card).getIndex() == 2)
+                        cards.append("WomanStudBuffer:").append(students).append(card.getPrice()).append(", ");
+
                 }
                 else if (card instanceof PutThreeStudentsInTheBagCard){
                     cards.append("PutThreeStudents:").append(card.getPrice()).append(", ");
@@ -682,11 +691,27 @@ public class GameHandler {
                         game.playEffect(((IntegerMessage) message).getMessage()-1);
                     }
                     else if(card instanceof SwapStudentsCard card1){
+                        if(game.getCurrentPlayer().getBoard().getHall().numStudents() == 0){
+                            client.sendMessageToClient("Your Hall is empty!");
+                            return false;
+                        }
                         swapStudents(client, card1);
-                        game.playEffect(((IntegerMessage) message).getMessage()-1);
+                        game.playVoidEffects(card1);
                     }
-                    else if(card instanceof  StudentsBufferCardsCluster){
-                        //TODO
+                    else if(card instanceof  StudentsBufferCardsCluster card1){
+                        int idx = ((StudentsBufferCardsCluster) card).getIndex();
+                        if(idx == 0){
+                            manStudentCluster(client, card1);
+                            game.playEffect(((IntegerMessage) message).getMessage()-1);
+                        }
+                        else if(idx == 1){
+                            swapCardCluster(client, card1);
+                            game.playVoidEffects(card1);
+                        }
+                        else if(idx == 2){
+                            askColorStudentsCluster(client, card1);
+                            game.playEffect(((IntegerMessage) message).getMessage()-1);
+                        }
                     }
                     else if (card instanceof PutThreeStudentsInTheBagCard){
                         putThreeStudentsInBagColor(client, card);
@@ -710,6 +735,10 @@ public class GameHandler {
                         }
                     }
                     else if (card instanceof BannedIslandCard){
+                        if(((ExpertGame)game).getBanTile()<=0){
+                            client.sendMessageToClient("There are no ban token remaining");
+                            return false;
+                        }
                         bannedIslandSelector(client, card);
                         game.playEffect(((IntegerMessage) message).getMessage()-1);
                     }
@@ -721,6 +750,117 @@ public class GameHandler {
             }
             else{
                 client.sendMessageToClient("Wrong command, please select which card you want to play");
+            }
+        }
+    }
+    private void swapCardCluster(ServerClientHandler client, StudentsBufferCardsCluster card) throws IOException, ClassNotFoundException {
+
+        Message message;
+        Board board = game.getCurrentPlayer().getBoard();
+        for(int i=0; i<3; i++){
+            client.sendMessageToClient("Please select the color of the student to take in the entrance");
+            boolean entranceColor = false;
+            while(!entranceColor){
+                message = client.readMessageFromClient();
+                if(message instanceof ColorChosen){
+                    if(board.getEntrance().colorsAvailable().contains(((ColorChosen) message).getColor())){
+                        client.sendMessageToClient("You have chosen" + ((ColorChosen) message).getColor().name() + "in entrance");
+                        setSwapCardStudentsBuffer(client, card);
+                        card.setStudentColorInEntrance(((ColorChosen) message).getColor());
+                        card.effect();
+                        entranceColor=true;
+                    }
+                    else{
+                        client.sendMessageToClient("Please select one available color");
+                    }
+                }
+                else if(message instanceof StopMessage){
+                    client.sendMessageToClient("You've finished to swap your tokens");
+                    return;
+
+                }
+                else{
+                    client.sendMessageToClient("Wrong command, please select a color");
+                }
+
+            }
+        }
+
+    }
+    private void setSwapCardStudentsBuffer(ServerClientHandler client, StudentsBufferCardsCluster card) throws IOException, ClassNotFoundException{
+        client.sendMessageToClient("Please select the color of the student on the card");
+        Message message;
+        boolean hallColor = false;
+        while(!hallColor){
+            message = client.readMessageFromClient();
+            if(message instanceof ColorChosen){
+                if(card.getStudBuffer().colorsAvailable().contains(((ColorChosen) message).getColor())){
+                    card.setStudentColorToBeMoved(((ColorChosen) message).getColor());
+                    client.sendMessageToClient("You have selected the" +  ((ColorChosen) message).getColor() + "student");
+                    hallColor = true;
+                }
+                else{
+                    client.sendMessageToClient("This color is not available please select another one");
+                }
+            }
+            else{
+                client.sendMessageToClient("Wrong command, select a new one");
+            }
+        }
+    }
+    private void manStudentCluster(ServerClientHandler client, ExpertCard card) throws IOException, ClassNotFoundException{
+        client.sendMessageToClient("Please select the color of the student to take");
+        Message message;
+        boolean colorChosen = false;
+        while(!colorChosen){
+            message = client.readMessageFromClient();
+            if(message instanceof ColorChosen){
+                if(((StudentsBufferCardsCluster)card).getStudBuffer().colorsAvailable().contains(((ColorChosen) message).getColor())){
+                    card.setStudentColorToBeMoved(((ColorChosen) message).getColor());
+                    colorChosen = true;
+                    islandSelectionManCluster(client, card);
+
+                }
+            }
+        }
+    }
+    private void islandSelectionManCluster(ServerClientHandler client, ExpertCard card) throws IOException, ClassNotFoundException{
+        Message message;
+        boolean choseIsland = false;
+        client.sendMessageToClient("Please select an island");
+        while(!choseIsland){
+            message = client.readMessageFromClient();
+            if(message instanceof IntegerMessage){
+                if(((IntegerMessage) message).getMessage()>0 && ((IntegerMessage) message).getMessage()<=game.getArchipelago().size()){
+                    card.setIdxChosenIsland(((IntegerMessage) message).getMessage()-1);
+                    choseIsland = true;
+                }
+                else{
+                    client.sendMessageToClient("This island not exists, select another island");
+                }
+            }
+            else{
+                client.sendMessageToClient("Wrong command, select a correct one");
+            }
+        }
+    }
+    private void askColorStudentsCluster(ServerClientHandler client, ExpertCard card) throws IOException, ClassNotFoundException{
+        client.sendMessageToClient("Please select the color to move to your hall");
+        Message message;
+        boolean colorChosen = false;
+        while(!colorChosen){
+            message = client.readMessageFromClient();
+            if(message instanceof ColorChosen){
+                if(((StudentsBufferCardsCluster)card).getStudBuffer().colorsAvailable().contains(((ColorChosen) message).getColor())){
+                    card.setStudentColorToBeMoved(((ColorChosen) message).getColor());
+                    colorChosen = true;
+                }
+                else{
+                    client.sendMessageToClient("Color not available, select a new one");
+                }
+            }
+            else{
+                client.sendMessageToClient("Wrong Command, chose a color");
             }
         }
     }
@@ -737,7 +877,6 @@ public class GameHandler {
                 }
                 else{
                     client.sendMessageToClient("!!!!ALARM!!!!! MALEFIC CLIENT DETECTED!!!!");
-                    client.sendShutDownToClient();
                 }
             }
             else{
@@ -752,7 +891,7 @@ public class GameHandler {
         boolean idxIsland = false;
         while(!idxIsland){
             message = client.readMessageFromClient();
-            if(message instanceof IntegerMessage && ((ExpertGame)game).getBanTile()>0){
+            if(message instanceof IntegerMessage){
                 if(((IntegerMessage) message).getMessage()>0 && ((IntegerMessage) message).getMessage()<=game.getArchipelago().size()){
                     card.changeIslandIndex(((IntegerMessage) message).getMessage()-1);
                     idxIsland=true;
@@ -786,46 +925,57 @@ public class GameHandler {
             }
         }
     }
-    private void swapStudents(ServerClientHandler client, ExpertCard card) throws IOException, ClassNotFoundException{
-        client.sendMessageToClient("Now choose the color you want to swap from your entrance");
+    private void swapStudents(ServerClientHandler client, SwapStudentsCard card) throws IOException, ClassNotFoundException{
         Message message;
         Board board = game.getCurrentPlayer().getBoard();
+            for(int count=0; count<2; count++){
+                boolean entranceColor = false;
+                while(!entranceColor){
+                    client.sendMessageToClient("If you want to stop the effect type 'stop'");
+                    client.sendMessageToClient("Please select the color of the entrance you want to swap");
+                    message = client.readMessageFromClient();
+                    if(message instanceof ColorChosen){
+                        if(board.getEntrance().colorsAvailable().contains(((ColorChosen) message).getColor())){
+                            card.setStudent1InEntranceColor(((ColorChosen) message).getColor());
+                            setSwapHall(client, card);
+                            entranceColor = true;
+                            drawBoard(client, game.getCurrentPlayer());
+                            card.effect();
+                        }
+                        else{
+                            client.sendMessageToClient("There is no such color in the entrance");
+                        }
+                    }
+                    else if(message instanceof StopMessage){
+                        client.sendMessageToClient("You finished swapping the cards");
+                        return;
+                    }
+                    else{
+                        client.sendMessageToClient("Wrong command, please select a color");
+                    }
+
+                }
+            }
+    }
+    private void setSwapHall(ServerClientHandler client, SwapStudentsCard card) throws IOException, ClassNotFoundException{
+        Message message;
         boolean hallColor = false;
-        boolean entranceColor = false;
-        while(!entranceColor){
-            message = client.readMessageFromClient();
-            if(message instanceof ColorChosen){
-                if(board.getEntrance().colorsAvailable().contains(((ColorChosen) message).getColor())){
-                    client.sendMessageToClient("Now choose the color you want to swap from your hall");
-                    card.setStudentColorInEntrance(((ColorChosen) message).getColor());
-                    entranceColor = true;
-                }
-                else{
-                    client.sendMessageToClient("Select an available color");
-                }
-            }
-            else{
-                client.sendMessageToClient("Wrong command, select a color");
-            }
-
-        }
-
+        Board board = game.getCurrentPlayer().getBoard();
         while(!hallColor){
+            client.sendMessageToClient("Please select a color for the hall to swap");
             message = client.readMessageFromClient();
             if(message instanceof ColorChosen){
-                if(board.getEntrance().colorsAvailable().contains(((ColorChosen) message).getColor())){
-                    client.sendMessageToClient("Your color has been swapped");
-                    card.setStudentColorToBeMoved(((ColorChosen) message).getColor());
-                    hallColor= true;
+                if(board.getHall().colorsAvailable().contains(((ColorChosen) message).getColor())){
+                    card.setStudent1InHallColor(((ColorChosen) message).getColor());
+                    hallColor = true;
                 }
                 else{
-                    client.sendMessageToClient("Select an available color");
+                    client.sendMessageToClient("Color not available, select another color");
                 }
             }
             else{
-                client.sendMessageToClient("Wrong command, select a color");
+                client.sendMessageToClient("Wrong command, select a color!");
             }
-
         }
     }
     private void choseColorInfluenceCalculator(ServerClientHandler client, InfluenceCardsCluster card) throws IOException, ClassNotFoundException{
@@ -841,7 +991,6 @@ public class GameHandler {
                 }
                 else{
                     client.sendMessageToClient("!!!!ALARM!!!!! MALEFIC CLIENT DETECTED!!!!");
-                    client.sendShutDownToClient();
                 }
             }
             else{

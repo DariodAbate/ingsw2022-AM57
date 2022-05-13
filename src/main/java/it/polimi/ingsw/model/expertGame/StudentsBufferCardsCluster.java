@@ -179,4 +179,8 @@ public class StudentsBufferCardsCluster extends ExpertCard implements Serializab
     public StudentsHandler getStudBuffer() {
         return studBuffer;
     }
+
+    public int getIndex() {
+        return index;
+    }
 }

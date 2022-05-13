@@ -167,15 +167,24 @@ public class ExpertGame extends Game implements Serializable, PseudoMotherNature
 
             int cardCost = expertCards.get(indexCard).getPrice();
             if(getCurrentPlayer().getBoard().hasCoin(cardCost)) {
-                expertCards.get(indexCard).effect();
                 getCurrentPlayer().getBoard().removeCoin(cardCost);
                 coinBank += cardCost;
                 cardHasBeenPlayed = true;
+                expertCards.get(indexCard).effect();
             }
             else
                 throw new IllegalCallerException("Current player does not have enough coin to activate this card");
     }
 
+    public void playVoidEffects(ExpertCard card){
+        if(getCurrentPlayer().getBoard().hasCoin(card.getPrice())) {
+            getCurrentPlayer().getBoard().removeCoin(card.getPrice());
+            coinBank += card.getPrice();
+            cardHasBeenPlayed = true;
+        }
+        else
+            throw new IllegalCallerException("Current player does not have enough coin to activate this card");
+    }
     /**
      * This method is used every time a player ends his turn. When the turn is an action, it sets the maximum number
      * of island mother nature can travel and sets cardHasBeenPlayed to false. After this method, motherMovement() can be invoked
