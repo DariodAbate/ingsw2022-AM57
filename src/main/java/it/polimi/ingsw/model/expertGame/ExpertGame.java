@@ -196,7 +196,7 @@ public class ExpertGame extends Game implements Serializable, PseudoMotherNature
             setMovesMotherNature();
             cardHasBeenPlayed = false;
         }
-        if(round.isPlanningStart())
+        if(round.isPlanning())
             setGameState(GameState.PLANNING_STATE);
         else
             setGameState(GameState.MOVING_STUDENT_STATE);

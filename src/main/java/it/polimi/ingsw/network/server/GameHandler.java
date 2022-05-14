@@ -936,7 +936,7 @@ public class GameHandler {
                     message = client.readMessageFromClient();
                     if(message instanceof ColorChosen){
                         if(board.getEntrance().colorsAvailable().contains(((ColorChosen) message).getColor())){
-                            card.setStudent1InEntranceColor(((ColorChosen) message).getColor());
+                            card.setStudentInEntranceColor(((ColorChosen) message).getColor());
                             setSwapHall(client, card);
                             entranceColor = true;
                             drawBoard(client, game.getCurrentPlayer());
@@ -966,7 +966,7 @@ public class GameHandler {
             message = client.readMessageFromClient();
             if(message instanceof ColorChosen){
                 if(board.getHall().colorsAvailable().contains(((ColorChosen) message).getColor())){
-                    card.setStudent1InHallColor(((ColorChosen) message).getColor());
+                    card.setStudentInHallColor(((ColorChosen) message).getColor());
                     hallColor = true;
                 }
                 else{
