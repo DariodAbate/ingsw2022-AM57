@@ -580,34 +580,6 @@ class ExpertGameTest {
     }
 
     /**
-     * This method tests the correct working of the SwapStudents card. In particular is tested
-     * the case when the player chose to swap two students.
-     */
-    @DisplayName("Tests the correct swapping of two students")
-    @Test
-    void SwapTwoStudentsTest() {
-        SwapStudentsCard card = new SwapStudentsCard(g);
-        setupFullPlayer();
-        g.initRound();
-        g.getCurrentPlayer().getBoard().fillEntrance(Color.PINK);
-        g.getCurrentPlayer().getBoard().fillEntrance(Color.BLUE);
-        g.getCurrentPlayer().getBoard().fillEntrance(Color.RED);
-        g.getCurrentPlayer().getBoard().fillEntrance(Color.YELLOW);
-        g.getCurrentPlayer().getBoard().entranceToHall(Color.PINK);
-        g.getCurrentPlayer().getBoard().entranceToHall(Color.BLUE);
-        card.setNumOfStudentsToMove(2);
-        card.setStudent1InEntranceColor(Color.YELLOW);
-        card.setStudent2InEntranceColor(Color.RED);
-        card.setStudent1InHallColor(Color.PINK);
-        card.setStudent2InHallColor(Color.BLUE);
-        card.effect();
-        assertEquals(1 ,g.getCurrentPlayer().getBoard().hallSize(Color.RED));
-        assertEquals(1,g.getCurrentPlayer().getBoard().hallSize(Color.YELLOW));
-        assertEquals(0,g.getCurrentPlayer().getBoard().hallSize(Color.BLUE));
-        assertEquals(0, g.getCurrentPlayer().getBoard().hallSize(Color.PINK));
-    }
-
-    /**
      * This method tests the correct working of the SwapStudents card. In particular s tested
      * the case when the player chose to swap one student.
      */
@@ -621,8 +593,8 @@ class ExpertGameTest {
         g.getCurrentPlayer().getBoard().fillEntrance(Color.RED);
         g.getCurrentPlayer().getBoard().entranceToHall(Color.RED);
         card.setNumOfStudentsToMove(1);
-        card.setStudent1InEntranceColor(Color.BLUE);
-        card.setStudent1InHallColor(Color.RED);
+        card.setStudentInEntranceColor(Color.BLUE);
+        card.setStudentInHallColor(Color.RED);
         card.effect();
         assertEquals(1, g.getCurrentPlayer().getBoard().hallSize(Color.BLUE));
         assertEquals(0, g.getCurrentPlayer().getBoard().hallSize(Color.RED));
@@ -639,8 +611,8 @@ class ExpertGameTest {
         setupFullPlayer();
         g.startGame();
         card.setNumOfStudentsToMove(1);
-        card.setStudent1InEntranceColor(Color.YELLOW);
-        card.setStudent1InHallColor(Color.GREEN);
+        card.setStudentInEntranceColor(Color.YELLOW);
+        card.setStudentInHallColor(Color.GREEN);
         assertThrows(IllegalArgumentException.class,
                 card::effect);
     }
