@@ -338,12 +338,19 @@ public class GameHandler {
      * @see ServerClientHandler for exceptions
      */
     private synchronized void actionPhase() throws IOException, ClassNotFoundException{
+        boolean areCloudsEmpty = false;
+        for(CloudTile cloud : game.getCloudTiles()){ //if at least one cloud is not filled (bag is empty), skip takecloud
+            if(cloud.isFillable()){
+                areCloudsEmpty = true;
+            }
+        }
         while(game.getGameState() != GameState.PLANNING_STATE){
             ServerClientHandler client = playerToClient.get(game.getCurrentPlayer());
             client.sendMessageToClient("It's your turn!");
             moveStudents(client);
             motherMovement(client);
-            takeCloud(client);
+            if(!areCloudsEmpty)
+                takeCloud(client);
         }
     }
 
@@ -398,6 +405,11 @@ public class GameHandler {
         drawArchipelago(client);
         game.setGameState(GameState.MOTHER_MOVEMENT_STATE);
     }
+
+    /**
+     * This method draws the available entrance colors
+     * @see ServerClientHandler for exceptions
+     */
     private void availableEntranceColor(ServerClientHandler client) throws IOException{
         client.sendMessageToClient("These are the available colors: ");
 
@@ -409,6 +421,11 @@ public class GameHandler {
         client.sendMessageToClient("Please select one of these colors.");
     }
 
+    /**
+     * In this method the player chose the color of the player to move in the hall
+     * @param client that moves his students in the hall
+     * @see ServerClientHandler for exceptions
+     */
     private void toHall(ServerClientHandler client) throws IOException, ClassNotFoundException{
         boolean isColorChosen = false;
         Message message;
