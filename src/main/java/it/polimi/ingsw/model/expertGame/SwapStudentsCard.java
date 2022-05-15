@@ -12,10 +12,8 @@ import java.io.Serializable;
 public class SwapStudentsCard extends ExpertCard implements Serializable {
     private final SwapStudents board;
     private  int numOfStudentsToMove;
-    private Color student1InEntranceColor;
-    private Color student2InEntranceColor;
-    private Color student1InHallColor;
-    private Color student2InHallColor;
+    private Color studentInEntranceColor;
+    private Color studentInHallColor;
 
     /**
      * This SwapStudentsCard constructor is used when the player
@@ -37,36 +35,20 @@ public class SwapStudentsCard extends ExpertCard implements Serializable {
         return this.numOfStudentsToMove;
     }
 
-    public void setStudent1InEntranceColor(Color studentColor){
-        this.student1InEntranceColor = studentColor;
+    public void setStudentInEntranceColor(Color studentColor){
+        this.studentInEntranceColor = studentColor;
     }
 
-    public Color getStudent1InEntranceColor() {
-        return this.student1InEntranceColor;
+    public Color getStudentInEntranceColor() {
+        return this.studentInEntranceColor;
     }
 
-    public void setStudent2InEntranceColor(Color studentColor) {
-        this.student2InEntranceColor = studentColor;
+    public void setStudentInHallColor(Color studentColor) {
+        this.studentInHallColor = studentColor;
     }
 
-    public Color getStudent2InEntranceColor() {
-        return student2InEntranceColor;
-    }
-
-    public void setStudent1InHallColor(Color studentColor) {
-        this.student1InHallColor = studentColor;
-    }
-
-    public Color getStudent1InHallColor() {
-        return student1InHallColor;
-    }
-
-    public void setStudent2InHallColor(Color student2InHallColor) {
-        this.student2InHallColor = student2InHallColor;
-    }
-
-    public Color getStudent2InHallColor() {
-        return student2InHallColor;
+    public Color getStudentInHallColor() {
+        return studentInHallColor;
     }
 
     /**
@@ -79,11 +61,6 @@ public class SwapStudentsCard extends ExpertCard implements Serializable {
             played = true;
             price += 1;
         }
-        if (numOfStudentsToMove == 1)
-            board.swapStudents(student1InEntranceColor, student1InHallColor);
-        else {
-            board.swapStudents(student1InEntranceColor, student1InHallColor);
-            board.swapStudents(student2InEntranceColor, student2InHallColor);
-        }
+            board.swapStudents(studentInEntranceColor, studentInHallColor);
     }
 }

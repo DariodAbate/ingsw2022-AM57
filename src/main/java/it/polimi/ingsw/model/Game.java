@@ -396,7 +396,7 @@ public class Game implements RoundObserver, RefillInterface, Serializable {
         if( ! currentPlayerBoard.studentInEntrance(colorStudentToBeMoved))
             throw new IllegalArgumentException("The current player does not have a student for the specified color");
 
-        controlMovementStudents();//one movement of student has done
+        //controlMovementStudents();//one movement of student has done
         currentPlayerBoard.removeStudentFromEntrance(colorStudentToBeMoved);
         archipelago.get(idxChosenIsland).add(colorStudentToBeMoved);
     }
@@ -448,7 +448,7 @@ public class Game implements RoundObserver, RefillInterface, Serializable {
         round.nextTurn();
         if(! round.isPlanning())
             setMovesMotherNature();
-        if(round.isPlanningStart())
+        if(round.isPlanning())
             setGameState(GameState.PLANNING_STATE); // after the last turn in the action phase, the game passes to planning state
         else
             setGameState(GameState.MOVING_STUDENT_STATE);// after a player that's not the last  has completed the action phase, the next player should play
