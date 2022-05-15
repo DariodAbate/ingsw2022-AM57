@@ -20,8 +20,8 @@ public class StudentsBufferCardsCluster extends ExpertCard implements Serializab
     private static final int WOMAN_CARD_COST = 2;
     private static final int WOMAN_CARD_BUFFER_SIZE = 4;
 
-    private StudentsHandler studBuffer;
-    private StudentsBufferCluster game;
+    private final StudentsHandler studBuffer;
+    private final StudentsBufferCluster game;
     private final int index ;
     private final int cardBufferSize;
 
@@ -61,10 +61,10 @@ public class StudentsBufferCardsCluster extends ExpertCard implements Serializab
     private void refillStudBuffer(){
         while(studBuffer.numStudents() < cardBufferSize) {
             Color drawColor = game.draw();
-            if (drawColor == null) {
-                //TODO endgame condition
-            }
-            studBuffer.add(drawColor);
+            if(drawColor != null)
+                studBuffer.add(drawColor);
+            else
+                return;
         }
     }
 

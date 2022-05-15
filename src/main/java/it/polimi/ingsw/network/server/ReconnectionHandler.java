@@ -7,6 +7,8 @@ import java.util.*;
 
 /**
  * This class is used to manage the persistence mechanism
+ *
+ * @author Dario d'Abate
  */
 public class ReconnectionHandler {
     private final MultiServer server;

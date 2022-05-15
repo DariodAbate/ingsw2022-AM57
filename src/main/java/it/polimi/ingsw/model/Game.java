@@ -8,6 +8,9 @@ import it.polimi.ingsw.model.expertGame.ExpertCard;
 import it.polimi.ingsw.model.statePattern.InfluenceCalculator;
 import it.polimi.ingsw.model.statePattern.StandardCalculator;
 
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
+import java.beans.PropertyChangeSupport;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -29,6 +32,7 @@ public class Game implements RoundObserver, RefillInterface, Serializable {
     protected Bag actionBag;//bag used during the game
     protected ArrayList<CloudTile> cloudTiles;
     private ArrayList<Tower> availableTowerColor; //a player can choose his own tower's color
+    protected ArrayList<CardBack> availableCardsBack;
     protected ArrayList<IslandTile> archipelago;
     protected int motherNature; //motherNature as an index corresponding to an island
     protected int maxMovement; //maxMovement that mother nature can do
@@ -41,7 +45,9 @@ public class Game implements RoundObserver, RefillInterface, Serializable {
     protected InfluenceCalculator calc; //calculator for the influence
     protected boolean notAbsoluteMax; //flag used to implement an expertCard
 
-    protected ArrayList<CardBack> availableCardsBack;
+    protected final PropertyChangeSupport propertyChangeSupport = new PropertyChangeSupport(this); //with this object we will fire the property change event
+
+
     /*
     Game creation rules, as indicated by specifications:
     If there are no games in the start phase, a new game is created, otherwise the user
@@ -77,8 +83,16 @@ public class Game implements RoundObserver, RefillInterface, Serializable {
 
         }
         else
-            throw new IllegalArgumentException("Illegal parameter for first player");//FIXME change with a checked custom exception
+            throw new IllegalArgumentException("Illegal parameter for first player");
 
+    }
+
+    /**
+     * This method is used to register a GameHandler object as a listener of this Game object
+     * @param pcl GameHandler object
+     */
+    public void addListener(PropertyChangeListener pcl){
+        propertyChangeSupport.addPropertyChangeListener(pcl);
     }
 
     //helper method for initializing game constants with a factory pattern
@@ -109,7 +123,7 @@ public class Game implements RoundObserver, RefillInterface, Serializable {
         if(nickPlayer == null)
             throw new NullPointerException();
         if(nickPlayer.equals(""))
-            throw new IllegalArgumentException("Illegal player's nickname"); //FIXME change with a checked custom exception
+            throw new IllegalArgumentException("Illegal player's nickname");
         if(playerCanJoin()) //redundant check, it has to be inserted in the server class
             players.add(new Player(nickPlayer, gameConstants));
 
@@ -149,8 +163,6 @@ public class Game implements RoundObserver, RefillInterface, Serializable {
 
         //fill entrance for each player's board
         initEntrancePlayers();
-
-        //TODO determine casually the first player
 
         //set planning state
 
@@ -256,8 +268,11 @@ public class Game implements RoundObserver, RefillInterface, Serializable {
         for (CloudTile cloudTile : cloudTiles){
             while (cloudTile.isFillable()) {
                 Color colorDrawn = actionBag.draw();
-                //TODO check for end game condition
-                // call alternativeWinner by the controller if condition as satisfied
+
+                if(colorDrawn == null){//last round to play
+                    propertyChangeSupport.firePropertyChange("endRoundWinning", "", "notEmpty");
+                    return;
+                }
                 cloudTile.fill(colorDrawn);
             }
         }
@@ -407,6 +422,9 @@ public class Game implements RoundObserver, RefillInterface, Serializable {
     public void playCard(int idxCard){
         try{
             getCurrentPlayer().playCard(idxCard);
+            if(getCurrentPlayer().getHand().size() == 0){
+                propertyChangeSupport.firePropertyChange("endRoundWinning", "", "notEmpty");
+            }
             nextTurn();
         }catch (IllegalArgumentException e){
             throw new IllegalArgumentException(e.getMessage());
@@ -437,7 +455,6 @@ public class Game implements RoundObserver, RefillInterface, Serializable {
 
     }
 
-    //TODO TO BE TESTED
     /**
      * Causes mother nature to move by as many positions as indicated by the parameter.
      * It also changes the InfluenceCalculator on the island, then it tries to conquer the island if possible, and checks
@@ -451,9 +468,34 @@ public class Game implements RoundObserver, RefillInterface, Serializable {
         motherNature = (motherNature + moves) % archipelago.size();
         archipelago.get(motherNature).changeCalculator(calc);
         archipelago.get(motherNature).conquer(players); //this is the only method that calls conquer()
-        //TODO add call for end game due to no towers remaining
+        checkInstantWinner();//no tower remaining
+
+
         mergeIslandTile();
+
+        checkInstantWinner(); //3 group of island
+
         setGameState(GameState.CLOUD_TO_ENTRANCE_STATE); //after a player has moved mother nature, he must claim a cloud tile
+    }
+
+
+    /**
+     * This method notify GameHandler whenever a player win because he ran out of tower or because
+     * remains 3 groups of island.
+     * To GameHandler is passed the nickname of that player
+     */
+    protected void checkInstantWinner() {
+        Board playerBoard;
+        for(Player player: getPlayers()){
+            playerBoard = player.getBoard();
+            if(playerBoard.getNumTower() <= 0){
+                propertyChangeSupport.firePropertyChange(new PropertyChangeEvent(this, "instantWinning","", player.getNickname()));
+                return;
+            }
+        }
+
+        if(archipelago.size() <= 3)
+            propertyChangeSupport.firePropertyChange(new PropertyChangeEvent(this, "instantWinning", "", alternativeWinner()));
     }
 
     /**
@@ -468,14 +510,10 @@ public class Game implements RoundObserver, RefillInterface, Serializable {
         mergeTwoIsland(rightIsland, currentIsland, AdjacentIslands.RIGHT);//Check the matching color for the right island
         currentIsland = getCurrentIsland();
         if(archipelago.size()<=3){
-            //TODO notify controller for end game
             return;
         }
         IslandTile leftIsland = archipelago.get((cyclicNumber(motherNature-1)));
         mergeTwoIsland(leftIsland, currentIsland, AdjacentIslands.LEFT);//Check the matching color for the left island
-        if(archipelago.size()<=3){
-            //TODO notify controller for end game
-        }
     }
 
     /**
@@ -545,7 +583,6 @@ public class Game implements RoundObserver, RefillInterface, Serializable {
         return number;
     }
 
-    //TODO add observer method called in mother movement for end game due to no towers remaining, it has to notify the observer
 
     /**
      * This method checks the winner of the game due to an alternative endgame condition.
@@ -669,7 +706,7 @@ public class Game implements RoundObserver, RefillInterface, Serializable {
         this.calc = new StandardCalculator();
     }
 
-    //expertcard methods
+    //expertCard methods
     public ArrayList<ExpertCard> getExpertCards(){return new ArrayList<>();}
     public void playEffect(int indexCard){}
     public boolean CardHasBeenPlayed(){return true;}

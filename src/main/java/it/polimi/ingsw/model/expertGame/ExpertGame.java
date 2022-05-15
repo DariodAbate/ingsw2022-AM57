@@ -4,6 +4,7 @@ import it.polimi.ingsw.model.*;
 import it.polimi.ingsw.model.statePattern.InfluenceCalculator;
 import it.polimi.ingsw.model.statePattern.StandardCalculator;
 
+import java.beans.PropertyChangeEvent;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Random;
@@ -226,6 +227,8 @@ public class ExpertGame extends Game implements Serializable, PseudoMotherNature
         if(archipelago.contains(tempIsland)){
             motherNature = archipelago.indexOf(tempIsland);
         }
+        //call for end game due to no towers remaining
+        checkInstantWinner();
     }
 
     /**
@@ -238,11 +241,14 @@ public class ExpertGame extends Game implements Serializable, PseudoMotherNature
     }
 
     /**
-     * This method is used to populate the student cluster
+     * This method is used to populate the student cluster. If is draw the last student, it notify the controller
      * @return color drown from the bag
      */
     public Color draw(){
-        return actionBag.draw();
+        Color colorDrawn = actionBag.draw();
+        if(colorDrawn == null)
+            propertyChangeSupport.firePropertyChange("endRoundWinning", "", "notEmpty");
+        return colorDrawn;
     }
 
 

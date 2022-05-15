@@ -10,6 +10,8 @@ import it.polimi.ingsw.network.server.exception.GameDisconnectionException;
 import it.polimi.ingsw.network.server.exception.SetupGameDisconnectionException;
 
 
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.io.IOException;
 import java.io.StreamCorruptedException;
 import java.net.SocketTimeoutException;
@@ -23,7 +25,7 @@ import java.util.Map;
  * It also handles the various phases of the game, the wrong input of the parameters and the endgame condition
  * @author Lorenzo Corrado
  */
-public class GameHandler {
+public class GameHandler implements PropertyChangeListener {
     private final MultiServer server;
     private final ArrayList<ServerClientHandler> playersConnections;//list of the sockets
 
@@ -35,9 +37,12 @@ public class GameHandler {
     private final Game game; //reference to the model
     private boolean expertGame; //the mode of the game
 
+    private volatile boolean endGameInRound;// true if this game end at the end of a round
+    private volatile boolean continueGame;//false if this game end now
+
 
     /**
-     * This is the constructor of GameHandler
+     * This is the standard constructor of GameHandler
      * @param numPlayer is the number of player in the game
      * @param expertGame is the game mode
      * @param playersConnections the reference to the connected players
@@ -51,11 +56,39 @@ public class GameHandler {
             game = new Game(playersConnections.get(0).getNickname(), numPlayer);
         }else
             game = new ExpertGame(playersConnections.get(0).getNickname(), numPlayer);
+
+        game.addListener(this);
+
         clientToPlayer = new HashMap<>();
         playerToClient = new HashMap<>();
+
+        continueGame = true;
+        endGameInRound = false;
     }
 
+    /**
+     * This method is invoked when a player wins the game
+     * @param evt type of victory associated to an event
+     */
+    @Override
+    public void propertyChange(PropertyChangeEvent evt) {
+        if(evt.getPropertyName().equals("instantWinning")){
+            String winner = (String) evt.getNewValue();
+            try {
+                continueGame = false;
+                notifyWinner(winner);
 
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }else if(evt.getPropertyName().equals("endRoundWinning")){
+            endGameInRound = true;
+        }
+    }
+
+    /**
+     * @return the reference to this game object
+     */
     public Game getGame() {
         return game;
     }
@@ -82,6 +115,15 @@ public class GameHandler {
             playerToClient.put(game.getPlayers().get(i), playersConnections.get(i));
         }
         //WARNING: playersConnections should have the same order as the arraylist of players saved in the game
+    }
+
+    /**
+     * This method is used to unregister all the player of this game in the server, so a new player can choose his nickname
+     */
+    private void unregisterPlayersFromServer(){
+        for(String player: getNicknamePlayers()){
+            server.unregisterPlayer(player);
+        }
     }
 
     /**
@@ -129,9 +171,8 @@ public class GameHandler {
             broadcastMessage("A player has disconnected. Closing this game...");
             broadcastMessage("Please login another time on the server to play.");
             broadcastShutDown();
-            for(String player: getNicknamePlayers()){
-                server.unregisterPlayer(player);
-            }
+            unregisterPlayersFromServer();
+
             throw new SetupGameDisconnectionException();
         }
 
@@ -142,7 +183,7 @@ public class GameHandler {
         // and the game reconnection policy is initiated.
         try {
             gameTurns();
-        }catch (GameDisconnectionException e){//do not save the game
+        }catch (GameDisconnectionException e){//save the game
             broadcastMessage("A player has disconnected. Closing this game...");
             broadcastMessage("Please reconnect to restart this game!");
             broadcastShutDown();
@@ -260,8 +301,7 @@ public class GameHandler {
     }
 
     public  synchronized void gameTurns() throws IOException, ClassNotFoundException, GameDisconnectionException {
-        boolean endgame = false;
-        while(!endgame){
+        while(!endGameInRound && continueGame){
             try{
             planningPhase();
             actionPhase();
@@ -272,12 +312,35 @@ public class GameHandler {
                 throw new GameDisconnectionException();
             }
         }
+        if(endGameInRound)
+            notifyWinner();//winning at the end of a round
+
+        unregisterPlayersFromServer();
     }
+
+    /**
+     * This method is used to notify the players about the winner
+     */
+    private void notifyWinner() throws IOException {
+        String winner = game.alternativeWinner();
+        broadcastMessage(winner + " has won!");
+        broadcastShutDown();
+    }
+
+    /**
+     * This method is used to notify the players about the winner
+     * @param winner nickname of the winner
+     */
+    private void notifyWinner(String winner) throws IOException {
+        broadcastMessage(winner + " has won!");
+        broadcastShutDown();
+    }
+
     private synchronized void planningPhase() throws IOException, ClassNotFoundException{
         Message message;
         ServerClientHandler client;
         ArrayList<Integer> cardsPlayed = new ArrayList<>();
-        while(game.getGameState() == GameState.PLANNING_STATE){
+        while(game.getGameState() == GameState.PLANNING_STATE && continueGame){
             client = playerToClient.get(game.getCurrentPlayer());
             client.sendMessageToClient("Please select which assistant card do you wanna play");
             client.sendMessageToClient("The remaining assistant cards are:");
@@ -310,12 +373,13 @@ public class GameHandler {
 
     }
     private synchronized void actionPhase() throws IOException, ClassNotFoundException{
-        while(game.getGameState() != GameState.PLANNING_STATE){
+        while(game.getGameState() != GameState.PLANNING_STATE && continueGame){
             ServerClientHandler client = playerToClient.get(game.getCurrentPlayer());
             client.sendMessageToClient("It's your turn!");
             moveStudents(client);
             motherMovement(client);
-            takeCloud(client);
+            if(continueGame) //to avoid socketTimeout exception caused by instant game winning
+                takeCloud(client);
         }
     }
 
