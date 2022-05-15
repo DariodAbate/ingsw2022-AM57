@@ -381,7 +381,7 @@ public class Game implements RoundObserver, RefillInterface, Serializable {
         if( ! currentPlayerBoard.studentInEntrance(colorStudentToBeMoved))
             throw new IllegalArgumentException("The current player does not have a student for the specified color");
 
-        controlMovementStudents();//one movement of student has done
+        //controlMovementStudents();//one movement of student has done
         currentPlayerBoard.removeStudentFromEntrance(colorStudentToBeMoved);
         archipelago.get(idxChosenIsland).add(colorStudentToBeMoved);
     }

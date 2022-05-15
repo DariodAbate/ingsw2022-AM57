@@ -187,6 +187,11 @@ public class GameHandler {
         waitForColorsSetup(client);
     }
 
+    /**
+     * This method waits for the player to chose a tower color
+     * @param client that ask for the client color
+     * @see ServerClientHandler for exceptions
+     */
     private synchronized void waitForColorsSetup(ServerClientHandler client) throws IOException, ClassNotFoundException{
         boolean towerChosen = false;
         Object message;
@@ -229,6 +234,13 @@ public class GameHandler {
         client.sendMessageToClient(backs.toString());
         waitForCardBackAnswer(client);
     }
+
+    /**
+     * This method ask the player for a Card Back during the setup phase
+     * You can't chose a card back selected from another player
+     * @param client that send the card back
+     * @see ServerClientHandler for exceptions
+     */
     private synchronized void waitForCardBackAnswer(ServerClientHandler client) throws IOException , ClassNotFoundException{
         boolean backChosen = false;
         Message message = null;
@@ -259,6 +271,11 @@ public class GameHandler {
         }
     }
 
+    /**This method handles all the phases of the game, switching turns and rounds until the game ends (see istant winning)
+     * or until the variable endgame is switched! (it waits for the end of the turn
+     * @see ServerClientHandler for exceptions
+     * @throws GameDisconnectionException
+     */
     public  synchronized void gameTurns() throws IOException, ClassNotFoundException, GameDisconnectionException {
         boolean endgame = false;
         while(!endgame){
@@ -273,6 +290,12 @@ public class GameHandler {
             }
         }
     }
+
+    /**
+     * This method handles the planning phase, letting each player, turn by turn, playing his card
+     * The player with lower priority will be the first to start the action phase
+     * @see ServerClientHandler for exceptions
+     */
     private synchronized void planningPhase() throws IOException, ClassNotFoundException{
         Message message;
         ServerClientHandler client;
@@ -309,6 +332,11 @@ public class GameHandler {
         }
 
     }
+
+    /**
+     * This method handles the action phase, using 3 submethods to handle all the turn changing
+     * @see ServerClientHandler for exceptions
+     */
     private synchronized void actionPhase() throws IOException, ClassNotFoundException{
         while(game.getGameState() != GameState.PLANNING_STATE){
             ServerClientHandler client = playerToClient.get(game.getCurrentPlayer());
@@ -319,6 +347,13 @@ public class GameHandler {
         }
     }
 
+    /**
+     * This method permits the player to play 3 moves between moving the students
+     * from entrance to hall, or entrance to island, for a limited number of time (depends on the number of players)
+     * Is also possible to play a card in this phase
+     * @param client to send the messages
+     * @see ServerClientHandler for exceptions
+     */
     private synchronized void moveStudents(ServerClientHandler client) throws IOException, ClassNotFoundException{
         int numberOfMoves = numPlayer == 3 ? new ThreePlayersConstants().getMaxNumStudMovements() : new TwoPlayersConstants().getMaxNumStudMovements();
         Message message;
@@ -344,7 +379,8 @@ public class GameHandler {
                 else if(message instanceof PlayExpertCard && expertGame){
                     if(!((ExpertGame) game).isCardHasBeenPlayed()) {
                         correctMove = playCard(client);
-                        i--;
+                        if(correctMove)
+                            i--;
                     }
                     else{
                         client.sendMessageToClient("You have already played a card this turn!");
@@ -357,10 +393,7 @@ public class GameHandler {
                 {
                     client.sendMessageToClient("Wrong command, select Hall or Island");
                 }
-
-
             }
-
         }
         drawArchipelago(client);
         game.setGameState(GameState.MOTHER_MOVEMENT_STATE);
@@ -463,6 +496,14 @@ public class GameHandler {
                     drawArchipelago(client);
                     isIdxChosen = true;
                 }
+                else if(message instanceof PlayExpertCard && expertGame){
+                    if(!((ExpertGame) game).isCardHasBeenPlayed()) {
+                        playCard(client);
+                    }
+                    else{
+                        client.sendMessageToClient("You have already played a card this turn!");
+                    }
+                }
                 else{
                     client.sendMessageToClient("Please select a valid number of steps.");
                 }
@@ -482,7 +523,6 @@ public class GameHandler {
         int cloudIdx = 0;
         for(int i=0; i<game.getCloudTiles().size(); i++){
             cloudIdx++;
-
             students.clear();
             if(!game.getCloudTiles().get(i).isEmpty()){
                 for(Color color: game.getCloudTiles().get(i).colorsAvailable()){
@@ -499,6 +539,14 @@ public class GameHandler {
                     game.cloudToBoard(temp - 1);
                     client.sendMessageToClient("You've chosen the cloud number " + temp);
                     cloudTaken = true;
+                }
+                else if(message instanceof PlayExpertCard && expertGame){
+                    if(!((ExpertGame) game).isCardHasBeenPlayed()) {
+                        playCard(client);
+                    }
+                    else{
+                        client.sendMessageToClient("You have already played a card this turn!");
+                    }
                 }
                 else{
                     client.sendMessageToClient("Cloud not valid, please insert a new cloud.");
@@ -564,11 +612,12 @@ public class GameHandler {
                         case BLACK -> towerColor.append("\u001B[4;34m");
                         case GRAY -> towerColor.append("\u001B[38;5;232m");
                     }
+                    for(int i=0; i<island.getNumTowers(); i++){
+                        towerColor.append("T\u001B[0m");
+                        towerCounter++;
+                    }
                 }
-                for(int i=0; i<island.getNumTowers(); i++){
-                    towerColor.append("T\u001B[0m");
-                    towerCounter++;
-                }
+
                 if(game.getArchipelago().indexOf(island) == game.getMotherNature()){
                     mother.append("o");
                     motherCounter++;
@@ -621,8 +670,8 @@ public class GameHandler {
         client.sendMessageToClient("Professors = " + playerBoard.getProfessors());
         client.sendMessageToClient("Tower Color = " + playerBoard.getTowerColor());
         client.sendMessageToClient("Number of Towers = " + playerBoard.getNumTower());
-
     }
+
     private void drawExpertCards(ServerClientHandler client) throws IOException{
         if(expertGame) {
             StringBuilder cards = new StringBuilder();
