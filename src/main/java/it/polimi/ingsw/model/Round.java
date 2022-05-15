@@ -221,10 +221,6 @@ public class Round implements Serializable {
         return !isPlanning && (getCurrentPlayerIndex() == playersCopy.size() - 1);
     }
 
-    public boolean isPlanningStart() {
-        return isPlanning;
-    }
-
     /**
      * @return true if the current turn is a planning turn, false is the current turn is an action turn
      */
