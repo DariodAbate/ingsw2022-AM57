@@ -114,6 +114,9 @@ public class GameHandler implements PropertyChangeListener {
         for(int i=0; i < numPlayer; i++){
             playerToClient.put(game.getPlayers().get(i), playersConnections.get(i));
         }
+
+        continueGame = true;
+        endGameInRound = false;
         //WARNING: playersConnections should have the same order as the arraylist of players saved in the game
     }
 
@@ -229,7 +232,7 @@ public class GameHandler implements PropertyChangeListener {
     }
 
     /**
-     * This method waits for the player to chose a tower color
+     * This method waits for the player to choose a tower color
      * @param client that ask for the client color
      * @see ServerClientHandler for exceptions
      */
@@ -278,7 +281,7 @@ public class GameHandler implements PropertyChangeListener {
 
     /**
      * This method ask the player for a Card Back during the setup phase
-     * You can't chose a card back selected from another player
+     * You can't choose a card back selected from another player
      * @param client that send the card back
      * @see ServerClientHandler for exceptions
      */
@@ -312,7 +315,7 @@ public class GameHandler implements PropertyChangeListener {
         }
     }
 
-    /**This method handles all the phases of the game, switching turns and rounds until the game ends (see istant winning)
+    /**This method handles all the phases of the game, switching turns and rounds until the game ends (see instant winning)
      * or until the variable endgame is switched! (it waits for the end of the turn
      * @see ServerClientHandler for exceptions
      * @throws GameDisconnectionException
@@ -397,12 +400,12 @@ public class GameHandler implements PropertyChangeListener {
     }
 
     /**
-     * This method handles the action phase, using 3 submethods to handle all the turn changing
+     * This method handles the action phase, using 3 methods to handle all the turn changing
      * @see ServerClientHandler for exceptions
      */
     private synchronized void actionPhase() throws IOException, ClassNotFoundException{
         boolean areCloudsEmpty = false;
-        for(CloudTile cloud : game.getCloudTiles()){ //if at least one cloud is not filled (bag is empty), skip takecloud
+        for(CloudTile cloud : game.getCloudTiles()){ //if at least one cloud is not filled (bag is empty), skip takeCloud
             if(cloud.isFillable()){
                 areCloudsEmpty = true;
             }
@@ -412,7 +415,7 @@ public class GameHandler implements PropertyChangeListener {
             client.sendMessageToClient("It's your turn!");
             moveStudents(client);
             motherMovement(client);
-            if(!areCloudsEmpty && continueGame) //to avoid problem caused to end game
+            if(!areCloudsEmpty && continueGame) //to avoid problem caused by end game
                 takeCloud(client);
         }
     }
