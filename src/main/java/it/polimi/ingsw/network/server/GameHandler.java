@@ -1068,8 +1068,8 @@ public class GameHandler implements PropertyChangeListener {
                             card.setStudentInEntranceColor(((ColorChosen) message).getColor());
                             setSwapHall(client, card);
                             entranceColor = true;
-                            drawBoard(client, game.getCurrentPlayer());
                             card.effect();
+                            drawBoard(client, game.getCurrentPlayer());
                         }
                         else{
                             client.sendMessageToClient("There is no such color in the entrance");
