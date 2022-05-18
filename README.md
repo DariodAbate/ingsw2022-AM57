@@ -7,13 +7,13 @@
 | Functionality                   |                       State                        |
 |:--------------------------------|:--------------------------------------------------:|
 | Basic rules                     | 🟢 |
-| Complete rules                  | 🟡 |
-| Socket                          | 🟡 |
+| Complete rules                  | 🟢 |
+| Socket                          | 🟢 |
 | GUI                             | 🔴 |
 | CLI                             | 🟡 |
 | Character cards                 | 🟡 |
 | Multiple games                  | 🟢 |
-| Persistence                     | 🟢 |
+| Persistence                     | 🟡 |
 | Resilience to disconnections    | 🔴 |
 
 #### Legend
