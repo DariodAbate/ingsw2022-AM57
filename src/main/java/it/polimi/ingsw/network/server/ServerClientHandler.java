@@ -1,6 +1,7 @@
 package it.polimi.ingsw.network.server;
 
 import it.polimi.ingsw.network.client.messages.*;
+import it.polimi.ingsw.network.server.answers.Answer;
 import it.polimi.ingsw.network.server.answers.GenericAnswer;
 import it.polimi.ingsw.network.server.answers.Shutdown;
 
@@ -95,6 +96,13 @@ public class ServerClientHandler implements Runnable {
     public void sendMessageToClient(String message) throws IOException {
         out.reset();
         out.writeObject(new GenericAnswer(message));
+        out.flush();
+    }
+
+
+    public void sendMessageToClient(Answer answer) throws IOException {
+        out.reset();
+        out.writeObject(answer);
         out.flush();
     }
 
