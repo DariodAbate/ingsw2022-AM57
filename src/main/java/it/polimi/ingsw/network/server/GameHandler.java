@@ -257,7 +257,7 @@ public class GameHandler implements PropertyChangeListener {
                 color = ((ChooseTowerColor) message).getColor();
                 if(game.getAvailableTowerColor().contains(color)){
                     game.associatePlayerToTower(color, clientToPlayer.get(client));
-                    broadcastMessage(new TowerColorAnswer(game.getCurrentPlayer().getNickname(), color));
+                    broadcastMessage(new TowerColorAnswer(game.getCurrentPlayer().getNickname(), color, game.getAvailableTowerColor()));
                     client.sendMessageToClient("Your color of tower is " + color.name());//FIXME rimuovi questo
                     towerChosen = true;
                 }
@@ -314,7 +314,7 @@ public class GameHandler implements PropertyChangeListener {
                 if(game.getAvailableCardsBack().contains(card)) {
                     game.associatePlayerToCardsToBack(card, clientToPlayer.get(client));
                     client.sendMessageToClient("Your character is " + card.name());
-                    broadcastMessage(new CardBackAnswer(game.getCurrentPlayer().getNickname(), card));
+                    broadcastMessage(new CardBackAnswer(game.getCurrentPlayer().getNickname(), card, game.getAvailableCardsBack()));
                     backChosen = true;
                 }
                 else{
