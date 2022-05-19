@@ -6,8 +6,10 @@ import it.polimi.ingsw.model.constantFactory.ThreePlayersConstants;
 import it.polimi.ingsw.model.constantFactory.TwoPlayersConstants;
 import it.polimi.ingsw.model.expertGame.*;
 import it.polimi.ingsw.network.client.messages.*;
+import it.polimi.ingsw.network.server.answers.AssistantCardPlayedAnswer;
 import it.polimi.ingsw.network.server.answers.CardBackAnswer;
 import it.polimi.ingsw.network.server.answers.Answer;
+import it.polimi.ingsw.network.server.answers.TowerColorAnswer;
 import it.polimi.ingsw.network.server.exception.GameDisconnectionException;
 import it.polimi.ingsw.network.server.exception.SetupGameDisconnectionException;
 
@@ -232,11 +234,11 @@ public class GameHandler implements PropertyChangeListener {
         client.sendMessageToClient("The available tower colors are: ");
 
         ArrayList<String> towerColors = new ArrayList<>();
-        for(int i=0; i<game.getAvailableTowerColor().size(); i++){
+        for(int i=0; i<game.getAvailableTowerColor().size(); i++){ //FIXME questo stampa i colori
             //client.sendMessageToClient(game.getAvailableTowerColor().get(i).name());
             towerColors.add(game.getAvailableTowerColor().get(i).name());
         }
-        client.sendMessageToClient(towerColors.toString());
+        client.sendMessageToClient(towerColors.toString());//FIXME anche questo
         waitForColorsSetup(client);
     }
 
@@ -255,7 +257,8 @@ public class GameHandler implements PropertyChangeListener {
                 color = ((ChooseTowerColor) message).getColor();
                 if(game.getAvailableTowerColor().contains(color)){
                     game.associatePlayerToTower(color, clientToPlayer.get(client));
-                    client.sendMessageToClient("Your color of tower is " + color.name());
+                    broadcastMessage(new TowerColorAnswer(game.getCurrentPlayer().getNickname(), color));
+                    client.sendMessageToClient("Your color of tower is " + color.name());//FIXME rimuovi questo
                     towerChosen = true;
                 }
                 else{
@@ -280,11 +283,11 @@ public class GameHandler implements PropertyChangeListener {
         client.sendMessageToClient("The available card backs are: ");
 
         ArrayList<String> backs = new ArrayList<>();
-        for(int i = 0; i<game.getAvailableCardsBack().size(); i++){
+        for(int i = 0; i<game.getAvailableCardsBack().size(); i++){//FIXME questo
             //client.sendMessageToClient(game.getAvailableCardsBack().get(i).name());
             backs.add(game.getAvailableCardsBack().get(i).name());
         }
-        client.sendMessageToClient(backs.toString());
+        client.sendMessageToClient(backs.toString()); //FIXME anche questo
         waitForCardBackAnswer(client);
     }
 
@@ -381,17 +384,19 @@ public class GameHandler implements PropertyChangeListener {
             client.sendMessageToClient("Please select which assistant card do you wanna play");
             client.sendMessageToClient("The remaining assistant cards are:");
 
-            ArrayList<String> hand = new ArrayList<>();
-            for(AssistantCard card : game.getCurrentPlayer().getHand()){
+            ArrayList<String> hand = new ArrayList<>();//FIXME e questo
+            for(AssistantCard card : game.getCurrentPlayer().getHand()){//FIXME Questo
                 hand.add(String.valueOf(card.getPriority()));
             }
-            client.sendMessageToClient(hand.toString());
+            client.sendMessageToClient(hand.toString());//fixme anche questo
             message = client.readMessageFromClient();
             if(message instanceof IntegerMessage && game.getGameState() == GameState.PLANNING_STATE){
                 if(game.getCurrentPlayer().isPriorityAvailable(((IntegerMessage) message).getMessage()) &&
                         (!cardsPlayed.contains(((IntegerMessage) message).getMessage()) || cardsPlayed.containsAll(hand))){
                     int index = game.getCurrentPlayer().priorityToIndex(((IntegerMessage) message).getMessage());
                     game.playCard(index);
+                    broadcastMessage(new AssistantCardPlayedAnswer(game.getCurrentPlayer().getNickname(),
+                            game.getCurrentPlayer().getHand(), ((IntegerMessage) message).getMessage()));
                     client.sendMessageToClient("You have chosen your " + ((IntegerMessage) message).getMessage() + " card");
                     cardsPlayed.add(((IntegerMessage) message).getMessage());
                 }
@@ -589,21 +594,22 @@ public class GameHandler implements PropertyChangeListener {
                     drawArchipelago(client);
                     isIdxChosen = true;
                 }
-                else if(message instanceof PlayExpertCard && expertGame){
-                    if(!((ExpertGame) game).isCardHasBeenPlayed()) {
-                        playCard(client);
-                    }
-                    else{
-                        client.sendMessageToClient("You have already played a card this turn!");
-                    }
-                }
                 else{
                     client.sendMessageToClient("Please select a valid number of steps.");
+                }
+            }
+            else if(message instanceof PlayExpertCard && expertGame){
+                if(!((ExpertGame) game).isCardHasBeenPlayed()) {
+                    playCard(client);
+                }
+                else{
+                    client.sendMessageToClient("You have already played a card this turn!");
                 }
             }
             else{
                 client.sendMessageToClient("Wrong command, please insert the number of islands you want to travel");
             }
+
         }
     }
 
@@ -633,16 +639,16 @@ public class GameHandler implements PropertyChangeListener {
                     client.sendMessageToClient("You've chosen the cloud number " + temp);
                     cloudTaken = true;
                 }
-                else if(message instanceof PlayExpertCard && expertGame){
-                    if(!((ExpertGame) game).isCardHasBeenPlayed()) {
-                        playCard(client);
-                    }
-                    else{
-                        client.sendMessageToClient("You have already played a card this turn!");
-                    }
-                }
                 else{
                     client.sendMessageToClient("Cloud not valid, please insert a new cloud.");
+                }
+            }
+            else if(message instanceof PlayExpertCard && expertGame){
+                if(!((ExpertGame) game).isCardHasBeenPlayed()) {
+                    playCard(client);
+                }
+                else{
+                    client.sendMessageToClient("You have already played a card this turn!");
                 }
             }
             else{
