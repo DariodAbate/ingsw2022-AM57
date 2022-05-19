@@ -7,6 +7,7 @@ import it.polimi.ingsw.model.constantFactory.TwoPlayersConstants;
 import it.polimi.ingsw.model.expertGame.*;
 import it.polimi.ingsw.network.client.messages.*;
 import it.polimi.ingsw.network.server.answers.CardBackAnswer;
+import it.polimi.ingsw.network.server.answers.Answer;
 import it.polimi.ingsw.network.server.exception.GameDisconnectionException;
 import it.polimi.ingsw.network.server.exception.SetupGameDisconnectionException;
 
@@ -204,6 +205,11 @@ public class GameHandler implements PropertyChangeListener {
             client.sendMessageToClient(message);
     }
 
+    private void broadcastMessage(Answer answer) throws IOException{
+        for (ServerClientHandler client : playersConnections)
+            client.sendMessageToClient(answer);
+    }
+
     /**
      * This method is used to send a message of shutdown to the client, so that it will terminate
      */
@@ -221,6 +227,8 @@ public class GameHandler implements PropertyChangeListener {
      */
     private synchronized void askColorsSetup(ServerClientHandler client) throws IOException, ClassNotFoundException{
         client.sendMessageToClient("Select the preferred tower color");
+
+
         client.sendMessageToClient("The available tower colors are: ");
 
         ArrayList<String> towerColors = new ArrayList<>();
