@@ -6,6 +6,7 @@ import it.polimi.ingsw.model.constantFactory.ThreePlayersConstants;
 import it.polimi.ingsw.model.constantFactory.TwoPlayersConstants;
 import it.polimi.ingsw.model.expertGame.*;
 import it.polimi.ingsw.network.client.messages.*;
+import it.polimi.ingsw.network.server.answers.CardBackAnswer;
 import it.polimi.ingsw.network.server.exception.GameDisconnectionException;
 import it.polimi.ingsw.network.server.exception.SetupGameDisconnectionException;
 
@@ -302,6 +303,7 @@ public class GameHandler implements PropertyChangeListener {
                 if(game.getAvailableCardsBack().contains(card)) {
                     game.associatePlayerToCardsToBack(card, clientToPlayer.get(client));
                     client.sendMessageToClient("Your character is " + card.name());
+                    broadcastMessage(new CardBackAnswer(game.getCurrentPlayer().getNickname(), card));
                     backChosen = true;
                 }
                 else{

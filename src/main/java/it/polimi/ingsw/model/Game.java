@@ -327,7 +327,7 @@ public class Game implements RoundObserver, RefillInterface, Serializable {
 
         if(!currentPlayerBoard.hallIsFillable(colorStudentToBeMoved))
             throw new IllegalStateException("The hall cannot accept a student of the specified color");
-        controlMovementStudents();//one movement of student has done
+        //controlMovementStudents();//one movement of student has done
         currentPlayerBoard.entranceToHall(colorStudentToBeMoved);
 
         //assignment of the professor
