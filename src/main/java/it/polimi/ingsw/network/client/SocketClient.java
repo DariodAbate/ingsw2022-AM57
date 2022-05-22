@@ -69,13 +69,13 @@ public class SocketClient {
      * This method is used to send a message to the server
      * @param msg message to be sent
      */
-    public void send(Message msg){
+    public void send(Message msg) throws SocketException {
         try{
             out.reset();
             out.writeObject(msg);
             out.flush();
         }catch(SocketException e1){
-            System.out.println("Connection closed");
+            throw new SocketException("Connection closed");
         } catch(IOException e ){
             System.err.println("Error in sending a message to the server");
         }
