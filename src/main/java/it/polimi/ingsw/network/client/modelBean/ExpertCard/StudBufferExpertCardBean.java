@@ -2,6 +2,7 @@ package it.polimi.ingsw.network.client.modelBean.ExpertCard;
 
 import it.polimi.ingsw.model.Color;
 
+import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -12,12 +13,8 @@ import java.util.Map;
  *
  * @author Dario d'Abate
  */
-public class StudBufferExpertCardBean extends ExpertCardBean {
+public class StudBufferExpertCardBean extends ExpertCardBean implements Serializable {
     private Map<Color, Integer> studentBuffer;
-
-    public StudBufferExpertCardBean(){
-        studentBuffer = new HashMap<>();
-    }
 
     public Map<Color, Integer> getStudentBuffer() {
         return studentBuffer;

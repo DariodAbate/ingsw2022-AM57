@@ -3,6 +3,7 @@ package it.polimi.ingsw.network.client.modelBean;
 import it.polimi.ingsw.model.Color;
 import it.polimi.ingsw.model.Tower;
 
+import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -13,7 +14,7 @@ import java.util.Map;
  *
  * @author Dario d'Abate
  */
-public class IslandBean {
+public class IslandBean implements Serializable {
     private Map<Color, Integer > students;
     private Tower towerColor;
     private int numTowers;

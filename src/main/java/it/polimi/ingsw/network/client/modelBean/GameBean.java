@@ -2,6 +2,7 @@ package it.polimi.ingsw.network.client.modelBean;
 
 import it.polimi.ingsw.network.client.modelBean.ExpertCard.ExpertCardBean;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
 
@@ -11,13 +12,14 @@ import java.util.ArrayList;
  *
  * @author Dario d'Abate
  */
-public class GameBean {
+public class GameBean implements Serializable {
     private int motherNature;
     private ArrayList<IslandBean> archipelago;
     private ArrayList<CloudBean> cloudTiles;
     private ArrayList<PlayerBean> players;
     private ArrayList<ExpertCardBean> expertCards;
     private int bank;
+    private boolean expertGame;
 
     public void setMotherNature(int motherNature) {
         this.motherNature = motherNature;
@@ -65,5 +67,13 @@ public class GameBean {
 
     public ArrayList<ExpertCardBean> getExpertCards() {
         return expertCards;
+    }
+
+    public boolean isExpertGame() {
+        return expertGame;
+    }
+
+    public void setExpertGame(boolean expertGame) {
+        this.expertGame = expertGame;
     }
 }
