@@ -81,6 +81,10 @@ public class ExpertGame extends Game implements Serializable, PseudoMotherNature
         this.coinBank = gameConstants.getMaxCoinSize();
     }
 
+    public int getCoinBank() {
+        return coinBank;
+    }
+
     /**
      * This method initializes the cards in the game
      */
