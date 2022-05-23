@@ -36,12 +36,11 @@ class PlayerTest {
     }
 
     /**
-     * This method tests that an Exception is thrown if there isn't
-     * a discard card yet.
+     * This method tests that the discarded card is null
      */
     @Test
     void noDiscardCardYet() {
-        assertThrows(NullPointerException.class, ()->p.viewLastCard());
+        assertNull(p.viewLastCard());
     }
 
     /**

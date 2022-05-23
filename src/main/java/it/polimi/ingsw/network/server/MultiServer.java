@@ -8,6 +8,7 @@ import it.polimi.ingsw.network.server.exception.GameDisconnectionException;
 import it.polimi.ingsw.network.server.exception.SetupGameDisconnectionException;
 
 import java.io.IOException;
+import java.net.SocketException;
 import java.net.SocketTimeoutException;
 import java.util.ArrayList;
 import java.util.Scanner;
@@ -105,9 +106,10 @@ public class MultiServer {
             Message nick;
             try {
                 nick = clientHandler.readMessageFromClient();
-            } catch (SocketTimeoutException e) {
+            } catch (SocketTimeoutException | SocketException e) {
                 //a disconnection at this stage means that the player is not registered on the server
-                clientHandler.sendShutDownToClient();
+                if(e instanceof SocketTimeoutException )
+                    clientHandler.sendShutDownToClient();
                 return false;
             }
             if (nick instanceof GenericMessage) {
@@ -153,8 +155,9 @@ public class MultiServer {
                 selectGameMode(clientHandler);
                 clientHandler.sendMessageToClient("Wait for " + (this.requiredPlayer - connectionList.size()) + " players to join.");
 
-            }catch(SocketTimeoutException e){
-                clientHandler.sendShutDownToClient();
+            }catch(SocketTimeoutException | SocketException e) {
+                if (e instanceof SocketTimeoutException)//disconnection
+                    clientHandler.sendShutDownToClient();
                 expertMode = false;
                 requiredPlayer = -1;
                 connectionList.remove(clientHandler);
@@ -247,6 +250,8 @@ public class MultiServer {
                 msg = clientHandler.readMessageFromClient();
             } catch (SocketTimeoutException e) {
                 throw new SocketTimeoutException(e.getMessage());
+            }catch (SocketException e) {
+                throw new SocketException(e.getMessage());
             }
 
 
@@ -280,6 +285,8 @@ public class MultiServer {
                 msg = clientHandler.readMessageFromClient();
             } catch (SocketTimeoutException e) {
                 throw new SocketTimeoutException(e.getMessage());
+            }catch (SocketException e) {
+                throw new SocketException(e.getMessage());
             }
 
             if (msg instanceof GenericMessage) {

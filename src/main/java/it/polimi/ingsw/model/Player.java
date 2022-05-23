@@ -114,7 +114,10 @@ public class Player implements Serializable {
      * @return the last discarded card
      */
     public AssistantCard viewLastCard() {
-        return new AssistantCard(discardCard.getPriority(), discardCard.getMovement());
+        if(discardCard == null)
+            return null;
+        else
+            return new AssistantCard(discardCard.getPriority(), discardCard.getMovement());
     }
 
     /**

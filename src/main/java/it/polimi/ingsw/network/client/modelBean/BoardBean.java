@@ -3,8 +3,10 @@ package it.polimi.ingsw.network.client.modelBean;
 import it.polimi.ingsw.model.Color;
 import it.polimi.ingsw.model.Tower;
 
+import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * This class is a simplified representation of the model in the server. It will be used by the CLI or the GUI.
@@ -12,9 +14,10 @@ import java.util.Map;
  *
  * @author Dario d'Abate
  */
-public class BoardBean {
+public class BoardBean  implements Serializable {
     private Map<Color, Integer > entranceStudent;
     private Map<Color, Integer > hallStudent;
+    private Set<Color> professors;
     private Tower towerColor;
     private int numTowers;
     private int numCoins;
@@ -62,5 +65,13 @@ public class BoardBean {
 
     public void setNumCoins(int numCoins) {
         this.numCoins = numCoins;
+    }
+
+    public Set<Color> getProfessors() {
+        return professors;
+    }
+
+    public void setProfessors(Set<Color> professors) {
+        this.professors = professors;
     }
 }

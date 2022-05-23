@@ -9,18 +9,18 @@ import java.util.ArrayList;
  * This class provides you with the following attributes:
  * -The name of the player who played the card
  * -The remaining hand of the player who played the card
- * -The PRIORITY of the card played from the player (it identifies the assistant card played)
+ * -The LAST played card
  * @author Lorenzo Corrado
  */
 public class AssistantCardPlayedAnswer implements Answer{
-    private String nickname;
-    private ArrayList<AssistantCard> hand;
-    private int card;
+    private final String nickname;
+    private final ArrayList<AssistantCard> hand;
+    private final AssistantCard  playedCard;
 
-    public AssistantCardPlayedAnswer(String nickname, ArrayList<AssistantCard> hand, int card) {
+    public AssistantCardPlayedAnswer(String nickname, ArrayList<AssistantCard> hand, AssistantCard playedCard) {
         this.nickname = nickname;
         this.hand = hand;
-        this.card = card;
+        this.playedCard = playedCard;
     }
 
     @Override
@@ -36,7 +36,7 @@ public class AssistantCardPlayedAnswer implements Answer{
         return hand;
     }
 
-    public int getCard() {
-        return card;
+    public AssistantCard getCard() {
+        return playedCard;
     }
 }

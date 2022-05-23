@@ -5,11 +5,13 @@ import it.polimi.ingsw.model.Color;
 import it.polimi.ingsw.model.constantFactory.ThreePlayersConstants;
 import it.polimi.ingsw.model.constantFactory.TwoPlayersConstants;
 import it.polimi.ingsw.model.expertGame.*;
+import it.polimi.ingsw.network.client.view.ExpertCard_ID;
 import it.polimi.ingsw.network.client.messages.*;
-import it.polimi.ingsw.network.server.answers.AssistantCardPlayedAnswer;
-import it.polimi.ingsw.network.server.answers.CardBackAnswer;
-import it.polimi.ingsw.network.server.answers.Answer;
-import it.polimi.ingsw.network.server.answers.TowerColorAnswer;
+import it.polimi.ingsw.network.client.modelBean.*;
+import it.polimi.ingsw.network.client.modelBean.ExpertCard.BanExpertCardBean;
+import it.polimi.ingsw.network.client.modelBean.ExpertCard.ExpertCardBean;
+import it.polimi.ingsw.network.client.modelBean.ExpertCard.StudBufferExpertCardBean;
+import it.polimi.ingsw.network.server.answers.*;
 import it.polimi.ingsw.network.server.exception.GameDisconnectionException;
 import it.polimi.ingsw.network.server.exception.SetupGameDisconnectionException;
 
@@ -18,10 +20,10 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.IOException;
 import java.io.StreamCorruptedException;
+import java.net.SocketException;
 import java.net.SocketTimeoutException;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.LinkedHashMap;
 import java.util.Map;
 
 /**
@@ -174,7 +176,7 @@ public class GameHandler implements PropertyChangeListener {
                 askCardsBackSetup(client);
                 askColorsSetup(client);
             }
-        }catch (SocketTimeoutException e){
+        }catch (SocketTimeoutException | SocketException e){
             broadcastMessage("A player has disconnected. Closing this game...");
             broadcastMessage("Please login another time on the server to play.");
             broadcastShutDown();
@@ -189,6 +191,8 @@ public class GameHandler implements PropertyChangeListener {
         // If a player disconnects after logging into the server, he is kept on the server
         // and the game reconnection policy is initiated.
         try {
+            sendNickname();// used for the view
+            sendGameView();//used for the view
             gameTurns();
         }catch (GameDisconnectionException e){//save the game
             broadcastMessage("A player has disconnected. Closing this game...");
@@ -199,17 +203,40 @@ public class GameHandler implements PropertyChangeListener {
     }
 
     /**
-     * This method is used to send a message in broadcast to all the players connected to this game handler
+     * Helper method used to associate a client with the nickname chosen in the UI class
+     */
+    private void sendNickname() throws IOException {
+        for (ServerClientHandler client : playersConnections) {
+                client.sendMessageToClient(new NicknameAnswer(client.getNickname()));
+        }
+    }
+
+    /**
+     * This method is used to send a  string message in broadcast to all the players connected to this game handler
      * @param message message to be sent
      */
     private void broadcastMessage(String message) throws IOException {
-        for (ServerClientHandler client : playersConnections)
-            client.sendMessageToClient(message);
+        for (ServerClientHandler client : playersConnections) {
+            try {
+                client.sendMessageToClient(message);
+            }catch(SocketException e){
+                System.out.println("Client already disconnected, do not need to send message");
+            }
+        }
     }
 
+    /**
+     * This method is used to send an answer message in broadcast to all the players connected to this game handler
+     * @param answer answer object that will be sent to all the clients
+     */
     private void broadcastMessage(Answer answer) throws IOException{
-        for (ServerClientHandler client : playersConnections)
-            client.sendMessageToClient(answer);
+        for (ServerClientHandler client : playersConnections) {
+            try {
+                client.sendMessageToClient(answer);
+            }catch(SocketException e){
+                System.out.println("Client already disconnected, do not need to send message");
+            }
+        }
     }
 
     /**
@@ -217,7 +244,194 @@ public class GameHandler implements PropertyChangeListener {
      */
     private void broadcastShutDown() throws IOException {
         for (ServerClientHandler client : playersConnections)
-            client.sendShutDownToClient();
+            try {
+                client.sendShutDownToClient();
+            }catch(SocketException e){
+                System.out.println("Client already disconnected, do not need to disconnect manually");
+            }
+    }
+
+    /**
+     * Method used to send the entire game state to the Client, so it can be displayed.
+     * This method sends only bean object, that are extracted from the model at the server side
+     */
+    private void sendGameView() throws IOException {
+        //parsing and sending
+        GameBean gameBean = new GameBean();
+        gameBean.setExpertGame(expertGame);
+
+        ArrayList<PlayerBean> playerBeans = new ArrayList<>();
+        for (Player player : game.getPlayers()){
+            PlayerBean tempPlayer = new PlayerBean();
+            tempPlayer.setNickname(player.getNickname());
+            tempPlayer.setHand(player.getHand());
+            tempPlayer.setPlayedCard(player.viewLastCard());
+
+            tempPlayer.setBoard(copyBoard(player.getBoard()));
+
+            playerBeans.add(tempPlayer);
+        }
+        gameBean.setPlayers(playerBeans);
+
+        gameBean.setArchipelago(copyArchipelago(game.getArchipelago()));
+
+        gameBean.setMotherNature(game.getMotherNature());
+
+        gameBean.setCloudTiles(copyClouds(game.getCloudTiles()));
+
+        gameBean.setExpertCards(copyExpertCards(game.getExpertCards()));
+
+        gameBean.setBank(game.getCoinBank());
+
+        broadcastMessage(new GameStateAnswer(gameBean));
+    }
+
+    /**
+     * Helper method used to extract data from the board class
+     * @param board board that will be parsed
+     * @return bean object with a board's data
+     */
+    private BoardBean copyBoard(Board board){
+        BoardBean tempBoard = new BoardBean();
+        tempBoard.setNumCoins(board.getNumCoin());
+        tempBoard.setTowerColor(board.getTowerColor());
+        tempBoard.setNumTowers(board.getNumTower());
+        tempBoard.setProfessors(board.getProfessors());
+
+        HashMap<Color, Integer> tempEntrance = new HashMap<>();
+        HashMap<Color, Integer> tempHall = new HashMap<>();
+        for(Color color: Color.values()){
+            tempEntrance.put(color, board.entranceSize(color));
+            tempHall.put(color, board.hallSize(color));
+        }
+        tempBoard.setEntranceStudent(tempEntrance);
+        tempBoard.setHallStudent(tempHall);
+
+        return tempBoard;
+    }
+
+    /**
+     * Helper method used to extract data from the Archipelago
+     * @param archipelago list of Island tiles that will be parsed
+     * @return bean object with the archipelago's data
+     */
+    private ArrayList<IslandBean> copyArchipelago(ArrayList<IslandTile> archipelago){
+        ArrayList<IslandBean> islandBeans = new ArrayList<>();
+        for(IslandTile islandTile: archipelago){
+            IslandBean tempIsland = new IslandBean();
+            tempIsland.setBanToken(islandTile.getIsBanned());
+            tempIsland.setTowerColor(islandTile.getTowerColor());
+            tempIsland.setNumTowers(islandTile.getNumTowers());
+
+            HashMap<Color, Integer> tempMap = new HashMap<>();
+            for(Color color: Color.values()){
+                tempMap.put(color, islandTile.getIslandStudents().numStudents(color));
+            }
+            tempIsland.setStudents(tempMap);
+            islandBeans.add(tempIsland);
+
+        }
+        return islandBeans;
+    }
+
+    /**
+     * Helper method used to extract data from the clouds
+     * @param cloudTiles list of cloud tiles that will be parsed
+     * @return bean object with the clouds data
+     */
+    private ArrayList<CloudBean> copyClouds(ArrayList<CloudTile> cloudTiles){
+        ArrayList<CloudBean> cloudBeans = new ArrayList<>();
+        for(CloudTile cloudTile: cloudTiles){
+            CloudBean tempCloud = new CloudBean();
+            HashMap<Color, Integer> tempMap = new HashMap<>();
+            for(Color color: Color.values()){
+                tempMap.put(color, cloudTile.numStudOn(color));
+            }
+            tempCloud.setStudents(tempMap);
+            cloudBeans.add(tempCloud);
+        }
+        return cloudBeans;
+    }
+
+    /**
+     * Helper method used to extract data from the Expert Card used in a game
+     * @param expertCards list of expert cards  that will be parsed
+     * @return bean object with the expert card data
+     */
+    private ArrayList<ExpertCardBean> copyExpertCards(ArrayList<ExpertCard> expertCards){
+        ArrayList<ExpertCardBean> expertCardBeans = new ArrayList<>();
+        for(ExpertCard expertCard : game.getExpertCards()){
+            ExpertCardBean tempExpertCard  = associateCard(expertCard);
+
+            expertCardBeans.add(tempExpertCard);
+        }
+        return expertCardBeans;
+    }
+
+    /**
+     * Helper method used to associate a card bean object to an expert card object
+     * @param expertCard expert card that will be parsed
+     * @return bean object with a specific expert card data
+     */
+    private ExpertCardBean associateCard(ExpertCard expertCard) {
+        ExpertCardBean tempExpertCard;
+        if(expertCard instanceof BannedIslandCard){
+            tempExpertCard = new BanExpertCardBean();
+            tempExpertCard.setActivationCost(expertCard.getPrice());
+            tempExpertCard.setName(ExpertCard_ID.HEALER);
+            ((BanExpertCardBean)tempExpertCard).setNumBanToken(((ExpertGame)game).getBanTile());
+            return  tempExpertCard;
+        }
+
+        if(expertCard instanceof StudentsBufferCardsCluster) {
+            tempExpertCard = new StudBufferExpertCardBean();
+            tempExpertCard.setActivationCost(expertCard.getPrice());
+            switch (((StudentsBufferCardsCluster) expertCard).getIndex()) {
+                case 0 -> tempExpertCard.setName(ExpertCard_ID.MONK);
+                case 1 -> tempExpertCard.setName(ExpertCard_ID.JOKER);
+                case 2 -> tempExpertCard.setName(ExpertCard_ID.PRINCESS);
+            }
+
+            HashMap<Color, Integer> tempStudOnCard = new HashMap<>();
+            for (Color color : Color.values()) {
+                tempStudOnCard.put(color, ((StudentsBufferCardsCluster) expertCard).getStudBuffer().numStudents(color));
+            }
+            ((StudBufferExpertCardBean) tempExpertCard).setStudentBuffer(tempStudOnCard);
+            return  tempExpertCard;
+        }
+
+        tempExpertCard = new ExpertCardBean();
+        tempExpertCard.setActivationCost(expertCard.getPrice());
+
+        if(expertCard instanceof IncrementMaxMovementCard){
+            tempExpertCard.setName(ExpertCard_ID.DELIVERYMAN);
+
+        }
+        else if(expertCard instanceof PseudoMotherNatureCard){
+            tempExpertCard.setName(ExpertCard_ID.HERALD);
+
+        }
+        else if(expertCard instanceof PutThreeStudentsInTheBagCard){
+            tempExpertCard.setName(ExpertCard_ID.MONEYLENDER);
+
+        }
+        else if(expertCard instanceof SwapStudentsCard){
+            tempExpertCard.setName(ExpertCard_ID.BARD);
+
+        }
+        else if(expertCard instanceof TakeProfessorEqualStudentsCard){
+            tempExpertCard.setName(ExpertCard_ID.HOST);
+
+        }
+        else if(expertCard instanceof InfluenceCardsCluster){
+            switch(((InfluenceCardsCluster)expertCard).getIndex()){
+                case 0 -> tempExpertCard.setName(ExpertCard_ID.CENTAUR);
+                case 1-> tempExpertCard.setName(ExpertCard_ID.KNIGHT);
+                case 2-> tempExpertCard.setName(ExpertCard_ID.POISONER);
+            }
+
+        }
+        return tempExpertCard;
     }
 
     /**
@@ -228,17 +442,7 @@ public class GameHandler implements PropertyChangeListener {
      * @see ServerClientHandler for exceptions
      */
     private synchronized void askColorsSetup(ServerClientHandler client) throws IOException, ClassNotFoundException{
-        client.sendMessageToClient("Select the preferred tower color");
-
-
-        client.sendMessageToClient("The available tower colors are: ");
-
-        ArrayList<String> towerColors = new ArrayList<>();
-        for(int i=0; i<game.getAvailableTowerColor().size(); i++){ //FIXME questo stampa i colori
-            //client.sendMessageToClient(game.getAvailableTowerColor().get(i).name());
-            towerColors.add(game.getAvailableTowerColor().get(i).name());
-        }
-        client.sendMessageToClient(towerColors.toString());//FIXME anche questo
+        client.sendMessageToClient(new TowerChoiceAnswer(game.getAvailableTowerColor()));
         waitForColorsSetup(client);
     }
 
@@ -257,8 +461,6 @@ public class GameHandler implements PropertyChangeListener {
                 color = ((ChooseTowerColor) message).getColor();
                 if(game.getAvailableTowerColor().contains(color)){
                     game.associatePlayerToTower(color, clientToPlayer.get(client));
-                    broadcastMessage(new TowerColorAnswer(game.getCurrentPlayer().getNickname(), color, game.getAvailableTowerColor()));
-                    client.sendMessageToClient("Your color of tower is " + color.name());//FIXME rimuovi questo
                     towerChosen = true;
                 }
                 else{
@@ -279,15 +481,7 @@ public class GameHandler implements PropertyChangeListener {
      * @see ServerClientHandler for exceptions
      */
     private synchronized void askCardsBackSetup(ServerClientHandler client) throws IOException , ClassNotFoundException {
-        client.sendMessageToClient("Insert the preferred card back");
-        client.sendMessageToClient("The available card backs are: ");
-
-        ArrayList<String> backs = new ArrayList<>();
-        for(int i = 0; i<game.getAvailableCardsBack().size(); i++){//FIXME questo
-            //client.sendMessageToClient(game.getAvailableCardsBack().get(i).name());
-            backs.add(game.getAvailableCardsBack().get(i).name());
-        }
-        client.sendMessageToClient(backs.toString()); //FIXME anche questo
+        client.sendMessageToClient(new CardBackChoiceAnswer(game.getAvailableCardsBack()));
         waitForCardBackAnswer(client);
     }
 
@@ -310,11 +504,8 @@ public class GameHandler implements PropertyChangeListener {
             }
             if(message instanceof ChooseCardBack && game.getGameState() == GameState.JOIN_STATE){
                 card = ((ChooseCardBack) message).getMessage();
-                //card = CardBack.valueOf(((ChooseCardBack)message).getMessage());
                 if(game.getAvailableCardsBack().contains(card)) {
                     game.associatePlayerToCardsToBack(card, clientToPlayer.get(client));
-                    client.sendMessageToClient("Your character is " + card.name());
-                    broadcastMessage(new CardBackAnswer(game.getCurrentPlayer().getNickname(), card, game.getAvailableCardsBack()));
                     backChosen = true;
                 }
                 else{
@@ -331,14 +522,13 @@ public class GameHandler implements PropertyChangeListener {
     /**This method handles all the phases of the game, switching turns and rounds until the game ends (see instant winning)
      * or until the variable endgame is switched! (it waits for the end of the turn
      * @see ServerClientHandler for exceptions
-     * @throws GameDisconnectionException
      */
     public  synchronized void gameTurns() throws IOException, ClassNotFoundException, GameDisconnectionException {
         while(!endGameInRound && continueGame){
             try{
             planningPhase();
             actionPhase();
-            }catch(SocketTimeoutException e){//start the mechanism to save the game
+            }catch(SocketTimeoutException | SocketException e){//start the mechanism to save the game
                 broadcastMessage("A player has disconnected. Closing this game...");
                 broadcastMessage("Please reconnect to restart this game!");
                 broadcastShutDown();
@@ -378,30 +568,33 @@ public class GameHandler implements PropertyChangeListener {
     private synchronized void planningPhase() throws IOException, ClassNotFoundException{
         Message message;
         ServerClientHandler client;
+
         ArrayList<Integer> cardsPlayed = new ArrayList<>();
         while(game.getGameState() == GameState.PLANNING_STATE && continueGame){
             client = playerToClient.get(game.getCurrentPlayer());
-            client.sendMessageToClient("Please select which assistant card do you wanna play");
-            client.sendMessageToClient("The remaining assistant cards are:");
+            client.sendMessageToClient("Please select the priority of the card you wanna play");
 
-            ArrayList<String> hand = new ArrayList<>();//FIXME e questo
-            for(AssistantCard card : game.getCurrentPlayer().getHand()){//FIXME Questo
-                hand.add(String.valueOf(card.getPriority()));
+            ArrayList<Integer> hand = new ArrayList<>();
+            for(AssistantCard card : game.getCurrentPlayer().getHand()){
+                hand.add(card.getPriority());
             }
-            client.sendMessageToClient(hand.toString());//fixme anche questo
+
             message = client.readMessageFromClient();
             if(message instanceof IntegerMessage && game.getGameState() == GameState.PLANNING_STATE){
-                if(game.getCurrentPlayer().isPriorityAvailable(((IntegerMessage) message).getMessage()) &&
+                Player currentPlayer = game.getCurrentPlayer();
+
+                if(currentPlayer.isPriorityAvailable(((IntegerMessage) message).getMessage()) &&
                         (!cardsPlayed.contains(((IntegerMessage) message).getMessage()) || cardsPlayed.containsAll(hand))){
-                    int index = game.getCurrentPlayer().priorityToIndex(((IntegerMessage) message).getMessage());
+
+                    int index = currentPlayer.priorityToIndex(((IntegerMessage) message).getMessage());
                     game.playCard(index);
-                    broadcastMessage(new AssistantCardPlayedAnswer(game.getCurrentPlayer().getNickname(),
-                            game.getCurrentPlayer().getHand(), ((IntegerMessage) message).getMessage()));
-                    client.sendMessageToClient("You have chosen your " + ((IntegerMessage) message).getMessage() + " card");
+                    broadcastMessage(new AssistantCardPlayedAnswer(currentPlayer.getNickname(),
+                            currentPlayer.getHand(), currentPlayer.viewLastCard()));
+
                     cardsPlayed.add(((IntegerMessage) message).getMessage());
                 }
-                else if(!game.getCurrentPlayer().isPriorityAvailable(((IntegerMessage) message).getMessage())){
-                    client.sendMessageToClient("You've already played this card! Play another one!");
+                else if(!currentPlayer.isPriorityAvailable(((IntegerMessage) message).getMessage())){
+                    client.sendMessageToClient("Not valid priority!");
                 }
                 else{
                     client.sendMessageToClient("This card has already been played by another player!");
@@ -445,9 +638,7 @@ public class GameHandler implements PropertyChangeListener {
     private synchronized void moveStudents(ServerClientHandler client) throws IOException, ClassNotFoundException{
         int numberOfMoves = numPlayer == 3 ? new ThreePlayersConstants().getMaxNumStudMovements() : new TwoPlayersConstants().getMaxNumStudMovements();
         Message message;
-        drawBoard(client, game.getCurrentPlayer());
-        drawArchipelago(client);
-        drawExpertCards(client);
+
         for(int i=0; i<numberOfMoves; i++){
             boolean correctMove = false;
             client.sendMessageToClient("Select where you want to move your students[\"hall/island\"]");
@@ -456,10 +647,10 @@ public class GameHandler implements PropertyChangeListener {
                 if(message instanceof MoveStudentMessage && game.getGameState() == GameState.MOVING_STUDENT_STATE) {
                     String command = ((MoveStudentMessage) message).getMsg().toUpperCase();
                     if (( command.equals("HALL"))){
-                        availableEntranceColor(client);
+                        client.sendMessageToClient("Please select the color of the student you want to move");
                         toHall(client);
                     } else{
-                        availableEntranceColor(client);
+                        client.sendMessageToClient("Please select the color of the student you want to move");
                         toIsland(client);
                     }
                     correctMove = true;
@@ -483,23 +674,7 @@ public class GameHandler implements PropertyChangeListener {
                 }
             }
         }
-        drawArchipelago(client);
         game.setGameState(GameState.MOTHER_MOVEMENT_STATE);
-    }
-
-    /**
-     * This method draws the available entrance colors
-     * @see ServerClientHandler for exceptions
-     */
-    private void availableEntranceColor(ServerClientHandler client) throws IOException{
-        client.sendMessageToClient("These are the available colors: ");
-
-        ArrayList<String> colors = new ArrayList<>();
-        for(Color color : game.getCurrentPlayer().getBoard().getEntrance().colorsAvailable()){
-            colors.add(color.name());
-        }
-        client.sendMessageToClient(colors.toString());
-        client.sendMessageToClient("Please select one of these colors.");
     }
 
     /**
@@ -516,12 +691,12 @@ public class GameHandler implements PropertyChangeListener {
                 if(game.getCurrentPlayer().getBoard().getEntrance().colorsAvailable().contains(((ColorChosen) message).getColor())
                 && game.getCurrentPlayer().getBoard().hallIsFillable(((ColorChosen) message).getColor())){
                     game.entranceToHall(((ColorChosen) message).getColor());
-                    client.sendMessageToClient("You have placed a " + ((ColorChosen) message).getColor().name().toLowerCase()
-                            + " student in the hall");
+
+                    broadcastMessage(new ToHallUpdateAnswer(client.getNickname(), copyBoard(game.getCurrentPlayer().getBoard())));
                     isColorChosen = true;
                 }
                 else{
-                    client.sendMessageToClient("Color not available, please select another color."); //TODO another custom message for the hall
+                    client.sendMessageToClient("Color not available, please select another color.");
                 }
             }
             else{
@@ -538,11 +713,10 @@ public class GameHandler implements PropertyChangeListener {
             message = client.readMessageFromClient();
             if(message instanceof ColorChosen && game.getGameState()==GameState.MOVING_STUDENT_STATE){
                 if(game.getCurrentPlayer().getBoard().getEntrance().colorsAvailable().contains(((ColorChosen) message).getColor())){
-                    client.sendMessageToClient("Color selected " + ((ColorChosen) message).getColor().name());
                     client.sendMessageToClient("Select the island where you want to place your student.");
-                    client.sendMessageToClient("There are " + game.getArchipelago().size() + " islands.");
                     islandSelection(client, ((ColorChosen) message).getColor());
                     isColorChosen = true;
+                    broadcastMessage(new ToIslandUpdateAnswer(client.getNickname(), copyBoard(game.getCurrentPlayer().getBoard()) , copyArchipelago(game.getArchipelago())));
                 }
                 else{
                     client.sendMessageToClient("Color not available, please select another color.");
@@ -563,8 +737,7 @@ public class GameHandler implements PropertyChangeListener {
             if(message instanceof IntegerMessage && game.getGameState()==GameState.MOVING_STUDENT_STATE){
                 if(((IntegerMessage) message).getMessage() <= game.getArchipelago().size() && ((IntegerMessage) message).getMessage() >0){
                     game.entranceToIsland(((IntegerMessage) message).getMessage() -1, color);
-                    client.sendMessageToClient("You have placed a " + color.name()
-                            + " student on the island number " + ((IntegerMessage) message).getMessage());
+
                     isIdxChosen = true;
                 }
                 else{
@@ -576,13 +749,24 @@ public class GameHandler implements PropertyChangeListener {
             }
         }
     }
+
+    /**
+     * @return all the board beans object parsed from the board objects
+     */
+    private ArrayList<BoardBean> getBoardBeans(){
+        ArrayList<BoardBean> boardBeans = new ArrayList<>();
+        for(Player player: game.getPlayers()){
+            boardBeans.add(copyBoard(player.getBoard()));
+        }
+        return  boardBeans;
+    }
+
     private void motherMovement(ServerClientHandler client) throws IOException, ClassNotFoundException{
         boolean isIdxChosen = false;
         Message message;
         client.sendMessageToClient("Move mother nature. You can travel " + game.getMaxMovement() + " islands.");
-        client.sendMessageToClient("Now she is on the island number " + game.getMotherNature());
-
         client.sendMessageToClient("Choose the number of islands you want to travel.");
+
         while(!isIdxChosen){
             message = client.readMessageFromClient();
             if(message instanceof IntegerMessage && game.getGameState()==GameState.MOTHER_MOVEMENT_STATE){
@@ -590,8 +774,11 @@ public class GameHandler implements PropertyChangeListener {
                 if(step <= game.getArchipelago().size() && step > 0 && step <= game.getMaxMovement()){
                     client.sendMessageToClient("Mother nature will travel " + ((IntegerMessage) message).getMessage() + " islands.");
                     game.motherMovement(step);
-                    drawBoard(client, game.getCurrentPlayer());
-                    drawArchipelago(client);
+
+                    //copy of boards
+                    ArrayList<BoardBean> boardBeans = getBoardBeans();
+
+                    broadcastMessage(new MotherNatureUpdateAnswer(game.getMotherNature(), boardBeans, copyArchipelago(game.getArchipelago())));
                     isIdxChosen = true;
                 }
                 else{
@@ -616,27 +803,19 @@ public class GameHandler implements PropertyChangeListener {
     private void takeCloud(ServerClientHandler client) throws IOException, ClassNotFoundException{
         boolean cloudTaken = false;
         Message message;
-        client.sendMessageToClient("Select one of the clouds: ");
+        client.sendMessageToClient("Select one of the clouds");
 
-        Map<Color, Integer> students = new LinkedHashMap<>();
-        int cloudIdx = 0;
-        for(int i=0; i<game.getCloudTiles().size(); i++){
-            cloudIdx++;
-            students.clear();
-            if(!game.getCloudTiles().get(i).isEmpty()){
-                for(Color color: game.getCloudTiles().get(i).colorsAvailable()){
-                    students.put(color, game.getCloudTiles().get(i).numStudOn(color));
-                }
-                client.sendMessageToClient("Cloud " + cloudIdx + " " + students);
-            }
-        }
         while(!cloudTaken){
             message = client.readMessageFromClient();
             if(message instanceof IntegerMessage && game.getGameState()==GameState.CLOUD_TO_ENTRANCE_STATE){
                 int temp = ((IntegerMessage) message).getMessage();
                 if(temp > 0 && temp<= numPlayer &&  !game.getCloudTiles().get(temp-1).isEmpty()){
                     game.cloudToBoard(temp - 1);
-                    client.sendMessageToClient("You've chosen the cloud number " + temp);
+
+                    ArrayList<BoardBean> boardBeans = getBoardBeans();
+
+
+                    broadcastMessage(new CloudsUpdateAnswer(boardBeans, copyClouds(game.getCloudTiles())));
                     cloudTaken = true;
                 }
                 else{
@@ -657,170 +836,8 @@ public class GameHandler implements PropertyChangeListener {
 
         }
     }
-    private void drawArchipelago(ServerClientHandler client) throws IOException{
-        StringBuilder stringStudents = new StringBuilder(100);
-        StringBuilder towerColor = new StringBuilder(100);
-        StringBuilder string = new StringBuilder(100);
-        StringBuilder mother = new StringBuilder(100);
-        int stringCounter = 0;
-        int motherCounter = 0;
-        int towerCounter = 0;
-        int studentsCounter = 0;
-        for(IslandTile island : game.getArchipelago()) {
-
-            for(int i=0; i< Math.max(island.getIslandStudents().numStudents()+3, 6); i++){
-                string.append("-");
-                stringCounter++;
-            }
 
 
-            stringStudents.append("\u001B[0m|");
-            studentsCounter++;
-
-                for (int i = 0; i < island.getIslandStudents().numStudents(Color.BLUE); i++) {
-                    stringStudents.append("\u001B[34mS");
-                    studentsCounter++;
-                }
-                for (int i = 0; i < island.getIslandStudents().numStudents(Color.YELLOW); i++) {
-                    stringStudents.append("\u001B[33mS");
-                    studentsCounter++;
-                }
-                for (int i = 0; i < island.getIslandStudents().numStudents(Color.RED); i++) {
-                    stringStudents.append("\u001B[31mS");
-                    studentsCounter++;
-                }
-                for (int i = 0; i < island.getIslandStudents().numStudents(Color.GREEN); i++) {
-                    stringStudents.append("\u001B[32mS");
-                    studentsCounter++;
-                }
-                for (int i = 0; i < island.getIslandStudents().numStudents(Color.PINK); i++) {
-                    stringStudents.append("\u001B[35mS");
-                    studentsCounter++;
-                }
-                while(stringCounter > studentsCounter){
-                    stringStudents.append(" ");
-                    studentsCounter++;
-                }
-                towerColor.append("\u001B[0m|");
-                towerCounter++;
-                mother.append("\u001B[0m|");
-                motherCounter++;
-                if(island.getNumTowers()>0) {
-                    switch (island.getTowerColor()) {
-                        case WHITE -> towerColor.append("\u001B[37m");
-                        case BLACK -> towerColor.append("\u001B[4;34m");
-                        case GRAY -> towerColor.append("\u001B[38;5;232m");
-                    }
-                    for(int i=0; i<island.getNumTowers(); i++){
-                        towerColor.append("T\u001B[0m");
-                        towerCounter++;
-                    }
-                }
-
-                if(game.getArchipelago().indexOf(island) == game.getMotherNature()){
-                    mother.append("o");
-                    motherCounter++;
-                }
-                if(island.getIsBanned()){
-                    mother.append("!");
-                    motherCounter++;
-                }
-            while(studentsCounter>towerCounter){
-                towerColor.append(" ");
-                towerCounter++;
-            }
-            while(towerCounter>motherCounter){
-                mother.append(" ");
-                motherCounter++;
-            }
-            towerColor.append("\u001B[0m|/");
-            towerCounter++;
-            towerCounter++;
-            stringStudents.append("\u001B[0m|/");
-            studentsCounter++;
-            studentsCounter++;
-            mother.append("\u001B[0m|/");
-            motherCounter++;
-            motherCounter++;
-
-        }
-        client.sendMessageToClient(string.toString());
-        client.sendMessageToClient(stringStudents.toString());
-        client.sendMessageToClient(towerColor.toString());
-        client.sendMessageToClient(mother.toString());
-        client.sendMessageToClient(string.toString());
-
-    }
-
-    private void drawBoard(ServerClientHandler client, Player player) throws IOException{
-        Map<Color, Integer> entranceStudents = new HashMap<>();
-        Map<Color, Integer> hallStudents = new HashMap<>();
-        Board playerBoard = player.getBoard();
-        for(Color color : player.getBoard().getEntrance().colorsAvailable()){
-            entranceStudents.put(color, playerBoard.getEntrance().numStudents(color));
-        }
-        for(Color color : Color.values()){
-            hallStudents.put(color, playerBoard.getHall().numStudents(color));
-        }
-        client.sendMessageToClient("Your board:");
-        client.sendMessageToClient("Entrance = " + entranceStudents);
-        client.sendMessageToClient("Hall = " + hallStudents);
-        if(expertGame) client.sendMessageToClient("Coin: " + playerBoard.getNumCoin());
-        client.sendMessageToClient("Professors = " + playerBoard.getProfessors());
-        client.sendMessageToClient("Tower Color = " + playerBoard.getTowerColor());
-        client.sendMessageToClient("Number of Towers = " + playerBoard.getNumTower());
-    }
-
-    private void drawExpertCards(ServerClientHandler client) throws IOException{
-        if(expertGame) {
-            StringBuilder cards = new StringBuilder();
-            cards.append("Expert Cards:");
-            for(int i=0; i<3; i++){
-                ExpertCard card = game.getExpertCards().get(i);
-                if(card instanceof IncrementMaxMovementCard){
-                    cards.append("IncrementMaxMov:").append(card.getPrice()).append(", ");
-                }
-                else if(card instanceof TakeProfessorEqualStudentsCard){
-                    cards.append("TakeProfessor:").append(card.getPrice()).append(", ");
-                }
-                else if(card instanceof SwapStudentsCard card1){
-                    cards.append("SwapStudents:").append(card1.getPrice()).append(", ");
-                }
-                else if(card instanceof  StudentsBufferCardsCluster){
-                    Map<Color, Integer> students = new HashMap<>();
-                    for(Color color : Color.values()){
-                        students.put(color, ((StudentsBufferCardsCluster) card).getStudBuffer().numStudents(color));
-                    }
-                    if(((StudentsBufferCardsCluster)card).getIndex() == 0)
-                        cards.append("ManStudBuffer:").append(students).append(card.getPrice()).append(", ");
-                    if(((StudentsBufferCardsCluster)card).getIndex() == 1)
-                        cards.append("ClownStudBuffer:").append(students).append(card.getPrice()).append(", ");
-                    if(((StudentsBufferCardsCluster)card).getIndex() == 2)
-                        cards.append("WomanStudBuffer:").append(students).append(card.getPrice()).append(", ");
-
-                }
-                else if (card instanceof PutThreeStudentsInTheBagCard){
-                    cards.append("PutThreeStudents:").append(card.getPrice()).append(", ");
-                }
-                else if (card instanceof  PseudoMotherNatureCard){
-                    cards.append("PseudoMother:").append(card.getPrice()).append(", ");
-                }
-                else if (card instanceof  InfluenceCardsCluster){
-                    if(((InfluenceCardsCluster) card).getIndex() == 0)
-                        cards.append("NoTower:").append(card.getPrice()).append(", ");
-                    if(((InfluenceCardsCluster) card).getIndex() == 1)
-                        cards.append("TwoMore:").append(card.getPrice()).append(", ");
-                    if(((InfluenceCardsCluster) card).getIndex()== 2)
-                        cards.append("NoColor:").append(card.getPrice()).append(", ");
-
-                }
-                else if (card instanceof BannedIslandCard){
-                    cards.append("BannedIsland:").append(card.getPrice()).append(", ");
-                }
-            }
-            client.sendMessageToClient(cards.toString());
-        }
-    }
     private boolean playCard(ServerClientHandler client) throws IOException, ClassNotFoundException{
         Message message;
         client.sendMessageToClient("Select the card you want to play!");
@@ -835,41 +852,69 @@ public class GameHandler implements PropertyChangeListener {
                         client.sendMessageToClient("You don't have enough coin!");
                         return false;
                     }
-                    if(card instanceof IncrementMaxMovementCard || card instanceof TakeProfessorEqualStudentsCard){
+
+                    //this update message is filled according to the effect of a card
+                    ExpertCardUpdateAnswer expertCardUpdateAnswer = new ExpertCardUpdateAnswer();
+
+                    if(card instanceof IncrementMaxMovementCard || card instanceof TakeProfessorEqualStudentsCard){ //do not refresh the ui
                         game.playEffect(((IntegerMessage) message).getMessage()-1);
                     }
-                    else if(card instanceof SwapStudentsCard card1){
+                    else if(card instanceof SwapStudentsCard card1){//refresh the boards
                         if(game.getCurrentPlayer().getBoard().getHall().numStudents() == 0){
                             client.sendMessageToClient("Your Hall is empty!");
                             return false;
                         }
                         swapStudents(client, card1);
                         game.playVoidEffects(card1);
+
+                        //copy of boards
+                        ArrayList<BoardBean> boardBeans = getBoardBeans();
+                        expertCardUpdateAnswer.setUpdatedBoards(boardBeans);
                     }
                     else if(card instanceof  StudentsBufferCardsCluster card1){
                         int idx = ((StudentsBufferCardsCluster) card).getIndex();
-                        if(idx == 0){
+                        if(idx == 0){// refresh the archipelago
                             manStudentCluster(client, card1);
                             game.playEffect(((IntegerMessage) message).getMessage()-1);
+
+                            expertCardUpdateAnswer.setUpdatedArchipelago(copyArchipelago(game.getArchipelago()));
                         }
-                        else if(idx == 1){
+                        else if(idx == 1){// refresh the boards
                             swapCardCluster(client, card1);
                             game.playVoidEffects(card1);
+
+                            //copy of boards
+                            ArrayList<BoardBean> boardBeans = getBoardBeans();
+                            expertCardUpdateAnswer.setUpdatedBoards(boardBeans);
                         }
-                        else if(idx == 2){
+                        else if(idx == 2){// refresh the boards
                             askColorStudentsCluster(client, card1);
                             game.playEffect(((IntegerMessage) message).getMessage()-1);
+
+                            //copy of boards
+                            ArrayList<BoardBean> boardBeans = getBoardBeans();
+                            expertCardUpdateAnswer.setUpdatedBoards(boardBeans);
                         }
                     }
-                    else if (card instanceof PutThreeStudentsInTheBagCard){
+                    else if (card instanceof PutThreeStudentsInTheBagCard){//refresh the boards
                         putThreeStudentsInBagColor(client, card);
                         game.playEffect(((IntegerMessage) message).getMessage());
+
+                        //copy of boards
+                        ArrayList<BoardBean> boardBeans = getBoardBeans();
+                        expertCardUpdateAnswer.setUpdatedBoards(boardBeans);
                     }
-                    else if (card instanceof  PseudoMotherNatureCard){
+                    else if (card instanceof  PseudoMotherNatureCard){//refresh the archipelago and the boards
                         pseudoMotherIslandSelector(client, card);
                         game.playEffect(((IntegerMessage) message).getMessage()-1);
+
+                        //copy of boards
+                        ArrayList<BoardBean> boardBeans = getBoardBeans();
+                        expertCardUpdateAnswer.setUpdatedBoards(boardBeans);
+                        expertCardUpdateAnswer.setUpdatedArchipelago(copyArchipelago(game.getArchipelago()));
+
                     }
-                    else if (card instanceof  InfluenceCardsCluster card1){
+                    else if (card instanceof  InfluenceCardsCluster card1){//do not refresh the ui
                         int idx = card1.getIndex();
                         if(idx == 0){
                             game.playEffect(((IntegerMessage) message).getMessage()-1);
@@ -882,14 +927,21 @@ public class GameHandler implements PropertyChangeListener {
                             game.playEffect(((IntegerMessage) message).getMessage()-1);
                         }
                     }
-                    else if (card instanceof BannedIslandCard){
+                    else if (card instanceof BannedIslandCard){//refresh the archipelago
                         if(((ExpertGame)game).getBanTile()<=0){
                             client.sendMessageToClient("There are no ban token remaining");
                             return false;
                         }
                         bannedIslandSelector(client, card);
                         game.playEffect(((IntegerMessage) message).getMessage()-1);
+
+                        expertCardUpdateAnswer.setUpdatedArchipelago(copyArchipelago(game.getArchipelago()));
+
                     }
+                    //refresh the cards
+                    expertCardUpdateAnswer.setUpdatedExpertCards(copyExpertCards(game.getExpertCards()));
+                    broadcastMessage(expertCardUpdateAnswer);
+                    broadcastMessage("A card was activated!");
                     return true;
                 }
                 else{
@@ -901,6 +953,9 @@ public class GameHandler implements PropertyChangeListener {
             }
         }
     }
+
+
+
     private void swapCardCluster(ServerClientHandler client, StudentsBufferCardsCluster card) throws IOException, ClassNotFoundException {
         Message message;
         Board board = game.getCurrentPlayer().getBoard();
@@ -911,7 +966,6 @@ public class GameHandler implements PropertyChangeListener {
                 message = client.readMessageFromClient();
                 if(message instanceof ColorChosen){
                     if(board.getEntrance().colorsAvailable().contains(((ColorChosen) message).getColor())){
-                        client.sendMessageToClient("You have chosen" + ((ColorChosen) message).getColor().name() + "in entrance");
                         setSwapCardStudentsBuffer(client, card);
                         card.setStudentColorInEntrance(((ColorChosen) message).getColor());
                         card.effect();
@@ -942,7 +996,6 @@ public class GameHandler implements PropertyChangeListener {
             if(message instanceof ColorChosen){
                 if(card.getStudBuffer().colorsAvailable().contains(((ColorChosen) message).getColor())){
                     card.setStudentColorToBeMoved(((ColorChosen) message).getColor());
-                    client.sendMessageToClient("You have selected the" +  ((ColorChosen) message).getColor() + "student");
                     hallColor = true;
                 }
                 else{
@@ -1086,7 +1139,6 @@ public class GameHandler implements PropertyChangeListener {
                             setSwapHall(client, card);
                             entranceColor = true;
                             card.effect();
-                            drawBoard(client, game.getCurrentPlayer());
                         }
                         else{
                             client.sendMessageToClient("There is no such color in the entrance");
@@ -1144,8 +1196,4 @@ public class GameHandler implements PropertyChangeListener {
             }
         }
     }
-    public int getNumPlayer() {
-        return numPlayer;
-    }
-
 }

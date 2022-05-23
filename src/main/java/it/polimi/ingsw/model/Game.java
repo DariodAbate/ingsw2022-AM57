@@ -711,5 +711,5 @@ public class Game implements RoundObserver, RefillInterface, Serializable {
     public void playEffect(int indexCard){}
     public boolean CardHasBeenPlayed(){return true;}
     public void playVoidEffects(ExpertCard card){}
-
+    public int getCoinBank(){return 0;}
 }

@@ -9,6 +9,7 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
+import java.net.SocketException;
 import java.net.SocketTimeoutException;
 
 
@@ -53,18 +54,22 @@ public class ServerClientHandler implements Runnable {
                     int i = 0;
                 }
 
-            }catch(SocketTimeoutException e){
+            }catch(SocketTimeoutException | SocketException e){
                 System.err.println(e.getMessage());
                 System.out.println("Disconnecting: " + socket.getLocalAddress());
-                sendShutDownToClient();
+                if(e instanceof SocketTimeoutException)
+                    sendShutDownToClient();
             }finally {
                 in.close();
                 out.close();
                 socket.close();
             }
 
-        }catch (IOException e) {
-            System.err.println("IOException in  run: " + e.getMessage());
+        }catch(SocketException e){
+            System.out.println("Disconnection completed!");
+        }
+        catch (IOException e) {
+            System.err.println("IOException in : " + e.getMessage());
             System.exit(1);
         }
     }
@@ -72,14 +77,14 @@ public class ServerClientHandler implements Runnable {
     /**
      * This method pass the login of a player to the server class
      */
-    private synchronized void initPlayer() throws SocketTimeoutException {
+    private synchronized void initPlayer() throws SocketTimeoutException, SocketException {
         try {
             server.loginPlayer(this);
-        }
-        catch(SocketTimeoutException e){
+        } catch (SocketTimeoutException e) {
             throw new SocketTimeoutException(e.getMessage());
-        }
-        catch (IOException e) {
+        }catch (SocketException e){
+            throw new SocketException(e.getMessage());
+        }catch (IOException e) {
             System.err.println("IOException in  initPlayer: " + e.getMessage());
             System.exit(1);
         } catch (ClassNotFoundException e) {
@@ -127,6 +132,8 @@ public class ServerClientHandler implements Runnable {
                 }
             }catch(SocketTimeoutException e){
                 throw new SocketTimeoutException("Client disconnected");
+            }catch (SocketException e1){
+                throw new SocketException("Client disconnected");
             }
         }
         if(msg instanceof Message) {

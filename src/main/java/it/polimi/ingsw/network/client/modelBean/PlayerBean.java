@@ -1,8 +1,8 @@
 package it.polimi.ingsw.network.client.modelBean;
 
 import it.polimi.ingsw.model.AssistantCard;
-import it.polimi.ingsw.model.Board;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
 
@@ -12,10 +12,11 @@ import java.util.ArrayList;
  *
  * @author Dario d'Abate
  */
-public class PlayerBean {
+public class PlayerBean implements Serializable {
     private String nickname;
-    private Board board;
+    private BoardBean board;
     private ArrayList<AssistantCard> hand;
+    private AssistantCard playedCard;
 
     public PlayerBean(){
         hand = new ArrayList<>();
@@ -29,11 +30,11 @@ public class PlayerBean {
         this.nickname = nickname;
     }
 
-    public Board getBoard() {
+    public BoardBean getBoard() {
         return board;
     }
 
-    public void setBoard(Board board) {
+    public void setBoard(BoardBean board) {
         this.board = board;
     }
 
@@ -43,5 +44,13 @@ public class PlayerBean {
 
     public void setHand(ArrayList<AssistantCard> hand) {
         this.hand = hand;
+    }
+
+    public void setPlayedCard(AssistantCard playedCard){
+        this.playedCard = playedCard;
+    }
+
+    public AssistantCard getPlayedCard() {
+        return playedCard;
     }
 }
