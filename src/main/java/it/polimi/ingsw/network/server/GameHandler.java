@@ -902,7 +902,6 @@ public class GameHandler implements PropertyChangeListener {
         }
     }
     private void swapCardCluster(ServerClientHandler client, StudentsBufferCardsCluster card) throws IOException, ClassNotFoundException {
-
         Message message;
         Board board = game.getCurrentPlayer().getBoard();
         for(int i=0; i<3; i++){
@@ -925,7 +924,6 @@ public class GameHandler implements PropertyChangeListener {
                 else if(message instanceof StopMessage){
                     client.sendMessageToClient("You've finished to swap your tokens");
                     return;
-
                 }
                 else{
                     client.sendMessageToClient("Wrong command, please select a color");
