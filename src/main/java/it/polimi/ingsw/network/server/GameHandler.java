@@ -880,8 +880,9 @@ public class GameHandler implements PropertyChangeListener {
                             expertCardUpdateAnswer.setUpdatedArchipelago(copyArchipelago(game.getArchipelago()));
                         }
                         else if(idx == 1){// refresh the boards
-                            swapCardCluster(client, card1);
                             game.playVoidEffects(card1);
+                            swapCardCluster(client, card1);
+
 
                             //copy of boards
                             ArrayList<BoardBean> boardBeans = getBoardBeans();
@@ -1092,7 +1093,7 @@ public class GameHandler implements PropertyChangeListener {
             message = client.readMessageFromClient();
             if(message instanceof IntegerMessage){
                 if(((IntegerMessage) message).getMessage()>0 && ((IntegerMessage) message).getMessage()<=game.getArchipelago().size()){
-                    card.changeIslandIndex(((IntegerMessage) message).getMessage()-1);
+                    ((BannedIslandCard)card).setIslandIndex(((IntegerMessage) message).getMessage()-1);
                     idxIsland=true;
                 }
                 else{

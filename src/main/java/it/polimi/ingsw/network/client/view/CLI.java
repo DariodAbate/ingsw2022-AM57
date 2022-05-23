@@ -7,6 +7,7 @@ import it.polimi.ingsw.network.client.modelBean.*;
 import it.polimi.ingsw.network.client.modelBean.ExpertCard.BanExpertCardBean;
 import it.polimi.ingsw.network.client.modelBean.ExpertCard.ExpertCardBean;
 import it.polimi.ingsw.network.client.modelBean.ExpertCard.StudBufferExpertCardBean;
+import javafx.scene.paint.Stop;
 
 import java.beans.PropertyChangeListener;
 import java.io.IOException;
@@ -68,6 +69,8 @@ public class CLI extends UI implements PropertyChangeListener {
                     socketClient.send(new ColorChosen(color));
                 } else if (userInput.equalsIgnoreCase("play")) {
                     socketClient.send(new PlayExpertCard());
+                } else if(userInput.equalsIgnoreCase("stop")){
+                    socketClient.send(new StopMessage());
                 } else {
                     socketClient.send(new GenericMessage(userInput));
                 }
