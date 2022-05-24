@@ -60,7 +60,8 @@ public class SocketClient {
             }catch(InterruptedException e){
                 System.err.println("InterruptedException in sendPing: " + e.getMessage());
             }catch(SocketException e1){
-                System.out.println("Connection closed");
+                System.out.println("Connection closed: stop pinging");
+                return;
             }
         }
     }
@@ -75,7 +76,7 @@ public class SocketClient {
             out.writeObject(msg);
             out.flush();
         }catch(SocketException e1){
-            throw new SocketException("Connection closed");
+            throw new SocketException("Connection closed: stop sending messages");
         } catch(IOException e ){
             System.err.println("Error in sending a message to the server");
         }
@@ -115,7 +116,7 @@ public class SocketClient {
            socket.close();
 
        }catch (ClassNotFoundException | IOException e){
-           System.out.println("Connection closed");
+           System.out.println("Connection closed: stop reading messages");
        }
    }
 

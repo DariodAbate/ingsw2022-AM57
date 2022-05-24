@@ -164,9 +164,11 @@ public class CLI extends UI implements PropertyChangeListener {
         System.out.println();
         for(PlayerBean playerBean : playerBeans){
             //display  boards
+            System.out.print("NICKNAME: " + playerBean.getNickname() + " ");
             if(playerBean.getNickname().equals(nickname))
-                System.out.print("NICKNAME: " + playerBean.getNickname() + " ");
                 System.out.println("(YOU)");
+            else
+                System.out.println();
             displayBoard(playerBean.getBoard(), gameBean.isExpertGame());
             //display assistant cards
             displayCard(playerBean);

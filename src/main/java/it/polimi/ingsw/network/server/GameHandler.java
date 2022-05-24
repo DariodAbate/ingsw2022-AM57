@@ -865,11 +865,14 @@ public class GameHandler implements PropertyChangeListener {
                             return false;
                         }
                         swapStudents(client, card1);
-                        game.playVoidEffects(card1);
+                        game.playVoidEffects(card1);// refresh te boards in each movement
 
+                        /*
                         //copy of boards
                         ArrayList<BoardBean> boardBeans = getBoardBeans();
                         expertCardUpdateAnswer.setUpdatedBoards(boardBeans);
+
+                         */
                     }
                     else if(card instanceof  StudentsBufferCardsCluster card1){
                         int idx = ((StudentsBufferCardsCluster) card).getIndex();
@@ -881,12 +884,17 @@ public class GameHandler implements PropertyChangeListener {
                         }
                         else if(idx == 1){// refresh the boards
                             swapCardCluster(client, card1);
-                            game.playVoidEffects(card1);
+                            game.playVoidEffects(card1); //refresh te boards in each movement
 
+                            /*
                             //copy of boards
                             ArrayList<BoardBean> boardBeans = getBoardBeans();
                             expertCardUpdateAnswer.setUpdatedBoards(boardBeans);
+                            */
+
                         }
+
+
                         else if(idx == 2){// refresh the boards
                             askColorStudentsCluster(client, card1);
                             game.playEffect(((IntegerMessage) message).getMessage()-1);
@@ -971,6 +979,15 @@ public class GameHandler implements PropertyChangeListener {
                         card.setStudentColorInEntrance(((ColorChosen) message).getColor());
                         card.effect();
                         entranceColor=true;
+
+                        //refresh the UI at each swap
+                        ExpertCardUpdateAnswer expertCardUpdateAnswer = new ExpertCardUpdateAnswer();
+
+                        //copy of boards
+                        ArrayList<BoardBean> boardBeans = getBoardBeans();
+                        expertCardUpdateAnswer.setUpdatedBoards(boardBeans);
+                        expertCardUpdateAnswer.setUpdatedExpertCards(copyExpertCards(game.getExpertCards()));
+                        broadcastMessage(expertCardUpdateAnswer);
                     }
                     else{
                         client.sendMessageToClient("Please select one available color");
@@ -1141,6 +1158,15 @@ public class GameHandler implements PropertyChangeListener {
                             setSwapHall(client, card);
                             entranceColor = true;
                             card.effect();
+
+                            //refresh the UI at each swap
+                            ExpertCardUpdateAnswer expertCardUpdateAnswer = new ExpertCardUpdateAnswer();
+
+                            //copy of boards
+                            ArrayList<BoardBean> boardBeans = getBoardBeans();
+                            expertCardUpdateAnswer.setUpdatedBoards(boardBeans);
+                            expertCardUpdateAnswer.setUpdatedExpertCards(copyExpertCards(game.getExpertCards()));
+                            broadcastMessage(expertCardUpdateAnswer);
                         }
                         else{
                             client.sendMessageToClient("There is no such color in the entrance");
