@@ -883,8 +883,9 @@ public class GameHandler implements PropertyChangeListener {
                             expertCardUpdateAnswer.setUpdatedArchipelago(copyArchipelago(game.getArchipelago()));
                         }
                         else if(idx == 1){// refresh the boards
-                            swapCardCluster(client, card1);
-                            game.playVoidEffects(card1); //refresh te boards in each movement
+                            game.playVoidEffects(card1);
+                            swapCardCluster(client, card1);//refresh the boards in each movement
+
 
                             /*
                             //copy of boards
@@ -965,7 +966,6 @@ public class GameHandler implements PropertyChangeListener {
 
 
     private void swapCardCluster(ServerClientHandler client, StudentsBufferCardsCluster card) throws IOException, ClassNotFoundException {
-
         Message message;
         Board board = game.getCurrentPlayer().getBoard();
         for(int i=0; i<3; i++){
@@ -996,7 +996,6 @@ public class GameHandler implements PropertyChangeListener {
                 else if(message instanceof StopMessage){
                     client.sendMessageToClient("You've finished to swap your tokens");
                     return;
-
                 }
                 else{
                     client.sendMessageToClient("Wrong command, please select a color");
@@ -1111,7 +1110,7 @@ public class GameHandler implements PropertyChangeListener {
             message = client.readMessageFromClient();
             if(message instanceof IntegerMessage){
                 if(((IntegerMessage) message).getMessage()>0 && ((IntegerMessage) message).getMessage()<=game.getArchipelago().size()){
-                    card.changeIslandIndex(((IntegerMessage) message).getMessage()-1);
+                    ((BannedIslandCard)card).setIslandIndex(((IntegerMessage) message).getMessage()-1);
                     idxIsland=true;
                 }
                 else{
