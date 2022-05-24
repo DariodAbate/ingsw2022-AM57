@@ -10,7 +10,7 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.IOException;
 
-public class GUI extends Application implements UI, PropertyChangeListener {
+public class GUI extends Application implements  PropertyChangeListener {
 
     Label label = new Label("My Label");
 
