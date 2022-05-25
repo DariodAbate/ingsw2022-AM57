@@ -7,7 +7,6 @@ import it.polimi.ingsw.network.client.modelBean.*;
 import it.polimi.ingsw.network.client.modelBean.ExpertCard.BanExpertCardBean;
 import it.polimi.ingsw.network.client.modelBean.ExpertCard.ExpertCardBean;
 import it.polimi.ingsw.network.client.modelBean.ExpertCard.StudBufferExpertCardBean;
-import javafx.scene.paint.Stop;
 
 import java.beans.PropertyChangeListener;
 import java.io.IOException;
