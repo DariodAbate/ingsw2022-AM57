@@ -1,6 +1,7 @@
 package it.polimi.ingsw.network.client;
 
 import it.polimi.ingsw.network.server.answers.*;
+import it.polimi.ingsw.network.server.answers.update.*;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;

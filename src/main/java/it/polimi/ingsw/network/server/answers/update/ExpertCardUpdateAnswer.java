@@ -1,9 +1,10 @@
-package it.polimi.ingsw.network.server.answers;
+package it.polimi.ingsw.network.server.answers.update;
 
 import it.polimi.ingsw.model.expertGame.ExpertCard;
 import it.polimi.ingsw.network.client.modelBean.BoardBean;
 import it.polimi.ingsw.network.client.modelBean.ExpertCard.ExpertCardBean;
 import it.polimi.ingsw.network.client.modelBean.IslandBean;
+import it.polimi.ingsw.network.server.answers.Answer;
 
 import java.util.ArrayList;
 
@@ -16,7 +17,7 @@ import java.util.ArrayList;
  *
  * @author Dario d'Abate
  */
-public class ExpertCardUpdateAnswer implements Answer{
+public class ExpertCardUpdateAnswer implements Answer {
     ArrayList<ExpertCardBean> updatedExpertCards = null;
     ArrayList<IslandBean> updatedArchipelago = null;
     ArrayList<BoardBean> updatedBoards = null;

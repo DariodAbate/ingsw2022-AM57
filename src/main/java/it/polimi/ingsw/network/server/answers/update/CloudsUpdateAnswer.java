@@ -1,7 +1,8 @@
-package it.polimi.ingsw.network.server.answers;
+package it.polimi.ingsw.network.server.answers.update;
 
 import it.polimi.ingsw.network.client.modelBean.BoardBean;
 import it.polimi.ingsw.network.client.modelBean.CloudBean;
+import it.polimi.ingsw.network.server.answers.Answer;
 
 import java.util.ArrayList;
 
@@ -13,7 +14,7 @@ import java.util.ArrayList;
  *
  * @author Dario d'Abate
  */
-public class CloudsUpdateAnswer implements Answer{
+public class CloudsUpdateAnswer implements Answer {
     ArrayList<BoardBean> updatedBoards;
     ArrayList<CloudBean> updateClouds;
 

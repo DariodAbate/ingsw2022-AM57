@@ -1,7 +1,8 @@
-package it.polimi.ingsw.network.server.answers;
+package it.polimi.ingsw.network.server.answers.update;
 
 import it.polimi.ingsw.network.client.modelBean.BoardBean;
 import it.polimi.ingsw.network.client.modelBean.IslandBean;
+import it.polimi.ingsw.network.server.answers.Answer;
 
 import java.util.ArrayList;
 
@@ -14,7 +15,7 @@ import java.util.ArrayList;
  *
  * @author Dario d'Abate
  */
-public class MotherNatureUpdateAnswer implements Answer{
+public class MotherNatureUpdateAnswer implements Answer {
     private final int updatedMotherNature ;
     ArrayList<BoardBean> updatedBoards;
     ArrayList<IslandBean> updatedArchipelago;

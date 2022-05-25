@@ -6,6 +6,7 @@ import it.polimi.ingsw.model.Tower;
 import it.polimi.ingsw.network.client.modelBean.*;
 import it.polimi.ingsw.network.client.modelBean.ExpertCard.ExpertCardBean;
 import it.polimi.ingsw.network.server.answers.*;
+import it.polimi.ingsw.network.server.answers.update.*;
 
 import java.beans.PropertyChangeEvent;
 import java.util.ArrayList;
