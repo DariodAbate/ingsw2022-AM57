@@ -1,6 +1,10 @@
 package it.polimi.ingsw.network.client;
 
 import it.polimi.ingsw.network.server.answers.*;
+import it.polimi.ingsw.network.server.answers.request.RequestExpertModeAnswer;
+import it.polimi.ingsw.network.server.answers.request.RequestNicknameAnswer;
+import it.polimi.ingsw.network.server.answers.request.RequestNumPlayerAnswer;
+import it.polimi.ingsw.network.server.answers.request.StartAnswer;
 import it.polimi.ingsw.network.server.answers.update.*;
 
 import java.beans.PropertyChangeEvent;
@@ -26,7 +30,14 @@ public class AnswerHandler {
 
         if(answer instanceof GenericAnswer)  //usato fino a questo momento
             support.firePropertyChange(new PropertyChangeEvent(this, "genericMessage", "", ((GenericAnswer) answer).getMessage()));
-
+        if(answer instanceof RequestNicknameAnswer)
+            support.firePropertyChange(new PropertyChangeEvent(this, "requestNickname", "", ((RequestNicknameAnswer) answer).getMessage()));
+        if(answer instanceof RequestNumPlayerAnswer)
+            support.firePropertyChange(new PropertyChangeEvent(this, "requestNumPlayer", "", ((RequestNumPlayerAnswer) answer).getMessage()));
+        if(answer instanceof RequestExpertModeAnswer)
+            support.firePropertyChange(new PropertyChangeEvent(this, "requestExpertMode", "", ((RequestExpertModeAnswer) answer).getMessage()));
+        if(answer instanceof StartAnswer)
+            support.firePropertyChange(new PropertyChangeEvent(this, "startMessage", "", ((StartAnswer) answer).getMessage()));
         if(answer instanceof TowerChoiceAnswer)
             support.firePropertyChange(new PropertyChangeEvent(this, "towerChoice", null, ((TowerChoiceAnswer) answer).getMessage()));
         if(answer instanceof CardBackChoiceAnswer)

@@ -1,9 +1,16 @@
 package it.polimi.ingsw.network.server.answers.request;
 
-import it.polimi.ingsw.network.server.answers.GenericAnswer;
+import it.polimi.ingsw.network.server.answers.Answer;
 
-public class RequestExpertModeAnswer extends GenericAnswer {
+public class RequestExpertModeAnswer implements Answer {
+    private final String message;
+
     public RequestExpertModeAnswer(String message) {
-        super(message);
+        this.message = message;
+    }
+
+    @Override
+    public Object getMessage() {
+        return message;
     }
 }

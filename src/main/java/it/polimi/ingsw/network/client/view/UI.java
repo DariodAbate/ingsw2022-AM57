@@ -28,7 +28,7 @@ public abstract class UI {
      public void propertyChange(PropertyChangeEvent evt) {
           switch (evt.getPropertyName()) {
                case "stopSending" -> closeUserInterface();
-               case "genericMessage" -> displayGenericMessage((String)evt.getNewValue());
+               case "genericMessage", "requestNickname", "requestNumPlayer", "requestExpertMode", "startMessage" -> displayGenericMessage((String)evt.getNewValue());
                case "towerChoice" -> displaySelectableTower((ArrayList<Tower>) evt.getNewValue());
                case "cardBackChoice" -> displaySelectableCardBack((ArrayList<CardBack>) evt.getNewValue());
                case "nickname" -> this.nickname = (String) evt.getNewValue();
