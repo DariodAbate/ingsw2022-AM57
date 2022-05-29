@@ -171,7 +171,7 @@ public class ReconnectionHandler {
      */
     private void writeGame(Game game){
         try{
-            String path = "src/main/resources/SavedGames/SerializationGame" + nextId +".ser";
+            String path = String.valueOf(getClass().getResource("src/main/resources/SavedGames/SerializationGame" + nextId +".ser"));
             FileOutputStream f = new FileOutputStream(path);
             ObjectOutputStream o = new ObjectOutputStream(f);
 
@@ -181,6 +181,7 @@ public class ReconnectionHandler {
             o.close();
             f.close();
         } catch (IOException e) {
+            System.out.println("Message: " +  e.getMessage());
             e.printStackTrace();
         }
     }
@@ -222,7 +223,8 @@ public class ReconnectionHandler {
     private Game readGame(int idOfAGame) {
         Game g = null;
         try {
-            String path = "src/main/resources/SavedGames/SerializationGame" + idOfAGame + ".ser";
+            String path = String.valueOf(getClass().getResource("src/main/resources/SavedGames/SerializationGame" + idOfAGame +".ser"));
+
             FileInputStream fi = new FileInputStream(path);
             ObjectInputStream oi = new ObjectInputStream(fi);
 

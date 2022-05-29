@@ -1,8 +1,11 @@
 package it.polimi.ingsw.network.server;
 
-import it.polimi.ingsw.network.client.messages.*;
+import it.polimi.ingsw.network.client.messages.Disconnect;
+import it.polimi.ingsw.network.client.messages.Message;
+import it.polimi.ingsw.network.client.messages.Ping;
 import it.polimi.ingsw.network.server.answers.Answer;
 import it.polimi.ingsw.network.server.answers.GenericAnswer;
+import it.polimi.ingsw.network.server.answers.Pong;
 import it.polimi.ingsw.network.server.answers.Shutdown;
 
 import java.io.IOException;
@@ -24,7 +27,8 @@ public class ServerClientHandler implements Runnable {
     private ObjectOutputStream out;
     private ObjectInputStream in;
     private String nickname;
-    private volatile boolean active;
+    private volatile boolean start;
+    private final int PONG_CLOCK = 2;
 
 
     /**
@@ -34,9 +38,15 @@ public class ServerClientHandler implements Runnable {
     public ServerClientHandler(MultiServer server, Socket socket) {
         this.server = server;
         this.socket = socket;
-        active = true;
+        start = false;
     }
 
+    /**
+     * Method used to exit from the waiting room
+     */
+    public void setStart(){
+        start = true;
+    }
 
     /**
      * In this method the streams are instantiated and closed, Thus it handles the login of a player
@@ -46,25 +56,30 @@ public class ServerClientHandler implements Runnable {
             out = new ObjectOutputStream(socket.getOutputStream());
             in = new ObjectInputStream(socket.getInputStream());
 
-            sendMessageToClient("Welcome to the magical world of Eryantis!!");
+            sendMessageToClient("Welcome to the magical world of Eriantys!!");
             try{
 
                 initPlayer();
-                while(active){ //FIXME delete this loop
-                    int i = 0;
+
+                /*
+                 * If a player disconnects while waiting then it will be removed
+                 * from the server
+                 */
+                while(!start){
+                    Thread.sleep(PONG_CLOCK * 1000);
+                    sendMessageToClient(new Pong());
                 }
 
             }catch(SocketTimeoutException | SocketException e){
-                System.err.println(e.getMessage());
                 System.out.println("Disconnecting: " + socket.getLocalAddress());
+                System.out.println("Removing from the server...");
+                server.removeFromLobby(this);
+
                 if(e instanceof SocketTimeoutException)
                     sendShutDownToClient();
-            }finally {
-                in.close();
-                out.close();
-                socket.close();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
             }
-
         }catch(SocketException e){
             System.out.println("Disconnection completed!");
         }
@@ -115,6 +130,7 @@ public class ServerClientHandler implements Runnable {
         out.reset();
         out.writeObject(new Shutdown("You are disconnected from the server"));
         out.flush();
+        closeClientHandler();
     }
 
     /**
@@ -137,14 +153,25 @@ public class ServerClientHandler implements Runnable {
             }
         }
         if(msg instanceof Message) {
-            if(msg instanceof Disconnect) {
-                active = false;
+            if(msg instanceof Disconnect) {//TODO close the game
+                start = false;
             }
             return (Message) msg;
         }
         else{
             System.err.println("Unexpected message from client");
             return null;
+        }
+    }
+
+    public void closeClientHandler(){
+        try {
+            in.close();
+            out.close();
+            socket.close();
+        }catch(IOException e){
+            e.printStackTrace();
+            System.exit(1);
         }
     }
 

@@ -163,13 +163,11 @@ public class MultiServer {
             }catch(SocketTimeoutException | SocketException e) {
                 if (e instanceof SocketTimeoutException)//disconnection
                     clientHandler.sendShutDownToClient();
-                expertMode = false;
-                requiredPlayer = -1;
-                connectionList.remove(clientHandler);
-                loggedPlayers.remove(clientHandler.getNickname());
+
+                System.out.println("Removing from lobby...");
+                removeFromLobby(clientHandler);
             }
         } else if (connectionList.size() == requiredPlayer) {
-            //broadcastMessage("Number of players reached. Starting a new game.");
             broadcastStart("Number of players reached. Starting a new game.");
             startGame(requiredPlayer, expertMode, this);
 
@@ -180,6 +178,17 @@ public class MultiServer {
         } else {
             clientHandler.sendMessageToClient("Wait for " + (this.requiredPlayer - connectionList.size()) + " players to join.");
         }
+    }
+
+    /**
+     * This method is used to reset the parameters set up by the first player and remove him from the server
+     * @param clientHandler client handler associated with the player
+     */
+    public void removeFromLobby(ServerClientHandler clientHandler){
+        expertMode = false;
+        requiredPlayer = -1;
+        connectionList.remove(clientHandler);
+        loggedPlayers.remove(clientHandler.getNickname());
     }
 
     /**
@@ -218,6 +227,7 @@ public class MultiServer {
 
         Thread t = new Thread(() -> {
             try {
+                gameHandler.sendGameView();//resend the view
                 gameHandler.gameTurns(); //restart a game at the point where a player has disconnected
             } catch (IOException | ClassNotFoundException e) {
                 e.printStackTrace();
@@ -312,18 +322,9 @@ public class MultiServer {
         }
     }
 
-    /**
-     *  This method sends a message to all the logged players that are waiting for a game
-     * @param msg message sent.
-     */
-    public void broadcastMessage(String msg) throws IOException {
-        for(ServerClientHandler clientHandler: connectionList){
-            clientHandler.sendMessageToClient(msg);
-        }
-    }
-
     public void broadcastStart(String msg) throws IOException {
         for(ServerClientHandler clientHandler: connectionList){
+            clientHandler.setStart();//exit from the waiting room
             clientHandler.sendMessageToClient(new StartAnswer(msg));
         }
     }
