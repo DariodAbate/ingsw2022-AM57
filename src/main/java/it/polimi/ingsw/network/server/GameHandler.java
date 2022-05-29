@@ -256,7 +256,7 @@ public class GameHandler implements PropertyChangeListener {
      * Method used to send the entire game state to the Client, so it can be displayed.
      * This method sends only bean object, that are extracted from the model at the server side
      */
-    private void sendGameView() throws IOException {
+    void sendGameView() throws IOException {
         //parsing and sending
         GameBean gameBean = new GameBean();
         gameBean.setExpertGame(expertGame);
