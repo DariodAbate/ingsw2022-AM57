@@ -361,7 +361,7 @@ public class GameHandler implements PropertyChangeListener {
      */
     private ArrayList<ExpertCardBean> copyExpertCards(ArrayList<ExpertCard> expertCards){
         ArrayList<ExpertCardBean> expertCardBeans = new ArrayList<>();
-        for(ExpertCard expertCard : game.getExpertCards()){
+        for(ExpertCard expertCard : expertCards){
             ExpertCardBean tempExpertCard  = associateCard(expertCard);
 
             expertCardBeans.add(tempExpertCard);
