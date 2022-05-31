@@ -508,12 +508,10 @@ public class GameHandler implements PropertyChangeListener {
                 if(game.getAvailableCardsBack().contains(card)) {
                     game.associatePlayerToCardsToBack(card, clientToPlayer.get(client));
                     backChosen = true;
-                }
-                else{
+                } else{
                     client.sendMessageToClient("Card already selected, please select another card");
                 }
-            }
-            else
+            } else
             {
                 client.sendMessageToClient("Command not inserted, please insert a valid command");
             }
@@ -593,15 +591,12 @@ public class GameHandler implements PropertyChangeListener {
                             currentPlayer.getHand(), currentPlayer.viewLastCard()));
 
                     cardsPlayed.add(((IntegerMessage) message).getMessage());
-                }
-                else if(!currentPlayer.isPriorityAvailable(((IntegerMessage) message).getMessage())){
+                } else if(!currentPlayer.isPriorityAvailable(((IntegerMessage) message).getMessage())){
                     client.sendMessageToClient("Not valid priority!");
-                }
-                else{
+                } else{
                     client.sendMessageToClient("This card has already been played by another player!");
                 }
-            }
-            else{
+            } else{
                 client.sendMessageToClient("Wrong command, please insert a valid command");
             }
         }
@@ -655,21 +650,17 @@ public class GameHandler implements PropertyChangeListener {
                         toIsland(client);
                     }
                     correctMove = true;
-                }
-                else if(message instanceof PlayExpertCard && expertGame){
+                } else if(message instanceof PlayExpertCard && expertGame){
                     if(!((ExpertGame) game).isCardHasBeenPlayed()) {
                         correctMove = playCard(client);
                         if(correctMove)
                             i--;
-                    }
-                    else{
+                    } else{
                         client.sendMessageToClient("You have already played a card this turn!");
                     }
-                }
-                else if(message instanceof PlayExpertCard){
+                } else if(message instanceof PlayExpertCard){
                     client.sendMessageToClient("Not in an expert game");
-                }
-                else
+                } else
                 {
                     client.sendMessageToClient("Wrong command, select Hall or Island");
                 }
@@ -718,12 +709,10 @@ public class GameHandler implements PropertyChangeListener {
                     islandSelection(client, ((ColorChosen) message).getColor());
                     isColorChosen = true;
                     broadcastMessage(new ToIslandUpdateAnswer(client.getNickname(), copyBoard(game.getCurrentPlayer().getBoard()) , copyArchipelago(game.getArchipelago())));
-                }
-                else{
+                } else{
                     client.sendMessageToClient("Color not available, please select another color.");
                 }
-            }
-            else{
+            } else{
                 client.sendMessageToClient("Wrong command, please insert the color you want to move");
             }
 
@@ -740,12 +729,10 @@ public class GameHandler implements PropertyChangeListener {
                     game.entranceToIsland(((IntegerMessage) message).getMessage() -1, color);
 
                     isIdxChosen = true;
-                }
-                else{
+                } else{
                     client.sendMessageToClient("This island doesn't exists, please select another island.");
                 }
-            }
-            else{
+            } else{
                 client.sendMessageToClient("Wrong command, select the idx of the island");
             }
         }
@@ -781,20 +768,16 @@ public class GameHandler implements PropertyChangeListener {
 
                     broadcastMessage(new MotherNatureUpdateAnswer(game.getMotherNature(), boardBeans, copyArchipelago(game.getArchipelago())));
                     isIdxChosen = true;
-                }
-                else{
+                } else{
                     client.sendMessageToClient("Please select a valid number of steps.");
                 }
-            }
-            else if(message instanceof PlayExpertCard && expertGame){
+            } else if(message instanceof PlayExpertCard && expertGame){
                 if(!((ExpertGame) game).isCardHasBeenPlayed()) {
                     playCard(client);
-                }
-                else{
+                } else{
                     client.sendMessageToClient("You have already played a card this turn!");
                 }
-            }
-            else{
+            } else{
                 client.sendMessageToClient("Wrong command, please insert the number of islands you want to travel");
             }
 
@@ -818,8 +801,7 @@ public class GameHandler implements PropertyChangeListener {
 
                     broadcastMessage(new CloudsUpdateAnswer(boardBeans, copyClouds(game.getCloudTiles())));
                     cloudTaken = true;
-                }
-                else{
+                } else{
                     client.sendMessageToClient("Cloud not valid, please insert a new cloud.");
                 }
             }
