@@ -60,7 +60,7 @@ public class Game implements RoundObserver, RefillInterface, Serializable {
     /**
      * Constructor of the class. It initializes the sets of players and add the first player.
      * The first player choose the number of players for a game
-     * @param nickPlayer Nickname of the first player that connects to the server
+     * @param nickPlayer nickname of the first player that connects to the server
      * @param numGamePlayers Number of players for a game
      * @throws IllegalArgumentException if it is passed a number of player that's neither 2 nor 3, or nickname's player is an empty string
      */

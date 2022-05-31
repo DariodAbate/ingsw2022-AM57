@@ -9,11 +9,11 @@
 | Basic rules                     | 🟢 |
 | Complete rules                  | 🟢 |
 | Socket                          | 🟢 |
-| GUI                             | 🔴 |
-| CLI                             | 🟡 |
-| Character cards                 | 🟡 |
+| GUI                             | 🟡 |
+| CLI                             | 🟢 |
+| Character cards                 | 🟢 |
 | Multiple games                  | 🟢 |
-| Persistence                     | 🟡 |
+| Persistence                     | 🟢 |
 | Resilience to disconnections    | 🔴 |
 
 #### Legend
