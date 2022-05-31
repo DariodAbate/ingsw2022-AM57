@@ -1,6 +1,7 @@
-package it.polimi.ingsw.network.server.answers;
+package it.polimi.ingsw.network.server.answers.update;
 
 import it.polimi.ingsw.network.client.modelBean.BoardBean;
+import it.polimi.ingsw.network.server.answers.Answer;
 
 /**
  * This class represent the answer given to the clients when one player moves a student from the entrance to the hall.
@@ -9,7 +10,7 @@ import it.polimi.ingsw.network.client.modelBean.BoardBean;
  * -The board updated
  * @author Dario d'Abate
  */
-public class ToHallUpdateAnswer implements Answer{
+public class ToHallUpdateAnswer implements Answer {
     String nickname;
     BoardBean updatedBoard;
 

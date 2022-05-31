@@ -6,6 +6,7 @@ import it.polimi.ingsw.model.Tower;
 import it.polimi.ingsw.network.client.modelBean.*;
 import it.polimi.ingsw.network.client.modelBean.ExpertCard.ExpertCardBean;
 import it.polimi.ingsw.network.server.answers.*;
+import it.polimi.ingsw.network.server.answers.update.*;
 
 import java.beans.PropertyChangeEvent;
 import java.util.ArrayList;
@@ -27,7 +28,7 @@ public abstract class UI {
      public void propertyChange(PropertyChangeEvent evt) {
           switch (evt.getPropertyName()) {
                case "stopSending" -> closeUserInterface();
-               case "genericMessage" -> displayGenericMessage((String)evt.getNewValue());
+               case "genericMessage", "requestNickname", "requestNumPlayer", "requestExpertMode", "startMessage" -> displayGenericMessage((String)evt.getNewValue());
                case "towerChoice" -> displaySelectableTower((ArrayList<Tower>) evt.getNewValue());
                case "cardBackChoice" -> displaySelectableCardBack((ArrayList<CardBack>) evt.getNewValue());
                case "nickname" -> this.nickname = (String) evt.getNewValue();

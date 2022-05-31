@@ -1,7 +1,8 @@
-package it.polimi.ingsw.network.server.answers;
+package it.polimi.ingsw.network.server.answers.update;
 
 import it.polimi.ingsw.network.client.modelBean.BoardBean;
 import it.polimi.ingsw.network.client.modelBean.IslandBean;
+import it.polimi.ingsw.network.server.answers.Answer;
 
 import java.util.ArrayList;
 
@@ -13,7 +14,7 @@ import java.util.ArrayList;
  * -The archipelago updated
  * @author Dario d'Abate
  */
-public class ToIslandUpdateAnswer implements Answer{
+public class ToIslandUpdateAnswer implements Answer {
     String nickname;
     BoardBean updatedBoard;
     ArrayList<IslandBean> updatedArchipelago;

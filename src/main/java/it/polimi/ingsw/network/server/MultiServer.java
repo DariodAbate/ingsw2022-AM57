@@ -4,6 +4,10 @@ import it.polimi.ingsw.model.Game;
 import it.polimi.ingsw.network.client.messages.GenericMessage;
 import it.polimi.ingsw.network.client.messages.IntegerMessage;
 import it.polimi.ingsw.network.client.messages.Message;
+import it.polimi.ingsw.network.server.answers.request.RequestExpertModeAnswer;
+import it.polimi.ingsw.network.server.answers.request.RequestNicknameAnswer;
+import it.polimi.ingsw.network.server.answers.request.RequestNumPlayerAnswer;
+import it.polimi.ingsw.network.server.answers.request.StartAnswer;
 import it.polimi.ingsw.network.server.exception.GameDisconnectionException;
 import it.polimi.ingsw.network.server.exception.SetupGameDisconnectionException;
 
@@ -99,7 +103,8 @@ public class MultiServer {
      * @param clientHandler client handler associated to a player.
      */
     private synchronized boolean registerPlayer(ServerClientHandler clientHandler) throws IOException, ClassNotFoundException {
-        clientHandler.sendMessageToClient("Set a nickname.");
+        //clientHandler.sendMessageToClient("Set a nickname.");
+        clientHandler.sendMessageToClient(new RequestNicknameAnswer("Set a nickname"));
 
         boolean correctNick = false;
         while(!correctNick) {
@@ -164,8 +169,8 @@ public class MultiServer {
                 loggedPlayers.remove(clientHandler.getNickname());
             }
         } else if (connectionList.size() == requiredPlayer) {
-            broadcastMessage("Number of players reached. Starting a new game.");
-
+            //broadcastMessage("Number of players reached. Starting a new game.");
+            broadcastStart("Number of players reached. Starting a new game.");
             startGame(requiredPlayer, expertMode, this);
 
             connectionList.clear();
@@ -241,7 +246,10 @@ public class MultiServer {
      * @param clientHandler client that communicates with server
      */
     private synchronized void selectNumPlayer(ServerClientHandler clientHandler) throws IOException, ClassNotFoundException {
-        clientHandler.sendMessageToClient("You are the first player; Please choose a number of players.");
+        //clientHandler.sendMessageToClient("You are the first player; Please choose a number of players.");
+        clientHandler.sendMessageToClient(new RequestNumPlayerAnswer("You are the first player; Please choose a number of players."));
+
+
         boolean valid = false;
 
         while(!valid) {
@@ -277,7 +285,8 @@ public class MultiServer {
      * @param clientHandler client that communicates with server
      */
     private void selectGameMode(ServerClientHandler clientHandler) throws IOException, ClassNotFoundException {
-        clientHandler.sendMessageToClient("Do you want to play expert mode? [y/n]");
+        //clientHandler.sendMessageToClient("Do you want to play expert mode? [y/n]");
+        clientHandler.sendMessageToClient(new RequestExpertModeAnswer("Do you want to play expert mode? [y/n]"));
         boolean isCorrect = false;
         while(!isCorrect) {
             Message msg;
@@ -310,6 +319,12 @@ public class MultiServer {
     public void broadcastMessage(String msg) throws IOException {
         for(ServerClientHandler clientHandler: connectionList){
             clientHandler.sendMessageToClient(msg);
+        }
+    }
+
+    public void broadcastStart(String msg) throws IOException {
+        for(ServerClientHandler clientHandler: connectionList){
+            clientHandler.sendMessageToClient(new StartAnswer(msg));
         }
     }
 
