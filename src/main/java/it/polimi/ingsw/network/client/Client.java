@@ -14,28 +14,22 @@ public class Client {
 
     public static void main(String[] args) throws IOException {
 
-        if (args.length != 3) {
-            System.err.println("Usage: java -jar AM57.jar <host name> <port number> <UI type>");
+        if (args.length != 1) {
+            System.err.println("Java usage: <UI type>");
             System.exit(1);
         }
 
-        String hostName = args[0];
-        int portNumber = Integer.parseInt(args[1]);
-
-        String uiType = args[2];
+        String uiType = args[0];
         if(! (uiType.equalsIgnoreCase("CLI") || uiType.equalsIgnoreCase("GUI") )){
             System.err.println("Insert GUI or CLI as third parameter");
             System.exit(1);
         }
 
-        AnswerHandler answerHandler = new AnswerHandler();
-        SocketClient socketClient = new SocketClient(hostName, portNumber, answerHandler);
 
         //TODO case for GUI
         CLI cli;
         if(uiType.equalsIgnoreCase("CLI")) {
-            cli = new CLI(socketClient);
-            answerHandler.addPropertyChangeListener(cli);
+            cli = new CLI();
             try {
                 cli.communicationWithServer();
             }catch(IOException | ClassNotFoundException e) {

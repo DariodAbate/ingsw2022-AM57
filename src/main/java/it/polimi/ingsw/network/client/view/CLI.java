@@ -1,6 +1,7 @@
 package it.polimi.ingsw.network.client.view;
 
 import it.polimi.ingsw.model.*;
+import it.polimi.ingsw.network.client.AnswerHandler;
 import it.polimi.ingsw.network.client.SocketClient;
 import it.polimi.ingsw.network.client.messages.*;
 import it.polimi.ingsw.network.client.modelBean.*;
@@ -15,9 +16,11 @@ import java.beans.PropertyChangeListener;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.SocketException;
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Map;
 import java.util.Scanner;
+import java.util.StringTokenizer;
 
 /**
  * This is the main class  for the Command Line Interface.
@@ -25,18 +28,90 @@ import java.util.Scanner;
  * @author Dario d'Abate
  */
 public class CLI  implements PropertyChangeListener, UI {
-    private final SocketClient socketClient;
+    private  SocketClient socketClient;
     private final Scanner stdIn ;
     private volatile boolean sending;
 
     private GameBean gameBean; //model view
     private String nickname;
 
-
-    public CLI(SocketClient socketClient){
-        this.socketClient = socketClient;
+    /**
+     * Constructor of the class. It also initializes the socketClient
+     */
+    public CLI(){
         stdIn = new Scanner(new InputStreamReader(System.in));
         sending = true;
+        try{
+            initSocketClient();
+        }catch (IOException e){
+            System.out.println("Cannot initialize CLI");
+            System.exit(1);
+        }
+    }
+
+    /**
+     * Helper method used to initialize a socket. It also set up the mechanism of event handling
+     * through property change listener
+     */
+    private void initSocketClient() throws IOException {
+        AnswerHandler answerHandler = new AnswerHandler();
+        String hostName = getHostName();
+        int portNumber = getPortNumber();
+        socketClient = new SocketClient(hostName , portNumber,answerHandler);
+        answerHandler.addPropertyChangeListener(this);
+    }
+
+    /**
+     * Helper method used to get and validate the hostname
+     * @return valid hostname inserted by the user
+     */
+    private String getHostName(){
+        System.out.println("Please insert the server host name.");
+        String temp = null;
+        boolean valid = false;
+        while(!valid) {
+            temp = stdIn.nextLine();
+            valid = checkIpAddress(temp);
+            if(!valid)
+                System.out.println("Please insert a valid host name");
+        }
+        return temp;
+    }
+
+    /**
+     * helper method used to validate an ip address
+     * @param ipAddress string representation of an ip address
+     * @return true if the ipAddress is well-formed, false otherwise
+     */
+    private static boolean checkIpAddress(String ipAddress) {
+        boolean b1 = false;
+        StringTokenizer t = new StringTokenizer(ipAddress, ".");
+        try {
+            int a = Integer.parseInt(t.nextToken());
+            int b = Integer.parseInt(t.nextToken());
+            int c = Integer.parseInt(t.nextToken());
+            int d = Integer.parseInt(t.nextToken());
+            if ((a >= 0 && a <= 255) && (b >= 0 && b <= 255)
+                    && (c >= 0 && c <= 255) && (d >= 0 && d <= 255))
+                b1 = true;
+            return b1;
+        }catch (Exception e){
+            return false;
+        }
+    }
+
+    /**
+     * Helper method used to get a valid port number
+     * @return valid port number inserted by the user
+     */
+    private int getPortNumber(){
+        System.out.println("Please insert the server port.");
+        int temp = -1;
+        while(temp < 0) {
+            temp = stdIn.nextInt();
+            System.out.println("Please insert a valid server port.");
+        }
+        return temp;
     }
 
     /**
