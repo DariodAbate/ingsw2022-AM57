@@ -16,6 +16,7 @@ import java.net.SocketException;
 import java.net.SocketTimeoutException;
 import java.util.ArrayList;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Scanner;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -72,22 +73,29 @@ public class MultiServer {
                  */
                 File savedParametersDirectory = new File("SavedServerParameters");
                 savedParametersDirectory.mkdir();
-                if (savedParametersDirectory.isDirectory() && (savedParametersDirectory.list()).length > 0) {
+                fileDeletion(savedParametersDirectory);
 
-                    //delete old content
-                    for (File file : savedParametersDirectory.listFiles()) {
-                        file.delete();
-                    }
-                }
                 File savedGamesDirectory = new File("SavedGames");
-                if(savedGamesDirectory.isDirectory() && (savedGamesDirectory.list()).length > 0){
-                    for(File file: savedGamesDirectory.listFiles()){
-                        file.delete();
-                    }
-                }
+                fileDeletion(savedGamesDirectory);
                 System.out.println("Cleaned old files");
                 System.exit(0);
                 break;
+            }
+        }
+    }
+
+    /**
+     * Helper method used to delete the files that managed the persistence mechanism
+     * @param directory directory in which the files will be deleted
+     */
+    private void fileDeletion(File directory) {
+        if (directory.isDirectory() && (Objects.requireNonNull(directory.list())).length > 0) {
+
+            //delete old content
+            for (File file : Objects.requireNonNull(directory.listFiles())) {
+                boolean control = file.delete();
+                System.out.println("Deleting: " + file.getName());
+                System.out.println(control ? ("File deleted"):"Cannot delete this file, please remove manually from the folder!");
             }
         }
     }
@@ -399,7 +407,7 @@ public class MultiServer {
 
             //File directory = new File(getClass().getResource("/SavedServerParameters").toExternalForm());
             if (directory.isDirectory()) {
-                if ((directory.list()).length > 0) {
+                if ((Objects.requireNonNull(directory.list())).length > 0) {
                     System.out.println("Reloading previous server parameters...");
                     this.loggedPlayers = (ArrayList<String>) readFromResources("loggedPlayers");
                     int nextId = (int) readFromResources("nextId");
