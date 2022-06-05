@@ -24,46 +24,46 @@ public class AnswerHandler {
         support.addPropertyChangeListener(pcl);
     }
 
-    public void handleMessage(Answer answer){ //FIRE DI EVENTI
+    public void handleMessage(Answer answer){
         if(answer instanceof Shutdown)//Used to close the connection
             support.firePropertyChange(new PropertyChangeEvent(this,"stopSending", "", "notEmpty"));
 
-        if(answer instanceof GenericAnswer)  //usato fino a questo momento
+        if(answer instanceof GenericAnswer)
             support.firePropertyChange(new PropertyChangeEvent(this, "genericMessage", "", ((GenericAnswer) answer).getMessage()));
         if(answer instanceof RequestNicknameAnswer)
-            support.firePropertyChange(new PropertyChangeEvent(this, "requestNickname", "", ((RequestNicknameAnswer) answer).getMessage()));
+            support.firePropertyChange(new PropertyChangeEvent(this, "requestNickname", "", answer.getMessage()));
         if(answer instanceof RequestNumPlayerAnswer)
-            support.firePropertyChange(new PropertyChangeEvent(this, "requestNumPlayer", "", ((RequestNumPlayerAnswer) answer).getMessage()));
+            support.firePropertyChange(new PropertyChangeEvent(this, "requestNumPlayer", "", answer.getMessage()));
         if(answer instanceof RequestExpertModeAnswer)
-            support.firePropertyChange(new PropertyChangeEvent(this, "requestExpertMode", "", ((RequestExpertModeAnswer) answer).getMessage()));
+            support.firePropertyChange(new PropertyChangeEvent(this, "requestExpertMode", "", answer.getMessage()));
         if(answer instanceof StartAnswer)
-            support.firePropertyChange(new PropertyChangeEvent(this, "startMessage", "", ((StartAnswer) answer).getMessage()));
+            support.firePropertyChange(new PropertyChangeEvent(this, "startMessage", "", answer.getMessage()));
         if(answer instanceof TowerChoiceAnswer)
-            support.firePropertyChange(new PropertyChangeEvent(this, "towerChoice", null, ((TowerChoiceAnswer) answer).getMessage()));
+            support.firePropertyChange(new PropertyChangeEvent(this, "towerChoice", null, answer.getMessage()));
         if(answer instanceof CardBackChoiceAnswer)
-            support.firePropertyChange(new PropertyChangeEvent(this, "cardBackChoice", null, ((CardBackChoiceAnswer)answer).getMessage()));
+            support.firePropertyChange(new PropertyChangeEvent(this, "cardBackChoice", null, answer.getMessage()));
         if(answer instanceof NicknameAnswer)
-            support.firePropertyChange(new PropertyChangeEvent(this, "nickname", null ,((NicknameAnswer)answer).getMessage()));
+            support.firePropertyChange(new PropertyChangeEvent(this, "nickname", null , answer.getMessage()));
         if(answer instanceof GameStateAnswer) {
-            support.firePropertyChange(new PropertyChangeEvent(this, "gameState", null, ((GameStateAnswer) answer).getMessage()));
+            support.firePropertyChange(new PropertyChangeEvent(this, "gameState", null, answer.getMessage()));
         }
         if(answer instanceof AssistantCardPlayedAnswer){
-            support.firePropertyChange(new PropertyChangeEvent(this, "cardPlayed", null , (AssistantCardPlayedAnswer)answer));
+            support.firePropertyChange(new PropertyChangeEvent(this, "cardPlayed", null , answer));
         }
         if(answer instanceof ToHallUpdateAnswer){
-            support.firePropertyChange(new PropertyChangeEvent(this, "toHall", null, (ToHallUpdateAnswer)answer));
+            support.firePropertyChange(new PropertyChangeEvent(this, "toHall", null, answer));
         }
         if(answer instanceof ToIslandUpdateAnswer){
-            support.firePropertyChange(new PropertyChangeEvent(this, "toIsland", null, (ToIslandUpdateAnswer)answer));
+            support.firePropertyChange(new PropertyChangeEvent(this, "toIsland", null, answer));
         }
         if(answer instanceof MotherNatureUpdateAnswer){
-            support.firePropertyChange(new PropertyChangeEvent(this,  "motherMovement", null,(MotherNatureUpdateAnswer)answer));
+            support.firePropertyChange(new PropertyChangeEvent(this,  "motherMovement", null, answer));
         }
         if(answer instanceof CloudsUpdateAnswer){
-            support.firePropertyChange(new PropertyChangeEvent(this, "cloudChoice", null, (CloudsUpdateAnswer) answer));
+            support.firePropertyChange(new PropertyChangeEvent(this, "cloudChoice", null, answer));
         }
         if(answer instanceof ExpertCardUpdateAnswer){
-            support.firePropertyChange(new PropertyChangeEvent(this, "expertCard", null, (ExpertCardUpdateAnswer) answer));
+            support.firePropertyChange(new PropertyChangeEvent(this, "expertCard", null, answer));
         }
     }
 }

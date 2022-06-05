@@ -702,7 +702,7 @@ public class GameHandler implements PropertyChangeListener {
 
                     server.saveGame(this);// save game
 
-                    broadcastMessage(new ToHallUpdateAnswer(client.getNickname(), copyBoard(game.getCurrentPlayer().getBoard())));
+                    broadcastMessage(new ToHallUpdateAnswer(client.getNickname(), getBoardBeans()));
                     isColorChosen = true;
                 }
                 else{
