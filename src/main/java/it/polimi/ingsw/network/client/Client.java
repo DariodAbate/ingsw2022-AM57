@@ -2,6 +2,8 @@ package it.polimi.ingsw.network.client;
 
 
 import it.polimi.ingsw.network.client.view.CLI;
+import it.polimi.ingsw.network.client.view.GUI;
+import javafx.application.Application;
 
 import java.io.IOException;
 
@@ -38,6 +40,14 @@ public class Client {
                 System.exit(1);
             }
         }
-
+        /*GUI gui;
+        if(uiType.equalsIgnoreCase("GUI")) {
+            gui = new GUI(socketClient);
+            answerHandler.addPropertyChangeListener(gui);
+            gui.startGUIApplication();
+        }*/
+        if(uiType.equalsIgnoreCase("GUI")) {
+            Application.launch(GUI.class);
+        }
     }
 }
