@@ -14,9 +14,13 @@ public class ReconnectionHandler {
     private final MultiServer server;
 
     private final Map<ArrayList<String>, Integer> gameIdByUserMap; //associate a players' session  with a progressive integer
-    private final Map<Integer,ArrayList<ServerClientHandler>> reconnectedPlayerMap;//associate the id of gameIdByUser to the client handler
+    private final Map<Integer,ArrayList<ServerClientHandler>> reconnectedPlayerMap;// associate reconnected players to a gameId
     private int nextId;
 
+    /**
+     * Default constructor used to create a new Reconnection handler object
+     * @param server server object that instantiates ReconnectionHandler object
+     */
     public ReconnectionHandler(MultiServer server){
         this.server = server;
         gameIdByUserMap = new HashMap<>();
@@ -24,12 +28,29 @@ public class ReconnectionHandler {
         nextId = -1;
     }
 
+
+    /**
+     * Constructor used to reload data from a previous ReconnectionHandler object
+     * @param server server object that instantiates ReconnectionHandler object
+     * @param nextId previous nextId
+     * @param gameIdByUserMap previous gameIdUserMap
+     */
+    public ReconnectionHandler(MultiServer server, int nextId, Map<ArrayList<String>, Integer> gameIdByUserMap){
+        this.server = server;
+        this.nextId = nextId;
+        this.gameIdByUserMap = gameIdByUserMap;
+        reconnectedPlayerMap = new HashMap<>();
+    }
+
     /**
      * Helper method used to get the id of a game corresponding to the given player
      * @param player nickname of a player
-     * @return id corresponding to a started game
+     * @return id corresponding to a started game, null if that player does not exist
      */
-    private int getIdByNickname(String player){
+    private Integer getIdByNickname(String player){
+        if(getKey(player) == null)
+            return null;
+
         return gameIdByUserMap.get(getKey(player));
     }
 
@@ -154,14 +175,46 @@ public class ReconnectionHandler {
     }
 
     /**
-     * This method saves a game session on disk, binding it to the list of related player
+     * This method saves a game session on disk, binding it to the list of related player.
+     * Thus, it saves the attributes of this class on disk, because they are modified
      * @param game game to be saved on disk
      * @param playersNick list of nickname of players that started that game
      */
     public void addGame(Game game, ArrayList<String> playersNick){
-        ++nextId;
-        gameIdByUserMap.put(playersNick, nextId);
+        gameIdByUserMap.put(playersNick, getNextId(playersNick.get(0)));
         writeGame(game);
+        saveParameters();// saving nextId and map on disk
+
+    }
+
+    /**
+     * This method return the id associated to the corresponding game.
+     * If the key does not already exist, it returns the next available id
+     * @param nickname nickname of one player associated with a game
+     * @return id associated to a game, specifying one player
+     */
+    private int getNextId(String nickname){
+        Integer tempId = getIdByNickname(nickname);
+        if(tempId == null){//game not saved
+            ++nextId;
+            return nextId;
+        }
+        return tempId;
+    }
+
+    /**
+     * This method is used to remove all the participant of a game from the map because they won a game.
+     * If the map does not contain that nickname it does nothing
+     * @param nickPlayer nickname of one of the player to remove
+     */
+    public void remove(String nickPlayer){
+        //control over existence of mapping already done
+        int idToRemove = getIdByNickname(nickPlayer);
+        ArrayList<String> playersToRemove = getKey(nickPlayer);
+
+        this.reconnectedPlayerMap.remove(idToRemove);
+        this.gameIdByUserMap.remove(playersToRemove);
+        saveParameters();//update gameIDByUserMap on disk
     }
 
 
@@ -171,7 +224,9 @@ public class ReconnectionHandler {
      */
     private void writeGame(Game game){
         try{
-            String path = String.valueOf(getClass().getResource("src/main/resources/SavedGames/SerializationGame" + nextId +".ser"));
+            File directory = new File("SavedGames");
+            directory.mkdir();
+            String path = "SavedGames/SerializationGame" + nextId +".ser";
             FileOutputStream f = new FileOutputStream(path);
             ObjectOutputStream o = new ObjectOutputStream(f);
 
@@ -201,7 +256,7 @@ public class ReconnectionHandler {
 
 
     /**
-     * This method is used to sort lhe list of clientHandler with the same order of the initial login
+     * This method is used to sort the list of clientHandler with the same order of the initial login
      * of players
      * @param playersToRestart list of clientHandler that reconnected
      */
@@ -223,7 +278,7 @@ public class ReconnectionHandler {
     private Game readGame(int idOfAGame) {
         Game g = null;
         try {
-            String path = String.valueOf(getClass().getResource("src/main/resources/SavedGames/SerializationGame" + idOfAGame +".ser"));
+            String path = "SavedGames/SerializationGame" + idOfAGame +".ser";
 
             FileInputStream fi = new FileInputStream(path);
             ObjectInputStream oi = new ObjectInputStream(fi);
@@ -237,6 +292,32 @@ public class ReconnectionHandler {
             e.printStackTrace();
         }
         return g;
+    }
+
+    /**
+     * This method is used to write on disk the attributes of this class that has to be reloaded
+     * because a server crash has occurred
+     */
+    private void saveParameters(){
+        try{
+            String path = "SavedServerParameters/gameIdByUserMap.ser";
+            FileOutputStream f = new FileOutputStream(path);
+            ObjectOutputStream o = new ObjectOutputStream(f);
+
+            // Write objects to file
+            o.writeObject(this.gameIdByUserMap);
+
+            path = "SavedServerParameters/nextId.ser";
+            f = new FileOutputStream(path);
+            o = new ObjectOutputStream(f);
+            o.writeObject(this.nextId);
+
+            o.close();
+            f.close();
+        } catch (IOException e) {
+            System.out.println("Message: " +  e.getMessage());
+            e.printStackTrace();
+        }
     }
 
 }

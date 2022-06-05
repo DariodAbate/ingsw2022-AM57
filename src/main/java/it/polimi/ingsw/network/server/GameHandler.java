@@ -134,6 +134,7 @@ public class GameHandler implements PropertyChangeListener {
         for(String player: getNicknamePlayers()){
             server.unregisterPlayer(player);
         }
+        server.unregisterPlayerFromReconnection(getNicknamePlayers().get(0));//only one player is needed
     }
 
     /**
@@ -525,6 +526,8 @@ public class GameHandler implements PropertyChangeListener {
      * @see ServerClientHandler for exceptions
      */
     public  synchronized void gameTurns() throws IOException, ClassNotFoundException, GameDisconnectionException {
+        server.saveGame(this);//saveGame
+
         while(!endGameInRound && continueGame){
             try{
             planningPhase();
@@ -589,6 +592,8 @@ public class GameHandler implements PropertyChangeListener {
 
                     int index = currentPlayer.priorityToIndex(((IntegerMessage) message).getMessage());
                     game.playCard(index);
+                    server.saveGame(this);// save game
+
                     broadcastMessage(new AssistantCardPlayedAnswer(currentPlayer.getNickname(),
                             currentPlayer.getHand(), currentPlayer.viewLastCard()));
 
@@ -619,6 +624,8 @@ public class GameHandler implements PropertyChangeListener {
                 areCloudsEmpty = true;
             }
         }
+        server.saveGame(this);// save game
+
         while(game.getGameState() != GameState.PLANNING_STATE && continueGame){
             ServerClientHandler client = playerToClient.get(game.getCurrentPlayer());
             client.sendMessageToClient("It's your turn!");
@@ -693,6 +700,8 @@ public class GameHandler implements PropertyChangeListener {
                 && game.getCurrentPlayer().getBoard().hallIsFillable(((ColorChosen) message).getColor())){
                     game.entranceToHall(((ColorChosen) message).getColor());
 
+                    server.saveGame(this);// save game
+
                     broadcastMessage(new ToHallUpdateAnswer(client.getNickname(), copyBoard(game.getCurrentPlayer().getBoard())));
                     isColorChosen = true;
                 }
@@ -739,6 +748,8 @@ public class GameHandler implements PropertyChangeListener {
                 if(((IntegerMessage) message).getMessage() <= game.getArchipelago().size() && ((IntegerMessage) message).getMessage() >0){
                     game.entranceToIsland(((IntegerMessage) message).getMessage() -1, color);
 
+                    server.saveGame(this);// save game
+
                     isIdxChosen = true;
                 }
                 else{
@@ -773,8 +784,9 @@ public class GameHandler implements PropertyChangeListener {
             if(message instanceof IntegerMessage && game.getGameState()==GameState.MOTHER_MOVEMENT_STATE){
                 int step = ((IntegerMessage)message).getMessage();
                 if(step <= game.getArchipelago().size() && step > 0 && step <= game.getMaxMovement()){
-                    client.sendMessageToClient("Mother nature will travel " + ((IntegerMessage) message).getMessage() + " islands.");
                     game.motherMovement(step);
+
+                    server.saveGame(this);// save game
 
                     //copy of boards
                     ArrayList<BoardBean> boardBeans = getBoardBeans();
@@ -813,9 +825,9 @@ public class GameHandler implements PropertyChangeListener {
                 if(temp > 0 && temp<= numPlayer &&  !game.getCloudTiles().get(temp-1).isEmpty()){
                     game.cloudToBoard(temp - 1);
 
+                    server.saveGame(this);// save game
+
                     ArrayList<BoardBean> boardBeans = getBoardBeans();
-
-
                     broadcastMessage(new CloudsUpdateAnswer(boardBeans, copyClouds(game.getCloudTiles())));
                     cloudTaken = true;
                 }
@@ -867,13 +879,6 @@ public class GameHandler implements PropertyChangeListener {
                         }
                         swapStudents(client, card1);
                         game.playVoidEffects(card1);// refresh te boards in each movement
-
-                        /*
-                        //copy of boards
-                        ArrayList<BoardBean> boardBeans = getBoardBeans();
-                        expertCardUpdateAnswer.setUpdatedBoards(boardBeans);
-
-                         */
                     }
                     else if(card instanceof  StudentsBufferCardsCluster card1){
                         int idx = ((StudentsBufferCardsCluster) card).getIndex();
@@ -887,16 +892,7 @@ public class GameHandler implements PropertyChangeListener {
                             game.playVoidEffects(card1);
                             swapCardCluster(client, card1);//refresh the boards in each movement
 
-
-                            /*
-                            //copy of boards
-                            ArrayList<BoardBean> boardBeans = getBoardBeans();
-                            expertCardUpdateAnswer.setUpdatedBoards(boardBeans);
-                            */
-
                         }
-
-
                         else if(idx == 2){// refresh the boards
                             askColorStudentsCluster(client, card1);
                             game.playEffect(((IntegerMessage) message).getMessage()-1);
@@ -948,6 +944,8 @@ public class GameHandler implements PropertyChangeListener {
                         expertCardUpdateAnswer.setUpdatedArchipelago(copyArchipelago(game.getArchipelago()));
 
                     }
+                    server.saveGame(this);// save game
+
                     //refresh the cards
                     expertCardUpdateAnswer.setUpdatedExpertCards(copyExpertCards(game.getExpertCards()));
                     broadcastMessage(expertCardUpdateAnswer);
