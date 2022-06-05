@@ -104,12 +104,12 @@ public class GUI extends Application implements PropertyChangeListener {
                 displayAllGame() ;
             }
             case "toHall" -> {
-                String nickname = ((ToHallUpdateAnswer)evt.getNewValue()).getNickname();
-                BoardBean updatedBoard = ((ToHallUpdateAnswer)evt.getNewValue()).getUpdatedBoard();
+                ArrayList<BoardBean> updatedBoardList = ((ToHallUpdateAnswer)evt.getNewValue()).getUpdatedBoardList();
 
-                for(PlayerBean player :gameBean.getPlayers()){
-                    if(player.getNickname().equals(nickname))
-                        player.setBoard(updatedBoard);
+
+                for(int i = 0; i < gameBean.getPlayers().size(); i++){
+                    PlayerBean player = gameBean.getPlayers().get(i);
+                    player.setBoard(updatedBoardList.get(i));
                 }
                 displayAllGame() ;
             }
