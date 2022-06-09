@@ -40,12 +40,6 @@ public class Client {
                 System.exit(1);
             }
         }
-        /*GUI gui;
-        if(uiType.equalsIgnoreCase("GUI")) {
-            gui = new GUI(socketClient);
-            answerHandler.addPropertyChangeListener(gui);
-            gui.startGUIApplication();
-        }*/
         if(uiType.equalsIgnoreCase("GUI")) {
             Application.launch(GUI.class);
         }
