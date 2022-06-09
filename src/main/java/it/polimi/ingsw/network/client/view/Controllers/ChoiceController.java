@@ -43,22 +43,18 @@ public class ChoiceController implements GUIController {
     }
 
     public void witchChosen() throws SocketException {
-        System.out.println("witch chosen");
         gui.getSocketClient().send(new ChooseCardBack(CardBack.WITCH));
     }
 
     public void sageChosen() throws SocketException {
-        System.out.println("sage chosen");
         gui.getSocketClient().send(new ChooseCardBack(CardBack.SAGE));
     }
 
     public void druidChosen() throws SocketException {
-        System.out.println("druid chosen");
         gui.getSocketClient().send(new ChooseCardBack(CardBack.DRUID));
     }
 
     public void kingChosen() throws SocketException {
-        System.out.println("king chosen");
         gui.getSocketClient().send(new ChooseCardBack(CardBack.KING));
     }
 
