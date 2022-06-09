@@ -7,9 +7,10 @@ import it.polimi.ingsw.network.client.messages.ColorChosen;
 import it.polimi.ingsw.network.client.messages.IntegerMessage;
 import it.polimi.ingsw.network.client.view.GUI;
 import javafx.fxml.FXML;
+import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.layout.GridPane;
+import javafx.scene.layout.AnchorPane;
 import javafx.scene.paint.Paint;
 import javafx.scene.shape.Circle;
 
@@ -18,57 +19,16 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 
-
 public class MainController2 implements GUIController {
 
     private GUI gui;
 
-    @FXML private ImageView prio1;
-    @FXML private ImageView prio2;
-    @FXML private ImageView prio3;
-    @FXML private ImageView prio4;
-    @FXML private ImageView prio5;
-    @FXML private ImageView prio6;
-    @FXML private ImageView prio7;
-    @FXML private ImageView prio8;
-    @FXML private ImageView prio9;
-    @FXML private ImageView prio10;
-    @FXML private ImageView myLastPlayedCard;
-    @FXML private ImageView otherLastPlayedCard;
-    @FXML private ImageView myEntranceStud0;
-    @FXML private ImageView myEntranceStud1;
-    @FXML private ImageView myEntranceStud2;
-    @FXML private ImageView myEntranceStud3;
-    @FXML private ImageView myEntranceStud4;
-    @FXML private ImageView myEntranceStud5;
-    @FXML private ImageView myEntranceStud6;
-    @FXML private ImageView otherEntranceStud0;
-    @FXML private ImageView otherEntranceStud1;
-    @FXML private ImageView otherEntranceStud2;
-    @FXML private ImageView otherEntranceStud3;
-    @FXML private ImageView otherEntranceStud4;
-    @FXML private ImageView otherEntranceStud5;
-    @FXML private ImageView otherEntranceStud6;
-    @FXML private GridPane myHall;
-    @FXML private Circle myTower0;
-    @FXML private Circle myTower1;
-    @FXML private Circle myTower2;
-    @FXML private Circle myTower3;
-    @FXML private Circle myTower4;
-    @FXML private Circle myTower5;
-    @FXML private Circle myTower6;
-    @FXML private Circle myTower7;
-    @FXML private ImageView cloud1Stud0;
-    @FXML private ImageView cloud1Stud1;
-    @FXML private ImageView cloud1Stud2;
-    @FXML private ImageView cloud2Stud0;
-    @FXML private ImageView cloud2Stud1;
-    @FXML private ImageView cloud2Stud2;
-    private int lastGreenStudentHall = 0;
-    private int lastRedStudentHall = 0;
-    private int lastYellowStudentHall = 0;
-    private int lastPinkStudentHall = 0;
-    private int lastBlueStudentHall = 0;
+    @FXML private AnchorPane mainPane;
+    @FXML private AnchorPane myBoard;
+    @FXML private AnchorPane otherBoard;
+    @FXML private AnchorPane myCoin;
+    @FXML private AnchorPane otherCoin;
+    @FXML private Label infoMessage;
 
 
     private final static Paint BLACK = javafx.scene.paint.Color.BLACK;
@@ -76,18 +36,37 @@ public class MainController2 implements GUIController {
     private final static Paint GRAY = javafx.scene.paint.Color.GRAY;
 
     private final HashMap<Integer, Image> hand = new HashMap<>();
-    private HashMap<ImageView, Color> entrance = new HashMap<>();
-    private HashMap<Color, Image> students = new HashMap<>();
-
-    private ArrayList<ImageView> movedStudents = new ArrayList<>();
+    private final HashMap<Color, Image> studentsColor = new HashMap<>();
+    private final HashMap<Color, Image> professorsColor = new HashMap<>();
 
 
+    private ArrayList<ImageView> myProfessors = new ArrayList<>();
+    private ArrayList<ImageView> otherProfessors = new ArrayList<>();
+    private ArrayList<ImageView> myEntranceStudents = new ArrayList<>();
+    private ArrayList<ImageView> otherEntranceStudents = new ArrayList<>();
+    private ArrayList<ImageView> myHallStudents = new ArrayList<>();
+    private ArrayList<ImageView> otherHallStudents = new ArrayList<>();
+    private ArrayList<ImageView> cards = new ArrayList<>();
+    private ArrayList<ImageView> cloud1Students = new ArrayList<>();
+    private ArrayList<ImageView> cloud2Students = new ArrayList<>();
+    private ArrayList<Circle> towers = new ArrayList<>();
+    private ArrayList<AnchorPane> archipelago = new ArrayList<>();
+    private ArrayList<ImageView> coins = new ArrayList<>();
+    private ArrayList<AnchorPane> clouds = new ArrayList<>();
 
-    private final static Image RED_STUDENT = new Image("/Students/student_red.png",20, 20, false, false);
-    private final static Image BLUE_STUDENT = new Image("Students/student_blue.png",20, 20, false, false);
-    private final static Image GREEN_STUDENT = new Image("/Students/student_green.png",20, 20, false, false);
-    private final static Image PINK_STUDENT = new Image("/Students/student_pink.png",20, 20, false, false);
-    private final static Image YELLOW_STUDENT = new Image("/Students/student_yellow.png",20, 20, false, false);
+    private final static Image GREEN_STUDENT = new Image("/Students/student_green.png");
+    private final static Image RED_STUDENT = new Image("/Students/student_red.png");
+    private final static Image YELLOW_STUDENT = new Image("/Students/student_yellow.png");
+    private final static Image PINK_STUDENT = new Image("/Students/student_pink.png");
+    private final static Image BLUE_STUDENT = new Image("Students/student_blue.png");
+
+    private final static Image GREEN_PROF = new Image("/Professors/teacher_green.png");
+    private final static Image RED_PROF = new Image("/Professors/teacher_red.png");
+    private final static Image YELLOW_PROF = new Image("/Professors/teacher_yellow.png");
+    private final static Image PINK_PROF = new Image("/Professors/teacher_pink.png");
+    private final static Image BLUE_PROF = new Image("/Professors/teacher_blue.png");
+
+    private final static Image ISLAND = new Image("/island2.png");
 
     private final static Image  PRIO1 = new Image("/Card/Animali_1_1@3x.png");
     private final static Image  PRIO2 = new Image("/Card/Animali_1_2@3x.png");
@@ -99,6 +78,11 @@ public class MainController2 implements GUIController {
     private final static Image  PRIO8 = new Image("/Card/Animali_1_8@3x.png");
     private final static Image  PRIO9 = new Image("/Card/Animali_1_9@3x.png");
     private final static Image  PRIO10 = new Image("/Card/Animali_1_10@3x.png");
+
+    private final static Image COIN = new Image("/Monetabase.png");
+
+    private final static Image CLOUD = new Image("/cloud_card.png");
+
 
     @Override
     public void setGUI(GUI gui) {
@@ -116,281 +100,432 @@ public class MainController2 implements GUIController {
         hand.put(8, PRIO8);
         hand.put(9, PRIO9);
         hand.put(10, PRIO10);
-        students.put(Color.RED, RED_STUDENT);
-        students.put(Color.GREEN, GREEN_STUDENT);
-        students.put(Color.PINK, PINK_STUDENT);
-        students.put(Color.BLUE, BLUE_STUDENT);
-        students.put(Color.YELLOW, YELLOW_STUDENT);
+        studentsColor.put(Color.RED, RED_STUDENT);
+        studentsColor.put(Color.GREEN, GREEN_STUDENT);
+        studentsColor.put(Color.PINK, PINK_STUDENT);
+        studentsColor.put(Color.BLUE, BLUE_STUDENT);
+        studentsColor.put(Color.YELLOW, YELLOW_STUDENT);
+        professorsColor.put(Color.GREEN, GREEN_PROF);
+        professorsColor.put(Color.RED, RED_PROF);
+        professorsColor.put(Color.YELLOW, YELLOW_PROF);
+        professorsColor.put(Color.PINK, PINK_PROF);
+        professorsColor.put(Color.BLUE, BLUE_PROF);
     }
 
-    public void showEntranceStudents(ArrayList<Color> color) {     //TODO controllare la put con la stessa chiave
-        if(color.size() == 7) {
-            myEntranceStud0.setImage(students.get(color.get(0)));
-            entrance.put(myEntranceStud0, color.get(0));
-            myEntranceStud1.setImage(students.get(color.get(1)));
-            entrance.put(myEntranceStud1, color.get(1));
-            myEntranceStud2.setImage(students.get(color.get(2)));
-            entrance.put(myEntranceStud2, color.get(2));
-            myEntranceStud3.setImage(students.get(color.get(3)));
-            entrance.put(myEntranceStud3, color.get(3));
-            myEntranceStud4.setImage(students.get(color.get(4)));
-            entrance.put(myEntranceStud4, color.get(4));
-            myEntranceStud5.setImage(students.get(color.get(5)));
-            entrance.put(myEntranceStud5, color.get(5));
-            myEntranceStud6.setImage(students.get(color.get(6)));
-            entrance.put(myEntranceStud6, color.get(6));
+    public void showEntranceStudents(ArrayList<Color> colors) {    //TODO gestire con un unico metodo le board con il booleano come parametro
+            for(ImageView entranceStudent : myEntranceStudents) {
+               myBoard.getChildren().remove(entranceStudent);
+            }
+        myEntranceStudents.removeAll(myEntranceStudents);
+        for (int i = 0; i < colors.size(); i ++) {
+            int finalI = i;
+            ImageView entranceStudent = new ImageView(studentsColor.get(colors.get(i)));
+            myBoard.getChildren().add(entranceStudent);
+            entranceStudent.setFitHeight(20);
+            entranceStudent.setFitWidth(20);
+            entranceStudent.setLayoutX(30);
+            entranceStudent.setLayoutY(10 + 25 * i);
+            myEntranceStudents.add(entranceStudent);
+            entranceStudent.setOnMouseClicked(event -> {
+                sendStudentToMove(colors.get(finalI));
+            });
         }
     }
 
-    public void student0ToMove() {
-        sendColor(myEntranceStud0);
-    }
-
-    public void student1ToMove() {
-        sendColor(myEntranceStud1);
-    }
-
-    public void student2ToMove() {
-        sendColor(myEntranceStud2);
-    }
-
-    public void student3ToMove() {
-        sendColor(myEntranceStud3);
-    }
-
-    public void student4ToMove() {
-        sendColor(myEntranceStud4);
-    }
-
-    public void student5ToMove() {
-        sendColor(myEntranceStud5);
-    }
-
-    public void student6ToMove() {
-        sendColor(myEntranceStud6);
-    }
-
-    private void sendColor(ImageView myEntranceStud) {
+    public void sendStudentToMove(Color studentColor) {
         try {
-            gui.getSocketClient().send(new ColorChosen(entrance.get(myEntranceStud)));
+            gui.getSocketClient().send(new ColorChosen(studentColor));
         } catch (SocketException e) {
             e.printStackTrace();
         }
-        myEntranceStud.setVisible(false);
-        movedStudents.add(myEntranceStud);
-        switch (entrance.get(myEntranceStud)) {
-            case GREEN -> {
-                myHall.add(new ImageView(GREEN_STUDENT), lastGreenStudentHall, 0, 1, 1);
-                lastGreenStudentHall += 1;
-            }
-            case RED -> {
-                myHall.add(new ImageView(RED_STUDENT), lastRedStudentHall,1, 1, 1);
-                lastRedStudentHall += 1;
-            }
-            case YELLOW -> {
-                myHall.add(new ImageView(YELLOW_STUDENT), lastYellowStudentHall,2, 1, 1);
-                lastYellowStudentHall += 1;
-            }
-            case PINK -> {
-                myHall.add(new ImageView(PINK_STUDENT), lastPinkStudentHall,3, 1, 1);
-                lastPinkStudentHall += 1;
-            }
-            case BLUE -> {
-                myHall.add(new ImageView(BLUE_STUDENT), lastBlueStudentHall,4, 1, 1);
-                lastBlueStudentHall += 1;
+    }
+
+    public void showHallStudents(ArrayList<Color> colors) {
+        double lastGreenStudentX = 71.8;
+        double lastRedStudentX = 71.8;
+        double lastYellowStudentX = 71.8;
+        double lastPinkStudentX = 71.8;
+        double lastBlueStudentX = 71.8;
+        for(ImageView hallStudent : myHallStudents) {
+            myBoard.getChildren().remove(hallStudent);
+        }
+        myHallStudents.removeAll(myHallStudents);
+        for (int i = 0; i < colors.size(); i++) {
+            int finalI = i;
+            ImageView hallStudent = new ImageView(studentsColor.get(colors.get(i)));
+            myBoard.getChildren().add(hallStudent);
+            hallStudent.setFitHeight(20);
+            hallStudent.setFitWidth(20);
+            myHallStudents.add(hallStudent);
+            /*if (isMyBoard) */
+                hallStudent.setOnMouseClicked(event -> {           //TODO gestire con un unico metodo le board con il booleano come parametro
+                    sendStudentToMove(colors.get(finalI));
+                });
+            switch (colors.get(i)) {
+                case GREEN -> {
+                    hallStudent.setLayoutX(lastGreenStudentX + 24.2);
+                    hallStudent.setLayoutY(28);
+                    lastGreenStudentX += 24.2;
+                }
+                case RED -> {
+                    hallStudent.setLayoutX(lastRedStudentX + 24.2);
+                    hallStudent.setLayoutY(64);
+                    lastRedStudentX += 24.2;
+                }
+                case YELLOW -> {
+                    hallStudent.setLayoutX(lastYellowStudentX + 24.2);
+                    hallStudent.setLayoutY(100);
+                    lastYellowStudentX += 24.2;
+                }
+                case PINK -> {
+                    hallStudent.setLayoutX(lastPinkStudentX + 24.2);
+                    hallStudent.setLayoutY(136);
+                    lastPinkStudentX += 24.2;
+                }
+                case BLUE -> {
+                    hallStudent.setLayoutX(lastBlueStudentX + 24.2);
+                    hallStudent.setLayoutY(172);
+                    lastBlueStudentX += 24.2;
+                }
             }
         }
     }
 
-    public void showTower(Tower towerColor) {
+
+    public void showMyTower(Tower towerColor, int numTowers) {
         switch(towerColor) {
-            case WHITE -> setTowerColor(WHITE);
-            case BLACK -> setTowerColor(BLACK);
-            case GRAY -> setTowerColor(GRAY);
+            case WHITE -> setTowerColor(WHITE, numTowers, myBoard);
+            case BLACK -> setTowerColor(BLACK, numTowers, myBoard);
+            case GRAY -> setTowerColor(GRAY, numTowers, myBoard);
         }
     }
 
-    private void setTowerColor(Paint paint) {
-            myTower0.setFill(paint);
-            myTower1.setFill(paint);
-            myTower2.setFill(paint);
-            myTower3.setFill(paint);
-            myTower4.setFill(paint);
-            myTower5.setFill(paint);
-            myTower6.setFill(paint);
-            myTower7.setFill(paint);
+    public void showOtherTower(Tower towerColor, int numTowers) {
+        switch(towerColor) {
+            case WHITE -> setTowerColor(WHITE, numTowers, otherBoard);
+            case BLACK -> setTowerColor(BLACK, numTowers, otherBoard);
+            case GRAY -> setTowerColor(GRAY, numTowers, otherBoard);
+        }
     }
 
-    public void updateClouds(ArrayList<Color> color, int numCloud) {
-        cloud1Stud0.setVisible(true);
-        cloud1Stud1.setVisible(true);
-        cloud1Stud2.setVisible(true);
-        cloud2Stud0.setVisible(true);
-        cloud2Stud1.setVisible(true);
-        cloud2Stud2.setVisible(true);
-        if(color.size() == 3) {
-        cloud1Stud0.setImage(RED_STUDENT);
-        cloud1Stud1.setImage(YELLOW_STUDENT);
-        cloud1Stud2.setImage(YELLOW_STUDENT);}
-        System.out.println("size = " + color.size());
-        if(color.size() == 3) {
-            if (numCloud == 0) {
-                cloud1Stud0.setImage(students.get(color.get(0)));
-                cloud1Stud1.setImage(students.get(color.get(1)));
-                cloud1Stud2.setImage(students.get(color.get(2)));
-            } else if (numCloud == 1) {
-                cloud2Stud0.setImage(students.get(color.get(0)));
-                cloud2Stud1.setImage(students.get(color.get(1)));
-                cloud2Stud2.setImage(students.get(color.get(2)));
+    private void setTowerColor(Paint paint, int numTowers, AnchorPane Board) {
+        for (Circle tower : towers) {
+            Board.getChildren().remove(tower);
+        }
+        for (int i = 0; i < numTowers; i ++) {
+            Circle tower = new Circle();
+            Board.getChildren().add(tower);
+            tower.setRadius(10);
+            tower.setFill(paint);
+            tower.setLayoutX(450);
+            tower.setLayoutY(32 + 22 * i);
+            towers.add(tower);
+        }
+    }
+
+    public void showMyProfessors(ArrayList<Color> professorsColors) {
+        showProfessors(professorsColors, myProfessors, myBoard);
+    }
+
+    public void showClouds(HashMap<Integer, ArrayList<Color>> cloudColorsMap) {
+        double lastCloudX = -43;
+        for (AnchorPane cloud : clouds) {
+            mainPane.getChildren().remove(cloud);
+        }
+        clouds.removeAll(clouds);
+        for (int i = 0; i < 2; i ++) {
+            AnchorPane cloudPane = new AnchorPane();
+            mainPane.getChildren().add(cloudPane);
+            cloudPane.setPrefHeight(128);
+            cloudPane.setPrefWidth(128);
+            cloudPane.setLayoutX(lastCloudX + 212);
+            lastCloudX += 212;
+            cloudPane.setLayoutY(269);
+            clouds.add(cloudPane);
+            ImageView cloud = new ImageView(CLOUD);
+            cloudPane.getChildren().add(cloud);
+            cloud.setFitWidth(128);
+            cloud.setFitHeight(128);
+            int finalI = i;
+            cloud.setOnMouseClicked( event -> {
+                sendCloudIndex(finalI);
+            });
+            for (int j = 0; j < cloudColorsMap.get(i).size(); j ++) {
+                ImageView student = new ImageView(studentsColor.get(cloudColorsMap.get(i).get(j)));
+                cloudPane.getChildren().add(student);
+                student.setFitWidth(20);
+                student.setFitHeight(20);
+                student.setLayoutX(30 + 25 * j);
+                student.setLayoutY(40);
             }
+        }
+    }
+
+    public void sendCloudIndex(int index) {
+        try {
+            gui.getSocketClient().send(new IntegerMessage((index+1)));
+        } catch (SocketException e) {
+            e.printStackTrace();
+        }
+    }
+
+
+    public void showAssistantCards(ArrayList<Integer> priorities) {
+        double lastCardX = 90;
+        for (ImageView card : cards) {
+            mainPane.getChildren().remove(card);
+        }
+        cards.removeAll(cards);
+        for (Integer priority : priorities) {
+            ImageView card = new ImageView(hand.get(priority));
+            mainPane.getChildren().add(card);
+            card.setFitHeight(132);
+            card.setFitWidth(88);
+            card.setLayoutX(lastCardX + 90);
+            card.setLayoutY(650);
+            lastCardX += 90;
+            cards.add(card);
+            card.setOnMouseClicked(event -> {
+                sendChosenCard(priority);
+            });
+        }
+    }
+
+    public void sendChosenCard(Integer priority) {
+        try {
+            gui.getSocketClient().send(new IntegerMessage(priority));
+        } catch (SocketException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void showLastPlayedCard(int lastPriority) {
+        ImageView lastPlayedCard = new ImageView(hand.get(lastPriority));
+        mainPane.getChildren().add(lastPlayedCard);
+        lastPlayedCard.setFitWidth(88);
+        lastPlayedCard.setFitHeight(132);
+        lastPlayedCard.setLayoutX(634);
+        lastPlayedCard.setLayoutY(505);
+    }
+
+    public void showOtherPlayerEntrance(ArrayList<Color> colors) {
+        for(ImageView entranceStudent : otherEntranceStudents) {
+            otherBoard.getChildren().remove(entranceStudent);
+        }
+        otherEntranceStudents.removeAll(otherEntranceStudents);
+        for (int i = 0; i < colors.size(); i ++) {
+            int finalI= i;
+            ImageView entranceStudent = new ImageView(studentsColor.get(colors.get(i)));
+            otherBoard.getChildren().add(entranceStudent);
+            entranceStudent.setFitHeight(20);
+            entranceStudent.setFitWidth(20);
+            entranceStudent.setLayoutX(30);
+            entranceStudent.setLayoutY(10 + 25 * i);
+            otherEntranceStudents.add(entranceStudent);
         }
     }
     
+    public void showOtherLastPlayedCard(int lastPriority) {
+        ImageView lastPlayedCard = new ImageView(hand.get(lastPriority));
+        mainPane.getChildren().add(lastPlayedCard);
+        lastPlayedCard.setFitWidth(88);
+        lastPlayedCard.setFitHeight(132);
+        lastPlayedCard.setLayoutX(634);
+        lastPlayedCard.setLayoutY(22);
+    }
 
-    public void selectedCloud1() {
+    public void showOtherPlayerProfessors(ArrayList<Color> professorsColors) {
+        showProfessors(professorsColors, otherProfessors, otherBoard);
+    }
+    
+    public void showOtherPLayerHall(ArrayList<Color> colors) {
+        double lastGreenStudentX = 71.8;
+        double lastRedStudentX = 71.8;
+        double lastYellowStudentX = 71.8;
+        double lastPinkStudentX = 71.8;
+        double lastBlueStudentX = 71.8;
+        for(ImageView hallStudent : otherHallStudents) {
+            myBoard.getChildren().remove(hallStudent);
+        }
+        otherHallStudents.removeAll(otherHallStudents);
+        for (int i = 0; i < colors.size(); i++) {
+            ImageView hallStudent = new ImageView(studentsColor.get(colors.get(i)));
+            otherBoard.getChildren().add(hallStudent);
+            hallStudent.setFitHeight(20);
+            hallStudent.setFitWidth(20);
+            otherHallStudents.add(hallStudent);
+            switch (colors.get(i)) {
+                case GREEN -> {
+                    hallStudent.setLayoutX(lastGreenStudentX + 24.2);
+                    hallStudent.setLayoutY(28);
+                    lastGreenStudentX += 24.2;
+                }
+                case RED -> {
+                    hallStudent.setLayoutX(lastRedStudentX + 24.2);
+                    hallStudent.setLayoutY(64);
+                    lastRedStudentX += 24.2;
+                }
+                case YELLOW -> {
+                    hallStudent.setLayoutX(lastYellowStudentX + 24.2);
+                    hallStudent.setLayoutY(100);
+                    lastYellowStudentX += 24.2;
+                }
+                case PINK -> {
+                    hallStudent.setLayoutX(lastPinkStudentX + 24.2);
+                    hallStudent.setLayoutY(136);
+                    lastPinkStudentX += 24.2;
+                }
+                case BLUE -> {
+                    hallStudent.setLayoutX(lastBlueStudentX + 24.2);
+                    hallStudent.setLayoutY(172);
+                    lastBlueStudentX += 24.2;
+                }
+            }
+        }
+    }
+
+    private void showProfessors(ArrayList<Color> professorsColors, ArrayList<ImageView> professorsList, AnchorPane Board) {
+        for (ImageView professor : professorsList) {
+            Board.getChildren().remove(professor);
+        }
+        professorsList.removeAll(professorsList);
+        for (int i = 0; i < professorsColors.size(); i ++) {
+            ImageView professor = new ImageView(professorsColor.get(professorsColors.get(i)));
+            Board.getChildren().add(professor);
+            professor.setFitHeight(25);
+            professor.setFitWidth(25);
+            professor.setLayoutX(359);
+            professorsList.add(professor);
+            switch (professorsColors.get(i)) {
+                case GREEN -> professor.setLayoutY(26);
+                case RED -> professor.setLayoutY(62);
+                case YELLOW -> professor.setLayoutY(98);
+                case PINK -> professor.setLayoutY(134);
+                case BLUE -> professor.setLayoutY(170);
+            }
+        }
+    }
+
+    public void showArchipelago(int archipelagoSize, int motherNature, HashMap<Integer, ArrayList<Color>> islandsStudents, HashMap<Integer, Tower> towerColorMap, HashMap<Integer, Integer> numTowersMap) {
+        double lastCloudX = 650;
+        double lastCloudY = 100;
+        int count = 0;
+        for (AnchorPane islandPane : archipelago) {
+            mainPane.getChildren().remove(islandPane);
+        }
+        for (int i = 0; i < archipelagoSize; i ++) {
+            int finalI = i;
+            AnchorPane islandPane = new AnchorPane();
+            mainPane.getChildren().add(islandPane);
+            islandPane.setPrefHeight(128);
+            islandPane.setPrefWidth(128);
+            if (count < 4) {
+                islandPane.setLayoutX(lastCloudX + 100);
+                islandPane.setLayoutY(lastCloudY);
+                lastCloudX += 100;
+                count += 1;
+            }
+            else if (count >= 4 && count <= 6) {
+                islandPane.setLayoutX(lastCloudX);
+                islandPane.setLayoutY(lastCloudY + 100);
+                lastCloudY += 100;
+                count += 1;
+            }
+            else if (count >= 7 && count <= 9) {
+                islandPane.setLayoutX(lastCloudX - 100);
+                islandPane.setLayoutY(lastCloudY);
+                lastCloudX -= 100;
+                count += 1;
+            }
+            else if (count >= 10 && count <= 11) {
+                islandPane.setLayoutX(lastCloudX);
+                islandPane.setLayoutY(lastCloudY - 100);
+                lastCloudY -= 100;
+                count += 1;
+            }
+
+            // Islands
+            ImageView island = new ImageView(ISLAND);
+            island.setFitHeight(128);
+            island.setFitWidth(128);
+            islandPane.getChildren().add(island);
+            island.setOnMouseClicked(event -> {
+                sendIslandIndex(finalI);
+            });
+
+            //Mother Nature
+            if (i == motherNature) {
+                Circle mother = new Circle();
+                islandPane.getChildren().add(mother);
+                mother.setFill(javafx.scene.paint.Color.ORANGE);
+                mother.setRadius(10);
+                mother.setLayoutX(25);
+                mother.setLayoutY(85);
+            }
+
+            //Island students
+            for (int j = 0; j < islandsStudents.get(i).size(); j ++) {
+                ImageView student = new ImageView(studentsColor.get(islandsStudents.get(i).get(j)));
+                islandPane.getChildren().add(student);
+                student.setFitWidth(15);
+                student.setFitHeight(15);
+                student.setLayoutX(20 + 17 * j);
+                student.setLayoutY(20);
+            }
+
+            //Tower
+            for (int k = 0; k < numTowersMap.get(i); k ++) {
+                Circle tower = new Circle();
+                islandPane.getChildren().add(tower);
+                tower.setRadius(10);
+                tower.setLayoutX(20 + 17 * k);
+                tower.setLayoutY(60);
+                switch (towerColorMap.get(i)) {
+                    case WHITE -> tower.setFill(WHITE);
+                    case BLACK -> tower.setFill(BLACK);
+                    case GRAY -> tower.setFill(GRAY);
+                }
+            }
+            archipelago.add(islandPane);
+        }
+    }
+
+    public void sendIslandIndex(int index) {
         try {
-            gui.getSocketClient().send(new IntegerMessage(1));
+            gui.getSocketClient().send(new IntegerMessage(index + 1));
         } catch (SocketException e) {
             e.printStackTrace();
         }
-        updateStudents();
-        cloud1Stud0.setVisible(false);
-        cloud1Stud1.setVisible(false);
-        cloud1Stud2.setVisible(false);
     }
 
-    public void selectedCloud2() {
-        try {
-            gui.getSocketClient().send(new IntegerMessage(2));
-        } catch (SocketException e) {
-            e.printStackTrace();
+    public void showCoin(int numCoin, AnchorPane Board) {
+        for (ImageView coin : coins) {
+            Board.getChildren().remove(coin);
         }
-        updateStudents();
-        cloud2Stud0.setVisible(false);
-        cloud2Stud1.setVisible(false);
-        cloud2Stud2.setVisible(false);
-    }
-
-    public void updateStudents() {
-        for(ImageView movedStudent : movedStudents) {
-            movedStudent.setVisible(true);
-        }
-        movedStudents.removeAll(movedStudents);
-    }
-
-    public void chosenCard_1() {
-        System.out.println("scelta prio 1");
-        myLastPlayedCard.setImage(PRIO1);
-        prio1.setVisible(false);
-        try {
-            gui.getSocketClient().send(new IntegerMessage(1));
-        } catch (SocketException e) {
-            e.printStackTrace();
+        for (int i = 0; i < numCoin; i++) {
+            ImageView coin = new ImageView(COIN);
+            Board.getChildren().add(coin);
+            coin.setFitWidth(50);
+            coin.setFitHeight(50);
+            coin.setLayoutX(10);
+            coin.setLayoutY(10 + 20 * i);
+            coins.add(coin);
         }
     }
 
-    public void chosenCard_2() {
-        System.out.println("scelta prio 2");
-        myLastPlayedCard.setImage(PRIO2);
-        prio2.setVisible(false);
-        try {
-            gui.getSocketClient().send(new IntegerMessage(2));
-        } catch (SocketException e) {
-            e.printStackTrace();
-        }
+    public void showMyCoin(int numCoin) {
+        showCoin(numCoin, myCoin);
     }
 
-    public void chosenCard_3() {
-        System.out.println("scelta prio 3");
-        myLastPlayedCard.setImage(PRIO3);
-        prio3.setVisible(false);
-        try {
-            gui.getSocketClient().send(new IntegerMessage(3));
-        } catch (SocketException e) {
-            e.printStackTrace();
-        }
+    public void showOtherCoin(int numCoin) {
+        showCoin(numCoin, otherCoin);
     }
 
-    public void chosenCard_4() {
-        System.out.println("scelta prio 4");
-        myLastPlayedCard.setImage(PRIO4);
-        prio4.setVisible(false);
-        try {
-            gui.getSocketClient().send(new IntegerMessage(4));
-        } catch (SocketException e) {
-            e.printStackTrace();
-        }
+    public void showExpertCard() {
+
     }
 
-    public void chosenCard_5() {
-        System.out.println("scelta prio 5");
-        myLastPlayedCard.setImage(PRIO5);
-        prio5.setVisible(false);
-        try {
-            gui.getSocketClient().send(new IntegerMessage(5));
-        } catch (SocketException e) {
-            e.printStackTrace();
-        }
-    }
-
-    public void chosenCard_6() {
-        System.out.println("scelta prio 6");
-        myLastPlayedCard.setImage(PRIO6);
-        prio6.setVisible(false);
-        try {
-            gui.getSocketClient().send(new IntegerMessage(6));
-        } catch (SocketException e) {
-            e.printStackTrace();
-        }
-    }
-
-    public void chosenCard_7() {
-        System.out.println("scelta prio 7");
-        myLastPlayedCard.setImage(PRIO7);
-        prio7.setVisible(false);
-        try {
-            gui.getSocketClient().send(new IntegerMessage(7));
-        } catch (SocketException e) {
-            e.printStackTrace();
-        }
-    }
-
-    public void chosenCard_8() {
-        System.out.println("scelta prio 8");
-        myLastPlayedCard.setImage(PRIO8);
-        prio8.setVisible(false);
-        try {
-            gui.getSocketClient().send(new IntegerMessage(8));
-        } catch (SocketException e) {
-            e.printStackTrace();
-        }
-    }
-
-    public void chosenCard_9() {
-        System.out.println("scelta prio 9");
-        myLastPlayedCard.setImage(PRIO9);
-        prio9.setVisible(false);
-        try {
-            gui.getSocketClient().send(new IntegerMessage(9));
-        } catch (SocketException e) {
-            e.printStackTrace();
-        }
-    }
-
-    public void chosenCard_10() {
-        System.out.println("scelta prio 10");
-        myLastPlayedCard.setImage(PRIO10);
-        prio10.setVisible(false);
-        try {
-            gui.getSocketClient().send(new IntegerMessage(10));
-        } catch (SocketException e) {
-            e.printStackTrace();
-        }
-    }
-
-    public void updateOtherLastPlayedCard() {
-        if (gui.getOtherPlayersLastCard() != null) {
-            otherLastPlayedCard.setImage(hand.get(gui.getOtherPlayersLastCard().getPriority()));
-        }
+    public void showInfoMessage(String message) {
+        infoMessage.setText(message);
     }
 }
