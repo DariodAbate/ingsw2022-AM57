@@ -1,195 +1,41 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.scene.control.Label?>
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
-<?import javafx.scene.layout.ColumnConstraints?>
-<?import javafx.scene.layout.GridPane?>
-<?import javafx.scene.layout.RowConstraints?>
-<?import javafx.scene.shape.Circle?>
+<?import javafx.scene.text.Font?>
 
 <AnchorPane fx:id="mainPane" prefHeight="800.0" prefWidth="1200.0" xmlns="http://javafx.com/javafx/18" xmlns:fx="http://javafx.com/fxml/1" fx:controller="it.polimi.ingsw.network.client.view.Controllers.MainController2">
    <children>
-      <ImageView fitHeight="88.0" fitWidth="88.0" layoutX="1071.0" layoutY="269.0" pickOnBounds="true" preserveRatio="true">
-         <image>
-            <Image url="@../island2.png" />
-         </image>
-      </ImageView>
-      <ImageView fitHeight="88.0" fitWidth="88.0" layoutX="721.0" layoutY="308.0" pickOnBounds="true" preserveRatio="true">
-         <image>
-            <Image url="@../island2.png" />
-         </image>
-      </ImageView>
-      <ImageView fitHeight="88.0" fitWidth="88.0" layoutX="796.0" layoutY="170.0" pickOnBounds="true" preserveRatio="true">
-         <image>
-            <Image url="@../island2.png" />
-         </image>
-      </ImageView>
-      <ImageView fitHeight="88.0" fitWidth="88.0" layoutX="745.0" layoutY="231.0" pickOnBounds="true" preserveRatio="true">
-         <image>
-            <Image url="@../island2.png" />
-         </image>
-      </ImageView>
-      <ImageView fitHeight="88.0" fitWidth="88.0" layoutX="877.0" layoutY="132.0" pickOnBounds="true" preserveRatio="true">
-         <image>
-            <Image url="@../island2.png" />
-         </image>
-      </ImageView>
-      <ImageView fitHeight="88.0" fitWidth="88.0" layoutX="1077.0" layoutY="352.0" pickOnBounds="true" preserveRatio="true">
-         <image>
-            <Image url="@../island2.png" />
-         </image>
-      </ImageView>
-      <ImageView fitHeight="88.0" fitWidth="88.0" layoutX="1041.0" layoutY="194.0" pickOnBounds="true" preserveRatio="true">
-         <image>
-            <Image url="@../island2.png" />
-         </image>
-      </ImageView>
-      <ImageView fitHeight="88.0" fitWidth="88.0" layoutX="1017.0" layoutY="416.0" pickOnBounds="true" preserveRatio="true">
-         <image>
-            <Image url="@../island2.png" />
-         </image>
-      </ImageView>
-      <ImageView fitHeight="88.0" fitWidth="88.0" layoutX="765.0" layoutY="388.0" pickOnBounds="true" preserveRatio="true">
-         <image>
-            <Image url="@../island2.png" />
-         </image>
-      </ImageView>
-      <ImageView fitHeight="88.0" fitWidth="88.0" layoutX="965.0" layoutY="150.0" pickOnBounds="true" preserveRatio="true">
-         <image>
-            <Image url="@../island2.png" />
-         </image>
-      </ImageView>
-      <ImageView fitHeight="88.0" fitWidth="88.0" layoutX="840.0" layoutY="432.0" pickOnBounds="true" preserveRatio="true">
-         <image>
-            <Image url="@../island2.png" />
-         </image>
-      </ImageView>
-      <ImageView fitHeight="88.0" fitWidth="88.0" layoutX="928.0" layoutY="440.0" pickOnBounds="true" preserveRatio="true">
-         <image>
-            <Image url="@../island2.png" />
-         </image>
-      </ImageView>
-      <ImageView fx:id="prio1" fitHeight="132.0" fitWidth="88.0" layoutX="177.0" layoutY="650.0" onMouseClicked="#chosenCard_1" pickOnBounds="true" preserveRatio="true">
-         <image>
-            <Image url="@../Card/Animali_1_1@3x.png" />
-         </image>
-      </ImageView>
-      <ImageView fx:id="prio2" fitHeight="132.0" fitWidth="87.0" layoutX="271.0" layoutY="650.0" onMouseClicked="#chosenCard_2" pickOnBounds="true" preserveRatio="true">
-         <image>
-            <Image url="@../Card/Animali_1_2@3x.png" />
-         </image>
-      </ImageView>
-      <ImageView fx:id="prio3" fitHeight="132.0" fitWidth="88.0" layoutX="367.0" layoutY="649.0" onMouseClicked="#chosenCard_3" pickOnBounds="true" preserveRatio="true">
-         <image>
-            <Image url="@../Card/Animali_1_3@3x.png" />
-         </image>
-      </ImageView>
-      <ImageView fx:id="prio4" fitHeight="132.0" fitWidth="87.0" layoutX="465.0" layoutY="651.0" onMouseClicked="#chosenCard_4" pickOnBounds="true" preserveRatio="true">
-         <image>
-            <Image url="@../Card/Animali_1_4@3x.png" />
-         </image>
-      </ImageView>
-      <ImageView fx:id="prio5" fitHeight="132.0" fitWidth="88.0" layoutX="556.0" layoutY="650.0" onMouseClicked="#chosenCard_5" pickOnBounds="true" preserveRatio="true">
-         <image>
-            <Image url="@../Card/Animali_1_5@3x.png" />
-         </image>
-      </ImageView>
-      <ImageView fx:id="prio6" fitHeight="132.0" fitWidth="88.0" layoutX="652.0" layoutY="651.0" onMouseClicked="#chosenCard_6" pickOnBounds="true" preserveRatio="true">
-         <image>
-            <Image url="@../Card/Animali_1_6@3x.png" />
-         </image>
-      </ImageView>
-      <ImageView fx:id="prio7" fitHeight="132.0" fitWidth="88.0" layoutX="747.0" layoutY="651.0" onMouseClicked="#chosenCard_7" pickOnBounds="true" preserveRatio="true">
-         <image>
-            <Image url="@../Card/Animali_1_7@3x.png" />
-         </image>
-      </ImageView>
-      <ImageView fx:id="prio8" fitHeight="132.0" fitWidth="88.0" layoutX="835.0" layoutY="651.0" onMouseClicked="#chosenCard_8" pickOnBounds="true" preserveRatio="true">
-         <image>
-            <Image url="@../Card/Animali_1_8@3x.png" />
-         </image>
-      </ImageView>
-      <ImageView fx:id="prio9" fitHeight="132.0" fitWidth="88.0" layoutX="923.0" layoutY="651.0" onMouseClicked="#chosenCard_9" pickOnBounds="true" preserveRatio="true">
-         <image>
-            <Image url="@../Card/Animali_1_9@3x.png" />
-         </image>
-      </ImageView>
-      <ImageView fx:id="prio10" fitHeight="132.0" fitWidth="88.0" layoutX="1011.0" layoutY="651.0" onMouseClicked="#chosenCard_10" pickOnBounds="true" preserveRatio="true">
-         <image>
-            <Image url="@../Card/Animali_1_10@3x.png" />
-         </image>
-      </ImageView>
-      <ImageView fitHeight="221.0" fitWidth="526.0" layoutX="81.0" layoutY="22.0" pickOnBounds="true" preserveRatio="true">
-         <image>
-            <Image url="@../PLANCIA_GIOCO_2.png" />
-         </image>
-      </ImageView>
-      <ImageView fitHeight="221.0" fitWidth="559.0" layoutX="81.0" layoutY="417.0" pickOnBounds="true" preserveRatio="true">
-         <image>
-            <Image url="@../PLANCIA_GIOCO_2.png" />
-         </image>
-      </ImageView>
-      <ImageView fx:id="myEntranceStud0" fitHeight="20.0" fitWidth="20.0" layoutX="130.0" layoutY="445.0" onMouseClicked="#student0ToMove" pickOnBounds="true" preserveRatio="true" />
-      <ImageView fx:id="myEntranceStud5" fitHeight="20.0" fitWidth="20.0" layoutX="130.0" layoutY="551.0" onMouseClicked="#student5ToMove" pickOnBounds="true" preserveRatio="true" />
-      <ImageView fx:id="myEntranceStud4" fitHeight="20.0" fitWidth="20.0" layoutX="99.0" layoutY="517.0" onMouseClicked="#student4ToMove" pickOnBounds="true" preserveRatio="true" />
-      <ImageView fx:id="myEntranceStud3" fitHeight="20.0" fitWidth="20.0" layoutX="130.0" layoutY="517.0" onMouseClicked="#student3ToMove" pickOnBounds="true" preserveRatio="true" />
-      <ImageView fx:id="myEntranceStud1" fitHeight="20.0" fitWidth="20.0" layoutX="130.0" layoutY="483.0" onMouseClicked="#student1ToMove" pickOnBounds="true" preserveRatio="true" />
-      <ImageView fx:id="myEntranceStud2" fitHeight="20.0" fitWidth="20.0" layoutX="99.0" layoutY="483.0" onMouseClicked="#student2ToMove" pickOnBounds="true" preserveRatio="true" />
-      <ImageView fx:id="otherEntranceStud6" fitHeight="20.0" fitWidth="20.0" layoutX="99.0" layoutY="204.0" pickOnBounds="true" preserveRatio="true" />
-      <ImageView fx:id="otherEntranceStud5" fitHeight="20.0" fitWidth="20.0" layoutX="130.0" layoutY="204.0" pickOnBounds="true" preserveRatio="true" />
-      <ImageView fx:id="otherEntranceStud4" fitHeight="20.0" fitWidth="20.0" layoutX="99.0" layoutY="171.0" pickOnBounds="true" preserveRatio="true" />
-      <ImageView fx:id="otherEntranceStud3" fitHeight="20.0" fitWidth="20.0" layoutX="130.0" layoutY="171.0" pickOnBounds="true" preserveRatio="true" />
-      <ImageView fx:id="otherEntranceStud2" fitHeight="20.0" fitWidth="20.0" layoutX="99.0" layoutY="132.0" pickOnBounds="true" preserveRatio="true" />
-      <ImageView fx:id="otherEntranceStud1" fitHeight="20.0" fitWidth="20.0" layoutX="130.0" layoutY="132.0" pickOnBounds="true" preserveRatio="true" />
-      <ImageView fx:id="otherEntranceStud0" fitHeight="20.0" fitWidth="20.0" layoutX="130.0" layoutY="98.0" pickOnBounds="true" preserveRatio="true" />
-      <ImageView fx:id="myEntranceStud6" fitHeight="20.0" fitWidth="20.0" layoutX="99.0" layoutY="551.0" onMouseClicked="#student6ToMove" pickOnBounds="true" preserveRatio="true" />
-      <ImageView fx:id="myLastPlayedCard" fitHeight="132.0" fitWidth="87.0" layoutX="634.0" layoutY="505.0" pickOnBounds="true" preserveRatio="true" />
-      <ImageView fx:id="otherLastPlayedCard" fitHeight="132.0" fitWidth="87.0" layoutX="634.0" layoutY="22.0" pickOnBounds="true" preserveRatio="true" />
-      <GridPane fx:id="myHall" layoutX="172.0" layoutY="438.0" prefHeight="179.0" prefWidth="243.0">
-        <columnConstraints>
-          <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-          <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-        </columnConstraints>
-        <rowConstraints>
-          <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-          <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-          <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-        </rowConstraints>
-      </GridPane>
-      <Circle fx:id="myTower0" fill="DODGERBLUE" layoutX="509.0" layoutY="465.0" radius="13.0" stroke="BLACK" strokeType="INSIDE" />
-      <Circle fx:id="myTower1" fill="DODGERBLUE" layoutX="556.0" layoutY="465.0" radius="13.0" stroke="BLACK" strokeType="INSIDE" />
-      <Circle fx:id="myTower2" fill="DODGERBLUE" layoutX="509.0" layoutY="499.0" radius="13.0" stroke="BLACK" strokeType="INSIDE" />
-      <Circle fx:id="myTower4" fill="DODGERBLUE" layoutX="509.0" layoutY="537.0" radius="13.0" stroke="BLACK" strokeType="INSIDE" />
-      <Circle fx:id="myTower6" fill="DODGERBLUE" layoutX="509.0" layoutY="573.0" radius="13.0" stroke="BLACK" strokeType="INSIDE" />
-      <Circle fx:id="myTower5" fill="DODGERBLUE" layoutX="556.0" layoutY="537.0" radius="13.0" stroke="BLACK" strokeType="INSIDE" />
-      <Circle fx:id="myTower3" fill="DODGERBLUE" layoutX="556.0" layoutY="499.0" radius="13.0" stroke="BLACK" strokeType="INSIDE" />
-      <Circle fx:id="myTower7" fill="DODGERBLUE" layoutX="556.0" layoutY="573.0" radius="13.0" stroke="BLACK" strokeType="INSIDE" />
-      <ImageView fx:id="cloud1" fitHeight="128.0" fitWidth="127.0" layoutX="140.0" layoutY="269.0" pickOnBounds="true" preserveRatio="true" onMouseClicked="#selectedCloud1">
-         <image>
-            <Image url="@../cloud_card.png" />
-         </image>
-      </ImageView>
-      <ImageView fx:id="cloud2" fitHeight="128.0" fitWidth="127.0" layoutX="367.0" layoutY="269.0" pickOnBounds="true" preserveRatio="true" onMouseClicked="#selectedCloud2">
-         <image>
-            <Image url="@../cloud_card.png" />
-         </image>
-      </ImageView>
-      <ImageView fx:id="cloud1Stud0" fitHeight="20.0" fitWidth="20.0" layoutX="177.0" layoutY="309.0" pickOnBounds="true" preserveRatio="true" />
-      <ImageView fx:id="cloud1Stud1" fitHeight="20.0" fitWidth="20.0" layoutX="187.0" layoutY="347.0" pickOnBounds="true" preserveRatio="true" />
-      <ImageView fx:id="cloud1Stud2" fitHeight="20.0" fitWidth="20.0" layoutX="211.0" layoutY="309.0" pickOnBounds="true" preserveRatio="true" />
-      <ImageView fx:id="cloud2Stud0" fitHeight="20.0" fitWidth="20.0" layoutX="395.0" layoutY="309.0" pickOnBounds="true" preserveRatio="true" />
-      <ImageView fx:id="cloud2Stud1" fitHeight="20.0" fitWidth="20.0" layoutX="420.0" layoutY="347.0" pickOnBounds="true" preserveRatio="true" />
-      <ImageView fx:id="cloud2Stud2" fitHeight="20.0" fitWidth="20.0" layoutX="435.0" layoutY="299.0" pickOnBounds="true" preserveRatio="true" />
+      <AnchorPane fx:id="myBoard" layoutX="81.0" layoutY="417.0" prefHeight="221.0" prefWidth="509.0">
+         <children>
+            <ImageView fitHeight="221.0" fitWidth="559.0" pickOnBounds="true" preserveRatio="true">
+               <image>
+                  <Image url="@../PLANCIA_GIOCO_2.png" />
+               </image>
+            </ImageView>
+         </children>
+      </AnchorPane>
+      <AnchorPane fx:id="otherBoard" layoutX="81.0" layoutY="21.0" prefHeight="221.0" prefWidth="509.0">
+         <children>
+            <ImageView fitHeight="221.0" fitWidth="559.0" pickOnBounds="true" preserveRatio="true">
+               <image>
+                  <Image url="@../PLANCIA_GIOCO_2.png" />
+               </image>
+            </ImageView>
+         </children>
+      </AnchorPane>
+      <AnchorPane fx:id="otherCoin" layoutX="9.0" layoutY="21.0" prefHeight="221.0" prefWidth="71.0" />
+      <AnchorPane fx:id="myCoin" layoutX="9.0" layoutY="417.0" prefHeight="221.0" prefWidth="71.0" />
+      <AnchorPane layoutX="718.0" layoutY="14.0" prefHeight="50.0" prefWidth="483.0">
+         <children>
+            <Label fx:id="infoMessage" alignment="CENTER" layoutX="202.0" layoutY="12.0" AnchorPane.leftAnchor="10.0">
+               <font>
+                  <Font size="15.0" />
+               </font>
+            </Label>
+         </children>
+      </AnchorPane>
    </children>
 </AnchorPane>
