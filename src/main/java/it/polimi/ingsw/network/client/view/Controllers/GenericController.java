@@ -2,7 +2,6 @@ package it.polimi.ingsw.network.client.view.Controllers;
 
 
 import it.polimi.ingsw.network.client.messages.IntegerMessage;
-import it.polimi.ingsw.network.client.messages.Message;
 import it.polimi.ingsw.network.client.messages.MoveStudentMessage;
 import it.polimi.ingsw.network.client.view.GUI;
 import javafx.fxml.FXML;
@@ -20,6 +19,7 @@ public class GenericController implements GUIController{
 
     @FXML
     Label myLabel;
+
 
     @Override
     public void setGUI(GUI gui) {
@@ -72,7 +72,7 @@ public class GenericController implements GUIController{
         gui.displayAllGame();
     }
 
-    public void movementInfo(String message) {
+    public void movementInfo(String message) {                   //TODo remove alert
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
         alert.setTitle("Movement!");
         alert.setHeaderText("You have to move mother nature");
@@ -80,10 +80,10 @@ public class GenericController implements GUIController{
         alert.showAndWait();
     }
 
-    public void numOfIslandToTravel() {
+    public void numOfIslandToTravel(String message) {
         TextInputDialog numOfIsland = new TextInputDialog();
         numOfIsland.setTitle("Movement!");
-        numOfIsland.setHeaderText("Choose the number of islands you want to travel.");
+        numOfIsland.setHeaderText(message);
         numOfIsland.setContentText("Number of island:");
 
         Optional<String> result = numOfIsland.showAndWait();
@@ -102,6 +102,14 @@ public class GenericController implements GUIController{
         alert.setTitle("Clouds!");
         alert.setHeaderText(message);
         alert.setContentText("Select the cloud by clicking on it");
+        alert.showAndWait();
+    }
+
+    public void selectIslandInfo(String message) {
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle("Clouds!");
+        alert.setHeaderText(message);
+        alert.setContentText("Select the island by clicking on it");
         alert.showAndWait();
     }
 }

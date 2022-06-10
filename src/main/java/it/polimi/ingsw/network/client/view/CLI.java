@@ -1,37 +1,209 @@
 package it.polimi.ingsw.network.client.view;
 
 import it.polimi.ingsw.model.*;
+import it.polimi.ingsw.network.client.AnswerHandler;
 import it.polimi.ingsw.network.client.SocketClient;
 import it.polimi.ingsw.network.client.messages.*;
 import it.polimi.ingsw.network.client.modelBean.*;
 import it.polimi.ingsw.network.client.modelBean.ExpertCard.BanExpertCardBean;
 import it.polimi.ingsw.network.client.modelBean.ExpertCard.ExpertCardBean;
 import it.polimi.ingsw.network.client.modelBean.ExpertCard.StudBufferExpertCardBean;
+import it.polimi.ingsw.network.server.answers.AssistantCardPlayedAnswer;
+import it.polimi.ingsw.network.server.answers.update.*;
 
+import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.SocketException;
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Map;
 import java.util.Scanner;
+import java.util.StringTokenizer;
 
 /**
  * This is the main class  for the Command Line Interface.
  *
  * @author Dario d'Abate
  */
-public class CLI extends UI implements PropertyChangeListener {
-    private final SocketClient socketClient;
+public class CLI  implements PropertyChangeListener, UI {
+    private  SocketClient socketClient;
     private final Scanner stdIn ;
     private volatile boolean sending;
 
+    private GameBean gameBean; //model view
+    private String nickname;
 
-
-    public CLI(SocketClient socketClient){
-        this.socketClient = socketClient;
+    /**
+     * Constructor of the class. It also initializes the socketClient
+     */
+    public CLI(){
         stdIn = new Scanner(new InputStreamReader(System.in));
         sending = true;
+        try{
+            initSocketClient();
+        }catch (IOException e){
+            System.out.println("Cannot initialize CLI");
+            System.exit(1);
+        }
+    }
+
+    /**
+     * Helper method used to initialize a socket. It also set up the mechanism of event handling
+     * through property change listener
+     */
+    private void initSocketClient() throws IOException {
+        AnswerHandler answerHandler = new AnswerHandler();
+        String hostName = getHostName();
+        int portNumber = getPortNumber();
+        socketClient = new SocketClient(hostName , portNumber,answerHandler);
+        answerHandler.addPropertyChangeListener(this);
+    }
+
+    /**
+     * Helper method used to get and validate the hostname
+     * @return valid hostname inserted by the user
+     */
+    private String getHostName(){
+        System.out.println("Please insert the server host name.");
+        String temp = null;
+        boolean valid = false;
+        while(!valid) {
+            temp = stdIn.nextLine();
+            valid = checkIpAddress(temp);
+            if(!valid)
+                System.out.println("Please insert a valid host name");
+        }
+        return temp;
+    }
+
+    /**
+     * helper method used to validate an ip address
+     * @param ipAddress string representation of an ip address
+     * @return true if the ipAddress is well-formed, false otherwise
+     */
+    private static boolean checkIpAddress(String ipAddress) {
+        boolean b1 = false;
+        StringTokenizer t = new StringTokenizer(ipAddress, ".");
+        try {
+            int a = Integer.parseInt(t.nextToken());
+            int b = Integer.parseInt(t.nextToken());
+            int c = Integer.parseInt(t.nextToken());
+            int d = Integer.parseInt(t.nextToken());
+            if ((a >= 0 && a <= 255) && (b >= 0 && b <= 255)
+                    && (c >= 0 && c <= 255) && (d >= 0 && d <= 255))
+                b1 = true;
+            return b1;
+        }catch (Exception e){
+            return false;
+        }
+    }
+
+    /**
+     * Helper method used to get a valid port number
+     * @return valid port number inserted by the user
+     */
+    private int getPortNumber(){
+        System.out.println("Please insert the server port.");
+        int temp = -1;
+        while(temp < 0) {
+            temp = stdIn.nextInt();
+            System.out.println("Please insert a valid server port.");
+        }
+        return temp;
+    }
+
+    /**
+     * This method will show content based on the event that the client receives, thus it updates the view
+     * @param evt event occurred due to server
+     */
+    public void propertyChange(PropertyChangeEvent evt) {
+        switch (evt.getPropertyName()) {
+            case "stopSending" -> closeUserInterface();
+            case "genericMessage", "requestNickname", "requestNumPlayer", "requestExpertMode", "startMessage" -> displayGenericMessage((String)evt.getNewValue());
+            case "towerChoice" -> displaySelectableTower((ArrayList<Tower>) evt.getNewValue());
+            case "cardBackChoice" -> displaySelectableCardBack((ArrayList<CardBack>) evt.getNewValue());
+            case "nickname" -> this.nickname = (String) evt.getNewValue();
+            case "gameState" -> {
+                this.gameBean = (GameBean)evt.getNewValue();
+                displayAllGame() ;
+            }
+            case "cardPlayed" -> {
+                String nickname = ((AssistantCardPlayedAnswer)evt.getNewValue()).getNickname();
+                ArrayList<AssistantCard> hand = ((AssistantCardPlayedAnswer)evt.getNewValue()).getHand();
+                AssistantCard playedCard = ((AssistantCardPlayedAnswer)evt.getNewValue()).getCard();
+
+                for(PlayerBean player :gameBean.getPlayers()){
+                    if(player.getNickname().equals(nickname)){
+                        player.setPlayedCard(playedCard);
+                        player.setHand(hand); //new hand
+                    }
+                }
+                displayAllGame() ;
+            }
+            case "toHall" -> {
+                ArrayList<BoardBean> updatedBoardList = ((ToHallUpdateAnswer)evt.getNewValue()).getUpdatedBoardList();
+
+
+                for(int i = 0; i < gameBean.getPlayers().size(); i++){
+                    PlayerBean player = gameBean.getPlayers().get(i);
+                    player.setBoard(updatedBoardList.get(i));
+                }
+                displayAllGame() ;
+            }
+            case "toIsland" -> {
+                String nickname = ((ToIslandUpdateAnswer)evt.getNewValue()).getNickname();
+                BoardBean updatedBoard = ((ToIslandUpdateAnswer)evt.getNewValue()).getUpdatedBoard();
+                ArrayList<IslandBean> updatedArchipelago = ((ToIslandUpdateAnswer)evt.getNewValue()).getUpdatedArchipelago();
+
+                for(PlayerBean player :gameBean.getPlayers()){
+                    if(player.getNickname().equals(nickname))
+                        player.setBoard(updatedBoard);
+                }
+                gameBean.setArchipelago(updatedArchipelago);
+                displayAllGame() ;
+            }
+
+            case "motherMovement" -> {
+                int motherNature =  ((MotherNatureUpdateAnswer)evt.getNewValue()).getUpdatedMotherNature();
+                ArrayList<BoardBean> updatedBoards = ((MotherNatureUpdateAnswer)evt.getNewValue()).getUpdatedBoards();
+                ArrayList<IslandBean> updatedArchipelago = ((MotherNatureUpdateAnswer)evt.getNewValue()).getUpdatedArchipelago();
+
+                for(int i = 0; i < gameBean.getPlayers().size(); i++){
+                    gameBean.getPlayers().get(i).setBoard(updatedBoards.get(i));
+                }
+                gameBean.setMotherNature(motherNature);
+                gameBean.setArchipelago(updatedArchipelago);
+                displayAllGame() ;
+            }
+            case "cloudChoice" -> {
+                ArrayList<BoardBean> updatedBoards = ((CloudsUpdateAnswer)evt.getNewValue()).getUpdatedBoards();
+                ArrayList<CloudBean> updateClouds = ((CloudsUpdateAnswer)evt.getNewValue()).getUpdateClouds();
+
+                for(int i = 0; i < gameBean.getPlayers().size(); i++){
+                    gameBean.getPlayers().get(i).setBoard(updatedBoards.get(i));
+                }
+                gameBean.setCloudTiles(updateClouds);
+                displayAllGame();
+            }
+            case "expertCard" -> {
+                ArrayList<BoardBean> updatedBoards = ((ExpertCardUpdateAnswer)evt.getNewValue()).getUpdatedBoards();
+                ArrayList<IslandBean> updatedArchipelago = ((ExpertCardUpdateAnswer)evt.getNewValue()).getUpdatedArchipelago();
+                ArrayList<ExpertCardBean> updatedExpertCards = ((ExpertCardUpdateAnswer)evt.getNewValue()).getUpdatedExpertCards();
+
+                gameBean.setExpertCards(updatedExpertCards);
+                if(updatedBoards != null){
+                    for(int i = 0; i < gameBean.getPlayers().size(); i++){
+                        gameBean.getPlayers().get(i).setBoard(updatedBoards.get(i));
+                    }
+                }
+                if(updatedArchipelago != null){
+                    gameBean.setArchipelago(updatedArchipelago);
+                }
+                displayAllGame();
+            }
+        }
     }
 
     /**
@@ -129,7 +301,7 @@ public class CLI extends UI implements PropertyChangeListener {
      * This method is used to close the user interface
      */
     @Override
-    void closeUserInterface() {
+    public void closeUserInterface() {
         sending = false;
     }
 
@@ -138,7 +310,7 @@ public class CLI extends UI implements PropertyChangeListener {
      * @param message message to be print
      */
     @Override
-    void displayGenericMessage(String message) {
+    public void displayGenericMessage(String message) {
         System.out.println(message);
     }
 
@@ -309,6 +481,8 @@ public class CLI extends UI implements PropertyChangeListener {
         System.out.println(ANSIConstants.UNDERLINE + "ASSISTANT CARDS");
         System.out.print(ANSIConstants.TEXT_RESET);
         System.out.flush();
+        System.out.println("Card back: " + playerBean.getHand().get(0).getCardBack());
+
 
         if(playerBean.getNickname().equals(nickname)){
             System.out.print("PRIORITY: ");
@@ -335,7 +509,7 @@ public class CLI extends UI implements PropertyChangeListener {
      * This method is used to print all the clouds in the game
      */
     @Override
-    void displayClouds() {
+    public void displayClouds() {
         for(CloudBean cloudBean: gameBean.getCloudTiles()){
             System.out.println("CLOUD " + (gameBean.getCloudTiles().indexOf(cloudBean) + 1));
             for (Color color: Color.values()){

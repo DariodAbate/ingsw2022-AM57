@@ -11,10 +11,12 @@ import it.polimi.ingsw.network.server.answers.request.StartAnswer;
 import it.polimi.ingsw.network.server.exception.GameDisconnectionException;
 import it.polimi.ingsw.network.server.exception.SetupGameDisconnectionException;
 
-import java.io.IOException;
+import java.io.*;
 import java.net.SocketException;
 import java.net.SocketTimeoutException;
 import java.util.ArrayList;
+import java.util.Map;
+import java.util.Objects;
 import java.util.Scanner;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -27,10 +29,10 @@ import java.util.concurrent.Executors;
  */
 public class MultiServer {
     private final SocketServer socketServer;
-    private final ReconnectionHandler reconnectionHandler;
+    private ReconnectionHandler reconnectionHandler;
     
-    private final ArrayList<String> loggedPlayers;//list of all the nicknames used in the server
-    private final ArrayList<ServerClientHandler> connectionList; //list of client waiting in the lobby
+    private ArrayList<String> loggedPlayers;//list of all the nicknames used in the server
+    private ArrayList<ServerClientHandler> connectionList; //list of client waiting in the lobby
 
     private int requiredPlayer;
     private boolean expertMode;
@@ -53,13 +55,7 @@ public class MultiServer {
         socketServer = new SocketServer(this, port);
         Thread thread = new Thread(this::stopServer); //thread that listen for quitting
         thread.start();
-        connectionList = new ArrayList<>();
-        loggedPlayers = new ArrayList<>();//contains all the nickname
-
-        expertMode = false;
-        requiredPlayer = -1;
-
-        reconnectionHandler = new ReconnectionHandler(this);
+        reloadPreviousServer();
     }
 
     /**
@@ -70,6 +66,18 @@ public class MultiServer {
         while(true){
             if(scanner.next().equalsIgnoreCase("close")){
                 socketServer.setOperating(false);
+
+                /*
+                 * Delete the stored files in disk.
+                 * WARNING: check the folder to be sure that the deletion occurred, otherwise the server cannot restart
+                 */
+                File savedParametersDirectory = new File("SavedServerParameters");
+                savedParametersDirectory.mkdir();
+                fileDeletion(savedParametersDirectory);
+
+                File savedGamesDirectory = new File("SavedGames");
+                fileDeletion(savedGamesDirectory);
+                System.out.println("Cleaned old files");
                 System.exit(0);
                 break;
             }
@@ -77,12 +85,38 @@ public class MultiServer {
     }
 
     /**
-     * This method unregister a player from the serve, deleting his nickname in the database.
+     * Helper method used to delete the files that managed the persistence mechanism
+     * @param directory directory in which the files will be deleted
+     */
+    private void fileDeletion(File directory) {
+        if (directory.isDirectory() && (Objects.requireNonNull(directory.list())).length > 0) {
+
+            //delete old content
+            for (File file : Objects.requireNonNull(directory.listFiles())) {
+                boolean control = file.delete();
+                System.out.println("Deleting: " + file.getName());
+                System.out.println(control ? ("File deleted"):"Cannot delete this file, please remove manually from the folder!");
+            }
+        }
+    }
+
+    /**
+     * This method unregister a player from the server, deleting his nickname in the "database".
      * If that nickname is not registered in the server, nothing happen
      * @param nickname nickname of the player to be deleted from the server
      */
     public void unregisterPlayer(String nickname){
         loggedPlayers.remove(nickname);
+
+        saveParameters(); //update loggedPlayers on disk
+    }
+
+    /**
+     * This method unregister ALL the players of a game from the reconnection handler, due to a victory.
+     * @param nickname nickname of one of the players that belongs to a game
+     */
+    public void unregisterPlayerFromReconnection(String nickname){
+        reconnectionHandler.remove(nickname);
     }
 
     /**
@@ -131,6 +165,8 @@ public class MultiServer {
                 }
                 if(!loggedPlayers.contains(nickName)){
                     loggedPlayers.add(nickName);
+                    saveParameters(); //saving loggedPlayers on disk
+
                     correctNick = true;
                     clientHandler.setNickname(nickName);
                     clientHandler.sendMessageToClient("Welcome " + nickName);
@@ -163,13 +199,11 @@ public class MultiServer {
             }catch(SocketTimeoutException | SocketException e) {
                 if (e instanceof SocketTimeoutException)//disconnection
                     clientHandler.sendShutDownToClient();
-                expertMode = false;
-                requiredPlayer = -1;
-                connectionList.remove(clientHandler);
-                loggedPlayers.remove(clientHandler.getNickname());
+
+                System.out.println("Removing from lobby...");
+                removeFromLobby(clientHandler);
             }
         } else if (connectionList.size() == requiredPlayer) {
-            //broadcastMessage("Number of players reached. Starting a new game.");
             broadcastStart("Number of players reached. Starting a new game.");
             startGame(requiredPlayer, expertMode, this);
 
@@ -180,6 +214,20 @@ public class MultiServer {
         } else {
             clientHandler.sendMessageToClient("Wait for " + (this.requiredPlayer - connectionList.size()) + " players to join.");
         }
+    }
+
+    /**
+     * This method is used to reset the parameters set up by the first player and remove him from the server
+     * @param clientHandler client handler associated with the player
+     */
+    public void removeFromLobby(ServerClientHandler clientHandler){
+        expertMode = false;
+        requiredPlayer = -1;
+        connectionList.remove(clientHandler);
+        loggedPlayers.remove(clientHandler.getNickname());
+
+        saveParameters(); //update loggedPlayers on disk
+
     }
 
     /**
@@ -218,6 +266,7 @@ public class MultiServer {
 
         Thread t = new Thread(() -> {
             try {
+                gameHandler.sendGameView();//resend the view
                 gameHandler.gameTurns(); //restart a game at the point where a player has disconnected
             } catch (IOException | ClassNotFoundException e) {
                 e.printStackTrace();
@@ -233,7 +282,7 @@ public class MultiServer {
      * This method is used to save a game into the disk
      * @param gameHandler game handler object associated to the game that will be saved
      */
-    private synchronized void saveGame(GameHandler gameHandler) {
+    public synchronized void saveGame(GameHandler gameHandler) {
         ArrayList<String> playersNick = gameHandler.getNicknamePlayers();
         Game game = gameHandler.getGame();
         reconnectionHandler.addGame(game, playersNick);
@@ -313,19 +362,96 @@ public class MultiServer {
     }
 
     /**
-     *  This method sends a message to all the logged players that are waiting for a game
-     * @param msg message sent.
+     * This method is used to notify all the client in the connection list about the start of a game
+     * @param msg msg that will be sent
      */
-    public void broadcastMessage(String msg) throws IOException {
+    public void broadcastStart(String msg) throws IOException {
         for(ServerClientHandler clientHandler: connectionList){
-            clientHandler.sendMessageToClient(msg);
+            clientHandler.setStart();//exit from the waiting room
+            clientHandler.sendMessageToClient(new StartAnswer(msg));
         }
     }
 
-    public void broadcastStart(String msg) throws IOException {
-        for(ServerClientHandler clientHandler: connectionList){
-            clientHandler.sendMessageToClient(new StartAnswer(msg));
+    /**
+     * This method is used to save on disk the list of logged players.
+     * This method has to be invoked whenever that list is modified
+     */
+    private void saveParameters(){
+        try{
+            String path =  "SavedServerParameters/loggedPlayers.ser";
+           // String path = getClass().getResource("/SavedServerParameters/loggedPlayers.ser").toExternalForm();
+            FileOutputStream f = new FileOutputStream(path);
+            ObjectOutputStream o = new ObjectOutputStream(f);
+
+            // Write objects to file
+            o.writeObject(this.loggedPlayers);
+
+            o.close();
+            f.close();
+
+        } catch (IOException e) {
+            System.out.println("Message: " +  e.getMessage());
+            e.printStackTrace();
         }
+    }
+
+    /**
+     * This method is used to get previous server related parameters from disk.
+     * If present, they are reloaded and removed from the disk, otherwise new ones are created
+     */
+    private void reloadPreviousServer() {
+        try {
+            //File directory = new File("src/main/resources/SavedServerParameters");
+            File directory = new File("SavedServerParameters");
+            directory.mkdir();
+
+            //File directory = new File(getClass().getResource("/SavedServerParameters").toExternalForm());
+            if (directory.isDirectory()) {
+                if ((Objects.requireNonNull(directory.list())).length > 0) {
+                    System.out.println("Reloading previous server parameters...");
+                    this.loggedPlayers = (ArrayList<String>) readFromResources("loggedPlayers");
+                    int nextId = (int) readFromResources("nextId");
+                    Map<ArrayList<String>, Integer> gameIdByUserMap = (Map<ArrayList<String>, Integer>) readFromResources("gameIdByUserMap");
+                    reconnectionHandler = new ReconnectionHandler(this, nextId, gameIdByUserMap);
+                } else {
+                    System.out.println("Previous server parameters does not exist. Creating new ones...");
+                    loggedPlayers = new ArrayList<>();//contains all the nickname
+
+                    reconnectionHandler = new ReconnectionHandler(this);
+                }
+
+                connectionList = new ArrayList<>();
+                expertMode = false;
+                requiredPlayer = -1;
+            }
+        }catch (Exception e ){
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * Helper method used to reload a file from the resource folder
+     * @param nameOfResource name of the file to reload
+     * @return object associated with the one that has been reloaded
+     */
+    private Object readFromResources(String nameOfResource) {
+        Object o = null;
+        try {
+            String path = "SavedServerParameters/"+ nameOfResource +".ser";
+            FileInputStream fi = new FileInputStream(path);
+            ObjectInputStream oi = new ObjectInputStream(fi);
+
+            // Read objects
+            o = oi.readObject();
+
+            oi.close();
+            fi.close();
+        } catch (IOException | ClassNotFoundException e) {
+            System.out.println(e.getMessage());
+            e.printStackTrace();
+            System.exit(1);
+        }
+        return o;
     }
 
     /**
