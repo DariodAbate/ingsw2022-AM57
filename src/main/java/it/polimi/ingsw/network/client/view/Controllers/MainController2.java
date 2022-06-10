@@ -170,7 +170,7 @@ public class MainController2 implements GUIController {
         sendColor(myEntranceStud6);
     }
 
-    private void sendColor(ImageView myEntranceStud) {
+    private void sendColor(ImageView myEntranceStud) {  //FIXME il disegno deve essere fatto in base alla chiamata
         try {
             gui.getSocketClient().send(new ColorChosen(entrance.get(myEntranceStud)));
         } catch (SocketException e) {

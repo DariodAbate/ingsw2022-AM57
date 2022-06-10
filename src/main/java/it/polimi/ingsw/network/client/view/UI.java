@@ -57,7 +57,7 @@ public abstract class UI {
                          if(player.getNickname().equals(nickname))
                               player.setBoard(updatedBoard);
                     }
-                    displayAllGame() ;
+                    displayAllGame();
                }
                case "toIsland" -> {
                     String nickname = ((ToIslandUpdateAnswer)evt.getNewValue()).getNickname();
