@@ -55,8 +55,8 @@ public class CLI  implements PropertyChangeListener, UI {
      */
     private void initSocketClient() throws IOException {
         AnswerHandler answerHandler = new AnswerHandler();
-        String hostName = getHostName();
         int portNumber = getPortNumber();
+        String hostName = getHostName();
         socketClient = new SocketClient(hostName , portNumber,answerHandler);
         answerHandler.addPropertyChangeListener(this);
     }
@@ -108,8 +108,13 @@ public class CLI  implements PropertyChangeListener, UI {
         System.out.println("Please insert the server port.");
         int temp = -1;
         while(temp < 0) {
-            temp = stdIn.nextInt();
-            System.out.println("Please insert a valid server port.");
+            String tempString = stdIn.nextLine();
+            try{
+                temp = Integer.parseInt(tempString);
+            }catch (NumberFormatException e){
+                System.out.println("Please insert a valid server port.");
+                temp = -1;
+            }
         }
         return temp;
     }
