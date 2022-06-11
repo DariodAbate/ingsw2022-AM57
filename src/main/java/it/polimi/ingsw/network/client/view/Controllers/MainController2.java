@@ -112,7 +112,7 @@ public class MainController2 implements GUIController {
         professorsColor.put(Color.BLUE, BLUE_PROF);
     }
 
-    public void showEntranceStudents(ArrayList<Color> colors) {    //TODO gestire con un unico metodo le board con il booleano come parametro
+    public void showEntranceStudents(ArrayList<Color> colors) {
             for(ImageView entranceStudent : myEntranceStudents) {
                myBoard.getChildren().remove(entranceStudent);
             }
@@ -158,7 +158,7 @@ public class MainController2 implements GUIController {
             hallStudent.setFitWidth(20);
             myHallStudents.add(hallStudent);
             /*if (isMyBoard) */
-                hallStudent.setOnMouseClicked(event -> {           //TODO gestire con un unico metodo le board con il booleano come parametro
+                hallStudent.setOnMouseClicked(event -> {
                     sendStudentToMove(colors.get(finalI));
                 });
             switch (colors.get(i)) {
