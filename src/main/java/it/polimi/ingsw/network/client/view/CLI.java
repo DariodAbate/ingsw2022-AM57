@@ -109,8 +109,12 @@ public class CLI  implements PropertyChangeListener, UI {
         int temp = -1;
         while(temp < 0) {
             String tempString = stdIn.nextLine();
-            temp = Integer.parseInt(tempString);
-            System.out.println("Please insert a valid server port.");
+            try{
+                temp = Integer.parseInt(tempString);
+            }catch (NumberFormatException e){
+                System.out.println("Please insert a valid server port.");
+                temp = -1;
+            }
         }
         return temp;
     }

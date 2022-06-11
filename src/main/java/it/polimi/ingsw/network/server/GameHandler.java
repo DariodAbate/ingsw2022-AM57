@@ -75,6 +75,33 @@ public class GameHandler implements PropertyChangeListener {
     }
 
     /**
+     * This constructor is used for restarting an already started game
+     * @param restartedGame game to be restarted
+     * @param playersConnections list of client handler that belongs to that game
+     * @param server server instance
+     */
+    public GameHandler(Game restartedGame, ArrayList<ServerClientHandler> playersConnections, MultiServer server){
+        this.server = server;
+        this.game = restartedGame;
+        this.playersConnections = playersConnections;
+        this.numPlayer = game.getNumPlayers();
+        clientToPlayer = new HashMap<>();
+        playerToClient = new HashMap<>();
+
+        for(int i=0; i < numPlayer; i++){
+            clientToPlayer.put(playersConnections.get(i), game.getPlayers().get(i));
+        }
+
+        for(int i=0; i < numPlayer; i++){
+            playerToClient.put(game.getPlayers().get(i), playersConnections.get(i));
+        }
+
+        continueGame = true;
+        endGameInRound = false;
+        //WARNING: playersConnections should have the same order as the arraylist of players saved in the game
+    }
+
+    /**
      * This method is invoked when a player wins the game
      * @param evt type of victory associated to an event
      */
@@ -101,32 +128,7 @@ public class GameHandler implements PropertyChangeListener {
         return game;
     }
 
-    /**
-     * This constructor is used for restarting an already started game
-     * @param restartedGame game to be restarted
-     * @param playersConnections list of client handler that belongs to that game
-     * @param server server instance
-     */
-    public GameHandler(Game restartedGame, ArrayList<ServerClientHandler> playersConnections, MultiServer server){
-        this.server = server;
-        this.game = restartedGame;
-        this.playersConnections = playersConnections;
-        this.numPlayer = game.getNumPlayers();
-        clientToPlayer = new HashMap<>();
-        playerToClient = new HashMap<>();
 
-        for(int i=0; i < numPlayer; i++){
-            clientToPlayer.put(playersConnections.get(i), game.getPlayers().get(i));
-        }
-
-        for(int i=0; i < numPlayer; i++){
-            playerToClient.put(game.getPlayers().get(i), playersConnections.get(i));
-        }
-
-        continueGame = true;
-        endGameInRound = false;
-        //WARNING: playersConnections should have the same order as the arraylist of players saved in the game
-    }
 
     /**
      * This method is used to unregister all the player of this game in the server, so a new player can choose his nickname
