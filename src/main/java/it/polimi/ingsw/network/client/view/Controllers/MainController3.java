@@ -26,6 +26,7 @@ public class MainController3 implements GUIController{
     @FXML private AnchorPane otherFirstBoard;
     @FXML private AnchorPane otherSecondBoard;
     @FXML private Label infoMessage;
+    private ArrayList<Integer> otherPlayersIndex;
 
     private final HashMap<Integer, Image> hand = new HashMap<>();
     private final HashMap<Color, Image> studentsColor = new HashMap<>();
@@ -38,6 +39,13 @@ public class MainController3 implements GUIController{
     private ArrayList<ImageView> myProfessors = new ArrayList<>();
     private ArrayList<ImageView>  cards = new ArrayList<>();
     private ArrayList<AnchorPane> clouds = new ArrayList<>();
+    private ArrayList<ImageView> otherFirstEntrance = new ArrayList<>();
+    private ArrayList<ImageView> otherSecondEntrance = new ArrayList<>();
+    private ArrayList<ImageView> otherFirstHall = new ArrayList<>();
+    private ArrayList<ImageView> otherSecondHall = new ArrayList<>();
+    private ArrayList<ImageView> otherFirstProfessors = new ArrayList<>();
+    private ArrayList<ImageView> otherSecondProfessors = new ArrayList<>();
+
 
     private final static Paint BLACK = javafx.scene.paint.Color.BLACK;
     private final static Paint WHITE = javafx.scene.paint.Color.WHITE;
@@ -129,11 +137,11 @@ public class MainController3 implements GUIController{
     }
 
     public void showHallStudents(ArrayList<Color> colors) {
-        double lastGreenStudentX = 76;
-        double lastRedStudentX = 76;
-        double lastYellowStudentX = 76;
-        double lastPinkStudentX = 76;
-        double lastBlueStudentX = 76;
+        double lastGreenStudentX = 56.3;
+        double lastRedStudentX = 56.3;
+        double lastYellowStudentX = 56.3;
+        double lastPinkStudentX = 56.3;
+        double lastBlueStudentX = 56.3;
         for(ImageView hallStudent : myHallStudents) {
             myBoard.getChildren().remove(hallStudent);
         }
@@ -249,6 +257,16 @@ public class MainController3 implements GUIController{
         }
     }
 
+    public void showLastPlayedCard(int lastPriority) {
+        ImageView lastPlayedCard = new ImageView(hand.get(lastPriority));
+        mainPane.getChildren().add(lastPlayedCard);
+        lastPlayedCard.setFitWidth(88);
+        lastPlayedCard.setFitHeight(132);
+        lastPlayedCard.setLayoutX(274);
+        lastPlayedCard.setLayoutY(529);
+    }
+    
+
     public void sendChosenCard(Integer priority) {
         try {
             gui.getSocketClient().send(new IntegerMessage(priority));
@@ -258,7 +276,7 @@ public class MainController3 implements GUIController{
     }
 
     public void showClouds(HashMap<Integer, ArrayList<Color>> cloudColorsMap) {
-        double lastCloudY = 15;
+        double lastCloudY = -85;
         for (AnchorPane cloud : clouds) {
             mainPane.getChildren().remove(cloud);
         }
@@ -373,7 +391,7 @@ public class MainController3 implements GUIController{
                 islandPane.getChildren().add(tower);
                 tower.setRadius(10);
                 tower.setLayoutX(20 + 17 * k);
-                tower.setLayoutY(40);
+                tower.setLayoutY(60);
                 switch (towerColorMap.get(i)) {
                     case WHITE -> tower.setFill(WHITE);
                     case BLACK -> tower.setFill(BLACK);
@@ -391,6 +409,199 @@ public class MainController3 implements GUIController{
             e.printStackTrace();
         }
     }
+
+    public void showOtherPlayerEntrance(ArrayList<Color> colors, int playerIndex) {
+        if (playerIndex == otherPlayersIndex.get(0)) {
+            firstEntranceStudents(colors);
+        }
+        if (playerIndex == otherPlayersIndex.get(1)) {
+            secondEntranceStudents(colors);
+        }
+    }
+
+    public void firstEntranceStudents(ArrayList<Color> colors) {
+        for(ImageView entranceStudent : otherFirstEntrance) {
+            otherFirstBoard.getChildren().remove(entranceStudent);
+        }
+        otherFirstEntrance.removeAll(otherFirstEntrance);
+        for (int i = 0; i < colors.size(); i ++) {
+            ImageView entranceStudent = new ImageView(studentsColor.get(colors.get(i)));
+            otherFirstBoard.getChildren().add(entranceStudent);
+            entranceStudent.setFitHeight(17);
+            entranceStudent.setFitWidth(17);
+            entranceStudent.setLayoutX(25);
+            entranceStudent.setLayoutY(10 + 18 * i);
+            otherFirstEntrance.add(entranceStudent);
+        }
+    }
+
+    public void secondEntranceStudents(ArrayList<Color> colors) {
+        for(ImageView entranceStudent : otherSecondEntrance) {
+            otherSecondBoard.getChildren().remove(entranceStudent);
+        }
+        otherSecondEntrance.removeAll(otherSecondEntrance);
+        for (int i = 0; i < colors.size(); i ++) {
+            ImageView entranceStudent = new ImageView(studentsColor.get(colors.get(i)));
+            otherSecondBoard.getChildren().add(entranceStudent);
+            entranceStudent.setFitHeight(17);
+            entranceStudent.setFitWidth(17);
+            entranceStudent.setLayoutX(25);
+            entranceStudent.setLayoutY(10 + 18 * i);
+            otherSecondEntrance.add(entranceStudent);
+        }
+    }
+
+    public void setOtherPlayersIndex(ArrayList<Integer> otherPlayersIndex) {
+        this.otherPlayersIndex = otherPlayersIndex;
+    }
+
+    public void showOtherLastPlayedCard(int lastPriority, int playerIndex) {
+        if(playerIndex == otherPlayersIndex.get(0)) {
+            ImageView lastPlayedCard = new ImageView(hand.get(lastPriority));
+            mainPane.getChildren().add(lastPlayedCard);
+            lastPlayedCard.setFitWidth(88);
+            lastPlayedCard.setFitHeight(132);
+            lastPlayedCard.setLayoutX(57);
+            lastPlayedCard.setLayoutY(488);
+            lastPlayedCard.setRotate(270);
+        } else if(playerIndex == otherPlayersIndex.get(1)) {
+            ImageView lastPlayedCard = new ImageView(hand.get(lastPriority));
+            mainPane.getChildren().add(lastPlayedCard);
+            lastPlayedCard.setFitWidth(88);
+            lastPlayedCard.setFitHeight(132);
+            lastPlayedCard.setLayoutX(1056);
+            lastPlayedCard.setLayoutY(488);
+            lastPlayedCard.setRotate(90);
+        }
+    }
+
+    public void showOtherPlayersHall(ArrayList<Color> colors, int playerIndex) {
+        if (playerIndex == otherPlayersIndex.get(0)) {
+            firstHallStudents(colors);
+        }
+        if (playerIndex == otherPlayersIndex.get(1)) {
+            secondHallStudents(colors);
+        }
+    }
+
+    public void firstHallStudents(ArrayList<Color> colors) {
+        double lastGreenStudentX = 56.3;
+        double lastRedStudentX = 56.3;
+        double lastYellowStudentX = 56.3;
+        double lastPinkStudentX = 56.3;
+        double lastBlueStudentX = 56.3;
+        for(ImageView hallStudent : otherFirstHall) {
+            otherFirstBoard.getChildren().remove(hallStudent);
+        }
+        otherFirstHall.removeAll(otherFirstHall);
+        for (int i = 0; i < colors.size(); i++) {
+            ImageView hallStudent = new ImageView(studentsColor.get(colors.get(i)));
+            otherFirstBoard.getChildren().add(hallStudent);
+            hallStudent.setFitHeight(18);
+            hallStudent.setFitWidth(18);
+            otherFirstHall.add(hallStudent);
+            switch (colors.get(i)) {
+                case GREEN -> {
+                    hallStudent.setLayoutX(lastGreenStudentX + 19.7);
+                    hallStudent.setLayoutY(22);
+                    lastGreenStudentX += 19.7;
+                }
+                case RED -> {
+                    hallStudent.setLayoutX(lastRedStudentX + 19.7);
+                    hallStudent.setLayoutY(51);
+                    lastRedStudentX += 19.7;
+                }
+                case YELLOW -> {
+                    hallStudent.setLayoutX(lastYellowStudentX + 19.7);
+                    hallStudent.setLayoutY(81);
+                    lastYellowStudentX += 19.7;
+                }
+                case PINK -> {
+                    hallStudent.setLayoutX(lastPinkStudentX + 19.7);
+                    hallStudent.setLayoutY(110.5);
+                    lastPinkStudentX += 19.7;
+                }
+                case BLUE -> {
+                    hallStudent.setLayoutX(lastBlueStudentX + 19.7);
+                    hallStudent.setLayoutY(139);
+                    lastBlueStudentX += 19.7;
+                }
+            }
+        }
+    }
+
+    public void secondHallStudents(ArrayList<Color> colors) {
+        double lastGreenStudentX = 56.3;
+        double lastRedStudentX = 56.3;
+        double lastYellowStudentX = 56.3;
+        double lastPinkStudentX = 56.3;
+        double lastBlueStudentX = 56.3;
+        for(ImageView hallStudent : otherFirstHall) {
+            otherSecondBoard.getChildren().remove(hallStudent);
+        }
+        otherSecondHall.removeAll(otherSecondHall);
+        for (int i = 0; i < colors.size(); i++) {
+            ImageView hallStudent = new ImageView(studentsColor.get(colors.get(i)));
+            otherSecondBoard.getChildren().add(hallStudent);
+            hallStudent.setFitHeight(18);
+            hallStudent.setFitWidth(18);
+            otherFirstHall.add(hallStudent);
+            switch (colors.get(i)) {
+                case GREEN -> {
+                    hallStudent.setLayoutX(lastGreenStudentX + 19.7);
+                    hallStudent.setLayoutY(22);
+                    lastGreenStudentX += 19.7;
+                }
+                case RED -> {
+                    hallStudent.setLayoutX(lastRedStudentX + 19.7);
+                    hallStudent.setLayoutY(51);
+                    lastRedStudentX += 19.7;
+                }
+                case YELLOW -> {
+                    hallStudent.setLayoutX(lastYellowStudentX + 19.7);
+                    hallStudent.setLayoutY(81);
+                    lastYellowStudentX += 19.7;
+                }
+                case PINK -> {
+                    hallStudent.setLayoutX(lastPinkStudentX + 19.7);
+                    hallStudent.setLayoutY(110.5);
+                    lastPinkStudentX += 19.7;
+                }
+                case BLUE -> {
+                    hallStudent.setLayoutX(lastBlueStudentX + 19.7);
+                    hallStudent.setLayoutY(139);
+                    lastBlueStudentX += 19.7;
+                }
+            }
+        }
+    }
+
+    public void showOtherPlayersProfessors(ArrayList<Color> professorsColors, int playerIndex) {
+        if (playerIndex == otherPlayersIndex.get(0)) {
+            showProfessors(professorsColors, otherFirstProfessors, otherFirstBoard);
+        }
+        if (playerIndex == otherPlayersIndex.get(1)) {
+            showProfessors(professorsColors, otherSecondProfessors, otherSecondBoard);
+        }
+    }
+
+    public void showOtherPlayesrsTowers(Tower towerColor, int numTowers, int playerIndex) {
+        if (playerIndex == otherPlayersIndex.get(0)) {
+            switch (towerColor) {
+                case WHITE -> setTowerColor(WHITE, numTowers, otherFirstBoard);
+                case BLACK -> setTowerColor(BLACK, numTowers, otherFirstBoard);
+                case GRAY -> setTowerColor(GRAY, numTowers, otherFirstBoard);
+            }
+        }
+        if (playerIndex == otherPlayersIndex.get(1)) {
+            switch (towerColor) {
+                case WHITE -> setTowerColor(WHITE, numTowers, otherSecondBoard);
+                case BLACK -> setTowerColor(BLACK, numTowers, otherSecondBoard);
+                case GRAY -> setTowerColor(GRAY, numTowers, otherSecondBoard);
+            }
+        }
+    }
+
 
     public void showInfoMessage(String message) {
         infoMessage.setText(message);

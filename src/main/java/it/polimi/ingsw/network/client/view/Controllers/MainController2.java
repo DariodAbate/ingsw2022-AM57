@@ -314,7 +314,6 @@ public class MainController2 implements GUIController {
         }
         otherEntranceStudents.removeAll(otherEntranceStudents);
         for (int i = 0; i < colors.size(); i ++) {
-            int finalI= i;
             ImageView entranceStudent = new ImageView(studentsColor.get(colors.get(i)));
             otherBoard.getChildren().add(entranceStudent);
             entranceStudent.setFitHeight(20);

@@ -21,7 +21,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 
-public class GUI extends Application implements PropertyChangeListener,UI{
+public class GUI extends Application implements PropertyChangeListener{
 
     public static final String MAIN_SCENE_FOR2 = "mainScene2Player.fxml";
     public static final String MAIN_SCENE_FOR3 = "mainScene3Player.fxml";
@@ -303,6 +303,7 @@ public class GUI extends Application implements PropertyChangeListener,UI{
     }
 
     public void displayAllGame() {
+        ArrayList<Integer> otherPlayersIndex = new ArrayList<>();
         Platform.runLater(() -> {
             if (gameBean.getPlayers().size() == 2) {
                 changeStage(MAIN_SCENE_FOR2);
@@ -310,20 +311,23 @@ public class GUI extends Application implements PropertyChangeListener,UI{
                 changeStage(MAIN_SCENE_FOR3);
             }
             for (int i = 0; i < gameBean.getPlayers().size(); i++) {
-                displayBoard(gameBean.getPlayers().get(i).getBoard(), gameBean.isExpertGame(), gameBean.getPlayers().get(i).getNickname().equals(nickname));
-                if (gameBean.getPlayers().get(i).getNickname().equals(nickname)) displayCard(gameBean.getPlayers().get(i));
+                displayBoard(gameBean.getPlayers().get(i).getBoard(), gameBean.isExpertGame(), gameBean.getPlayers().get(i).getNickname().equals(nickname), gameBean.getPlayers().indexOf(gameBean.getPlayers().get(i)));
+                if (gameBean.getPlayers().get(i).getNickname().equals(nickname)) {
+                    displayCard(gameBean.getPlayers().get(i));
+                }
+                if(!gameBean.getPlayers().get(i).getNickname().equals(nickname)) {
+                    otherPlayersIndex.add(gameBean.getPlayers().indexOf(gameBean.getPlayers().get(i)));
+                    MainController3 controller = (MainController3) controllerMap.get(MAIN_SCENE_FOR3);
+                    controller.setOtherPlayersIndex(otherPlayersIndex);
+                }
             }
             displayClouds();
             displayArchipelago();
         });
     }
 
-    @Override
-    public void displayBoard(BoardBean board, boolean expertGame) {     //FIXME metodo dell' interfaccia UI
 
-    }
-
-    public void displayBoard(BoardBean board, boolean expertGame, boolean isMyBoard) {
+    public void displayBoard(BoardBean board, boolean expertGame, boolean isMyBoard, int playerIndex) {
         ArrayList<Color> entranceColors = new ArrayList<>();
         ArrayList<Color> professorsColors = new ArrayList<>();
         ArrayList<Color> hallColors = new ArrayList<>();
@@ -374,8 +378,13 @@ public class GUI extends Application implements PropertyChangeListener,UI{
                     controller.showMyTower(board.getTowerColor(), board.getNumTowers());
                     controller.showMyProfessors(professorsColors);
                 });
-
-                //TODO per gli altri giocatori fare una mappa <indice player, board>
+            } else {
+                Platform.runLater(() -> {
+                    controller.showOtherPlayerEntrance(entranceColors, playerIndex);
+                    controller.showOtherPlayersHall(hallColors, playerIndex);
+                    controller.showOtherPlayersProfessors(professorsColors, playerIndex);
+                    controller.showOtherPlayesrsTowers(board.getTowerColor(), board.getNumTowers(), playerIndex);
+                });
             }
         }
     }
@@ -396,7 +405,7 @@ public class GUI extends Application implements PropertyChangeListener,UI{
 
     public int otherLastPlayedCard() {   //TODO per adesso funziona solo per 2
                                          //TODO per 3 fare una mappa <indice player, ultima carta giocata>
-        int lastPriority = 0;
+        int lastPriority;
         for (int i = 0; i < gameBean.getPlayers().size(); i++) {
             if (!gameBean.getPlayers().get(i).getNickname().equals(nickname)) {
                 if(gameBean.getPlayers().get(i).getPlayedCard() != null) {
@@ -430,8 +439,23 @@ public class GUI extends Application implements PropertyChangeListener,UI{
                     controller.showAssistantCards(priorities);
                 });
             }
+            Platform.runLater(() -> {
+                controller.showLastPlayedCard(myLastPlayedCard());
+                int otherLastPriority = 0;
+                for (int i = 0; i < gameBean.getPlayers().size(); i++) {
+                    if (!gameBean.getPlayers().get(i).getNickname().equals(nickname)) {
+                        if(gameBean.getPlayers().get(i).getPlayedCard() != null) {
+                            otherLastPriority = gameBean.getPlayers().get(i).getPlayedCard().getPriority();
+                            controller.showOtherLastPlayedCard(otherLastPriority, gameBean.getPlayers().indexOf(gameBean.getPlayers().get(i)));
+                        }
+                    }
+
+                }
+
+            });
         }
     }
+
 
     public void displayArchipelago() {
         HashMap<Integer, ArrayList<Color>> islandColorsMap = new HashMap<>();
