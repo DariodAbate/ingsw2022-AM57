@@ -676,7 +676,6 @@ public class GameHandler implements PropertyChangeListener {
                 }
             }
             moveStudentsSteps++;
-            System.out.println(moveStudentsSteps);
         }
         moveStudentsSteps = 0;
         game.setGameState(GameState.MOTHER_MOVEMENT_STATE);
