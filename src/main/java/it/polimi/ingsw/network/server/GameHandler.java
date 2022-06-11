@@ -46,6 +46,7 @@ public class GameHandler implements PropertyChangeListener {
 
     private volatile boolean endGameInRound;// true if this game end at the end of a round
     private volatile boolean continueGame;//false if this game end now
+    private int moveStudentsSteps;//register how many swap are taken in Move Students state
 
 
     /**
@@ -68,7 +69,7 @@ public class GameHandler implements PropertyChangeListener {
 
         clientToPlayer = new HashMap<>();
         playerToClient = new HashMap<>();
-
+        moveStudentsSteps = 0;
         continueGame = true;
         endGameInRound = false;
     }
@@ -642,7 +643,7 @@ public class GameHandler implements PropertyChangeListener {
         int numberOfMoves = numPlayer == 3 ? new ThreePlayersConstants().getMaxNumStudMovements() : new TwoPlayersConstants().getMaxNumStudMovements();
         Message message;
 
-        for(int i=0; i<numberOfMoves; i++){
+        while(moveStudentsSteps<numberOfMoves){
             boolean correctMove = false;
             client.sendMessageToClient("Select where you want to move your students[\"hall/island\"]");
             while(!correctMove){
@@ -660,19 +661,22 @@ public class GameHandler implements PropertyChangeListener {
                 } else if(message instanceof PlayExpertCard && expertGame){
                     if(!((ExpertGame) game).isCardHasBeenPlayed()) {
                         correctMove = playCard(client);
-                        if(correctMove)
-                            i--;
+                        if(correctMove) {
+                            moveStudentsSteps--;
+                        }
                     } else{
                         client.sendMessageToClient("You have already played a card this turn!");
                     }
                 } else if(message instanceof PlayExpertCard){
                     client.sendMessageToClient("Not in an expert game");
-                } else
-                {
+                } else {
                     client.sendMessageToClient("Wrong command, select Hall or Island");
                 }
             }
+            moveStudentsSteps++;
+            System.out.println(moveStudentsSteps);
         }
+        moveStudentsSteps = 0;
         game.setGameState(GameState.MOTHER_MOVEMENT_STATE);
     }
 
