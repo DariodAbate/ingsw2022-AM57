@@ -47,7 +47,6 @@ public class Game implements RoundObserver, RefillInterface, Serializable {
 
     protected final PropertyChangeSupport propertyChangeSupport = new PropertyChangeSupport(this); //with this object we will fire the property change event
 
-
     /*
     Game creation rules, as indicated by specifications:
     If there are no games in the start phase, a new game is created, otherwise the user
@@ -74,7 +73,6 @@ public class Game implements RoundObserver, RefillInterface, Serializable {
             this.gameState = GameState.JOIN_STATE; //When the game is initialized, we wait for all the player to join
             this.maxNumStudMoves = gameConstants.getMaxNumStudMovements();
             actualNumStudMoves = 0;
-
             availableTowerColor = new ArrayList<>();
             Collections.addAll(availableTowerColor,Tower.values());
 
@@ -401,17 +399,6 @@ public class Game implements RoundObserver, RefillInterface, Serializable {
         archipelago.get(idxChosenIsland).add(colorStudentToBeMoved);
     }
 
-    /**
-     * This method is used as a control for the movement of a predetermined number of students, moreover it
-     * passes to the phase in which mother nature can be moved
-     */
-    private void controlMovementStudents(){
-        ++actualNumStudMoves;
-        if(actualNumStudMoves == maxNumStudMoves){
-            actualNumStudMoves = 0;
-            setGameState(GameState.MOTHER_MOVEMENT_STATE);// after a player has moved all the students, he must move mother nature
-        }
-    }
 
     /**
      * Thi method is called when the current player have to play a card. It also sets the maximum
@@ -704,6 +691,22 @@ public class Game implements RoundObserver, RefillInterface, Serializable {
     @Override
     public void resetCalc() {
         this.calc = new StandardCalculator();
+    }
+
+    public int getActualNumStudMoves() {
+        return actualNumStudMoves;
+    }
+
+    public void addActualNumStudMoves(){
+        actualNumStudMoves++;
+    }
+
+    public void removeActualNumStudMoves(){
+        actualNumStudMoves--;
+    }
+
+    public void setActualNumStudMoves(int actualNumStudMoves) {
+        this.actualNumStudMoves = actualNumStudMoves;
     }
 
     //expertCard methods
