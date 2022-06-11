@@ -643,7 +643,7 @@ public class GameHandler implements PropertyChangeListener {
         int numberOfMoves = numPlayer == 3 ? new ThreePlayersConstants().getMaxNumStudMovements() : new TwoPlayersConstants().getMaxNumStudMovements();
         Message message;
 
-        while(moveStudentsSteps<numberOfMoves){
+        while(game.getActualNumStudMoves()<numberOfMoves){
             boolean correctMove = false;
             client.sendMessageToClient("Select where you want to move your students[\"hall/island\"]");
             while(!correctMove){
@@ -662,7 +662,7 @@ public class GameHandler implements PropertyChangeListener {
                     if(!((ExpertGame) game).isCardHasBeenPlayed()) {
                         correctMove = playCard(client);
                         if(correctMove) {
-                            moveStudentsSteps--;
+                            game.removeActualNumStudMoves();
                         }
                     } else{
                         client.sendMessageToClient("You have already played a card this turn!");
@@ -673,10 +673,9 @@ public class GameHandler implements PropertyChangeListener {
                     client.sendMessageToClient("Wrong command, select Hall or Island");
                 }
             }
-            moveStudentsSteps++;
-            System.out.println(moveStudentsSteps);
+            game.addActualNumStudMoves();
         }
-        moveStudentsSteps = 0;
+        game.setActualNumStudMoves(0);
         game.setGameState(GameState.MOTHER_MOVEMENT_STATE);
     }
 
@@ -1023,8 +1022,14 @@ public class GameHandler implements PropertyChangeListener {
                     islandSelectionManCluster(client, card);
 
                 }
+                else{
+                    client.sendMessageToClient("Please select a valid color!");
+                }
+            }else{
+                client.sendMessageToClient("Wrong command, please insert a new command");
             }
         }
+
     }
     private void islandSelectionManCluster(ServerClientHandler client, ExpertCard card) throws IOException, ClassNotFoundException{
         Message message;
