@@ -130,6 +130,7 @@ public class CLI  implements PropertyChangeListener, UI {
             case "towerChoice" -> displaySelectableTower((ArrayList<Tower>) evt.getNewValue());
             case "cardBackChoice" -> displaySelectableCardBack((ArrayList<CardBack>) evt.getNewValue());
             case "nickname" -> this.nickname = (String) evt.getNewValue();
+            case "win" -> displayWinner((String)evt.getNewValue());
             case "gameState" -> {
                 this.gameBean = (GameBean)evt.getNewValue();
                 displayAllGame() ;
@@ -665,6 +666,16 @@ public class CLI  implements PropertyChangeListener, UI {
         System.out.println(string);
         System.out.print(ANSIConstants.TEXT_RESET);
         System.out.flush();
+    }
+
+    @Override
+    public void displayWinner(String winner) {
+        if(winner.equals(nickname)){
+            System.out.println("Congratulations, you have just won!!");
+        }else{
+            System.out.println(winner + " has won!");
+        }
+
     }
 
     /**
