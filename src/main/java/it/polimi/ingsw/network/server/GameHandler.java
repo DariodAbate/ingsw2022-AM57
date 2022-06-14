@@ -663,6 +663,7 @@ public class GameHandler implements PropertyChangeListener {
                 } else if(message instanceof PlayExpertCard && expertGame){
                     if(!((ExpertGame) game).isCardHasBeenPlayed()) {
                         correctMove = playCard(client);
+                        client.sendMessageToClient("Select where you want to move your students[\"hall/island\"]");
                         if(correctMove) {
                             game.removeActualNumStudMoves();
                         }
@@ -671,6 +672,7 @@ public class GameHandler implements PropertyChangeListener {
                     }
                 } else if(message instanceof PlayExpertCard){
                     client.sendMessageToClient("Not in an expert game");
+                    client.sendMessageToClient("Select where you want to move your students[\"hall/island\"]");
                 } else {
                     client.sendMessageToClient("Wrong command, select Hall or Island");
                 }
