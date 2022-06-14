@@ -29,4 +29,5 @@ public interface  UI {
       void displayArchipelago();
       void displayExpertCard();
       void displayClouds();
+      void displayWinner(String winner);
 }

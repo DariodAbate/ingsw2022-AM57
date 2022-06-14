@@ -47,6 +47,9 @@ public class AnswerHandler {
         if(answer instanceof GameStateAnswer) {
             support.firePropertyChange(new PropertyChangeEvent(this, "gameState", null, answer.getMessage()));
         }
+        if(answer instanceof WinningAnswer) {
+            support.firePropertyChange(new PropertyChangeEvent(this, "win", null, answer.getMessage()));
+        }
         if(answer instanceof AssistantCardPlayedAnswer){
             support.firePropertyChange(new PropertyChangeEvent(this, "cardPlayed", null , answer));
         }

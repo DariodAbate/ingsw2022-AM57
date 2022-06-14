@@ -96,6 +96,9 @@ public class GameHandler implements PropertyChangeListener {
             playerToClient.put(game.getPlayers().get(i), playersConnections.get(i));
         }
 
+        expertGame = game instanceof ExpertGame;
+
+
         continueGame = true;
         endGameInRound = false;
         //WARNING: playersConnections should have the same order as the arraylist of players saved in the game
@@ -551,7 +554,15 @@ public class GameHandler implements PropertyChangeListener {
      */
     private void notifyWinner() throws IOException {
         String winner = game.alternativeWinner();
-        broadcastMessage(winner + " has won!");
+
+        for (ServerClientHandler client : playersConnections) {
+            try {
+                client.sendMessageToClient(new WinningAnswer(winner));
+            }catch(SocketException e){
+                System.out.println("Client already disconnected, do not need to send message");
+            }
+        }
+
         broadcastShutDown();
     }
 
@@ -560,7 +571,15 @@ public class GameHandler implements PropertyChangeListener {
      * @param winner nickname of the winner
      */
     private void notifyWinner(String winner) throws IOException {
-        broadcastMessage(winner + " has won!");
+
+        for (ServerClientHandler client : playersConnections) {
+            try {
+                client.sendMessageToClient(new WinningAnswer(winner));
+            }catch(SocketException e){
+                System.out.println("Client already disconnected, do not need to send message");
+            }
+        }
+
         broadcastShutDown();
     }
 
