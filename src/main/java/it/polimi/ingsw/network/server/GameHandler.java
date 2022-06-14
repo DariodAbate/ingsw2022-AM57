@@ -96,6 +96,9 @@ public class GameHandler implements PropertyChangeListener {
             playerToClient.put(game.getPlayers().get(i), playersConnections.get(i));
         }
 
+        expertGame = game instanceof ExpertGame;
+
+
         continueGame = true;
         endGameInRound = false;
         //WARNING: playersConnections should have the same order as the arraylist of players saved in the game
