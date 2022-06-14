@@ -41,7 +41,7 @@ public class MainMenuController implements GUIController {
         System.exit(0);
     }
 
-    public void startServer() throws IOException {
+    public void startServer() throws IOException, NumberFormatException {
         AnswerHandler answerHandler = new AnswerHandler();
         SocketClient socketClient = new SocketClient(serverAddress.getText(), Integer.parseInt(serverPort.getText()), answerHandler);
         gui.startConnection(answerHandler, socketClient);

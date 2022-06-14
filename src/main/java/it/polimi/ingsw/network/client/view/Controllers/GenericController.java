@@ -3,6 +3,7 @@ package it.polimi.ingsw.network.client.view.Controllers;
 
 import it.polimi.ingsw.network.client.messages.IntegerMessage;
 import it.polimi.ingsw.network.client.messages.MoveStudentMessage;
+import it.polimi.ingsw.network.client.messages.PlayExpertCard;
 import it.polimi.ingsw.network.client.view.GUI;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
@@ -39,28 +40,57 @@ public class GenericController implements GUIController{
         alert.showAndWait();
     }
 
-    public void chooseMovementInfo() {
+    public void chooseMovementInfo(boolean isExpert) {
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
         alert.setTitle("Action phase!");
         alert.setHeaderText("Choose where you want to move your student.");
-        alert.setContentText("Please select hall or island from the button below.");
+        if (isExpert) {
+            alert.setContentText("Please select hall or island from the button below. Click 'Play card' to play an expert card");
+        } else {
+            alert.setContentText("Please select hall or island from the button below.");
+        }
 
         ButtonType hall = new ButtonType("Hall");
         ButtonType island = new ButtonType("Island");
+        if (isExpert) {
+            ButtonType playCard = new ButtonType("Play card");
+            alert.getButtonTypes().setAll(hall, island, playCard);
+            Optional<ButtonType> result = alert.showAndWait();
+            String choice = null;
+            if (result.isPresent() && result.get() == hall) {
+                choice = "hall";
+            } else if (result.isPresent() && result.get() == island) {
+                choice = "island";
+            } else if (result.isPresent() && result.get() == playCard) {
+                try {
+                    gui.getSocketClient().send(new PlayExpertCard());
+                } catch (SocketException e) {
+                    e.printStackTrace();
+                }
+            }
+            if (choice != null) {
+                try {
+                    gui.getSocketClient().send(new MoveStudentMessage(choice));
+                } catch (SocketException e) {
+                    e.printStackTrace();
+                }
+            }
+        } else {
+            alert.getButtonTypes().setAll(hall, island);
+            Optional<ButtonType> result = alert.showAndWait();
+            String choice = null;
+            if (result.isPresent() && result.get() == hall) {
+                choice = "hall";
+            } else if (result.isPresent() && result.get() == island) {
+                choice = "island";
+            }
+            try {
+                gui.getSocketClient().send(new MoveStudentMessage(choice));
+            } catch (SocketException e) {
+                e.printStackTrace();
+            }
+        }
 
-        alert.getButtonTypes().setAll(hall, island);
-        Optional<ButtonType> result = alert.showAndWait();
-        String choice = null;
-        if (result.isPresent() && result.get() == hall) {
-            choice = "hall";
-        } else if (result.isPresent() && result.get() == island) {
-            choice = "island";
-        }
-        try {
-            gui.getSocketClient().send(new MoveStudentMessage(choice));
-        } catch (SocketException e) {
-            e.printStackTrace();
-        }
     }
 
     public void colorStudentInfo() {
@@ -72,7 +102,7 @@ public class GenericController implements GUIController{
         gui.displayAllGame();
     }
 
-    public void movementInfo(String message) {                   //TODo remove alert
+    public void movementInfo(String message) {                   //TODO remove alert
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
         alert.setTitle("Movement!");
         alert.setHeaderText("You have to move mother nature");
@@ -80,7 +110,7 @@ public class GenericController implements GUIController{
         alert.showAndWait();
     }
 
-    public void numOfIslandToTravel(String message) {
+    public void numOfIslandToTravel(String message) throws NumberFormatException{
         TextInputDialog numOfIsland = new TextInputDialog();
         numOfIsland.setTitle("Movement!");
         numOfIsland.setHeaderText(message);
@@ -111,5 +141,22 @@ public class GenericController implements GUIController{
         alert.setHeaderText(message);
         alert.setContentText("Select the island by clicking on it");
         alert.showAndWait();
+    }
+
+    public void winnerInfo(String winner) {
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle("WIN!");
+        alert.setHeaderText("Winner!");
+        alert.setContentText("Congratulation " + winner + " .You just win!");
+        alert.showAndWait();
+    }
+
+    public void notWinnerInfo(String winner) {
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle("WIN!");
+        alert.setHeaderText("Winner!");
+        alert.setContentText( winner + " has won!");
+        alert.showAndWait();
+        //TODO aggiungere terminazione processo una volta cliccato OK
     }
 }
