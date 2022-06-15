@@ -596,6 +596,7 @@ class ExpertGameTest {
         card.setStudentInEntranceColor(Color.BLUE);
         card.setStudentInHallColor(Color.RED);
         card.effect();
+        assertEquals(2, card.getPrice());
         assertEquals(1, g.getCurrentPlayer().getBoard().hallSize(Color.BLUE));
         assertEquals(0, g.getCurrentPlayer().getBoard().hallSize(Color.RED));
     }
@@ -698,6 +699,48 @@ class ExpertGameTest {
         assertEquals(1, g.getArchipelago().get(1).getNumTowers());
         assertFalse(g.getArchipelago().get(1).getIsBanned());
         assertEquals(4, g.getBanTile());
+    }
+
+    @DisplayName("Testing more than one ban tile on an island")
+    @Test
+    void MoreThanOneBanTile() {
+        BannedIslandCard card = new BannedIslandCard(g);
+        setupFullPlayer();
+        g.startGame();
+        //Player 1 has green and pink professors
+        //Player 2 has yellow and blue professors
+        //Player 3 has red professor
+        g.getPlayers().get(0).getBoard().addProfessor(Color.GREEN);
+        g.getPlayers().get(0).getBoard().addProfessor(Color.PINK);
+        g.getPlayers().get(1).getBoard().addProfessor(Color.YELLOW);
+        g.getPlayers().get(1).getBoard().addProfessor(Color.BLUE);
+        g.getPlayers().get(2).getBoard().addProfessor(Color.RED);
+        g.getArchipelago().get(1).add(Color.GREEN);
+        g.getArchipelago().get(1).add(Color.GREEN);
+        g.getArchipelago().get(1).conquer(g.getPlayers());
+        assertEquals(1, g.getArchipelago().get(1).getNumTowers());
+        assertEquals(5, g.getPlayers().get(0).getBoard().getNumTower());
+        assertEquals(6, g.getPlayers().get(1).getBoard().getNumTower());
+        g.getArchipelago().get(1).add(Color.BLUE);
+        g.getArchipelago().get(1).add(Color.BLUE);
+        g.getArchipelago().get(1).add(Color.BLUE);
+        g.getArchipelago().get(1).add(Color.BLUE);
+        g.getArchipelago().get(1).add(Color.BLUE);
+        card.setIslandIndex(1);
+        card.effect();
+        card.effect();
+        assertEquals(2, g.getBanTile());
+        assertEquals(2, g.getArchipelago().get(1).getBanTile());
+        g.getArchipelago().get(1).conquer(g.getPlayers());
+        assertEquals(6, g.getPlayers().get(1).getBoard().getNumTower());
+        assertEquals(5, g.getPlayers().get(0).getBoard().getNumTower());
+        assertEquals(1, g.getArchipelago().get(1).getNumTowers());
+        assertTrue(g.getArchipelago().get(1).getIsBanned());
+        assertEquals(3, g.getBanTile());
+        assertEquals(1, g.getArchipelago().get(1).getBanTile());
+        g.getArchipelago().get(1).conquer(g.getPlayers());
+        assertEquals(4, g.getBanTile());
+        assertEquals(0, g.getArchipelago().get(1).getBanTile());
     }
 
     /**
