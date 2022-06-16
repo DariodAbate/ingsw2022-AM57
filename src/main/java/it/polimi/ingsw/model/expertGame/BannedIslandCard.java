@@ -7,7 +7,7 @@ public class BannedIslandCard extends ExpertCard implements Serializable {
     private int islandIndex;
 
     public BannedIslandCard (BannedIsland game) {
-        super(2);
+        super(0);
         this.game = game;
     }
 

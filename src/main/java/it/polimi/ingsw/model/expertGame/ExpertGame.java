@@ -60,7 +60,7 @@ public class ExpertGame extends Game implements Serializable, PseudoMotherNature
 
         //setGameState(GameState.PLANNING_STATE);
 
-        //determine casually the first player TODO
+        //determine casually the first player
         initBank();
 
         pickCards();
@@ -96,7 +96,7 @@ public class ExpertGame extends Game implements Serializable, PseudoMotherNature
         for (int j = 1; j <= 12; j++) {
             cardsPlaceHolder.add(j);
         }
-        //expertCards.add(new StudentsBufferCardsCluster(2, this));
+        //expertCards.add(new BannedIslandCard(this));//FIXME
         for(int i=0; i<NUMBER_OF_EXPERT_CARDS; i++){//per testare una carta mettere i ad 1 e cambiare il tipo di carta sopra
             temp = rand.nextInt((cardsPlaceHolder.size()));
             switch (cardsPlaceHolder.get(temp)) {
@@ -375,7 +375,26 @@ public class ExpertGame extends Game implements Serializable, PseudoMotherNature
             }
         }
     }
-
+    @Override
+    protected IslandTile sumOfTwoIsland(IslandTile islandOne, IslandTile islandTwo){
+        IslandTile newIsland = new IslandTile(new StandardCalculator());
+        //The new Island has the sum of the towers of the previous two islands
+        for (int i=0; i< islandTwo.getNumTowers()+ islandOne.getNumTowers(); i++){
+            newIsland.addTower();
+        }
+        newIsland.changeTowerColor(islandOne.getTowerColor());
+        //the new island has the total of all students of the previous two islands
+        for(Color color : Color.values()){
+            for(int i=0; i< islandOne.getInfluenceColor(color)+islandTwo.getInfluenceColor(color); i++){
+                newIsland.add(color);
+            }
+        }
+        if(islandOne.getIsBanned() || islandTwo.getIsBanned()) {
+            newIsland.setBanned(true, this);
+            newIsland.setBanTile(islandOne.getBanTile() + islandTwo.getBanTile());
+        }
+        return newIsland;
+    }
     /**
      * This method allows the current player  to get the professor of a certain color even if it has
      * the same number of students as the player who currently owns that professor

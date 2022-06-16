@@ -173,6 +173,14 @@ public class IslandTile implements Serializable {
         banTile += 1;
     }
 
+    public BanTile getBanTileAdder() {
+        return banTileAdder;
+    }
+
+    public void setBanTile(int banTile) {
+        this.banTile = banTile;
+    }
+
     public boolean  getIsBanned() {
         return this.isBanned;
     }
