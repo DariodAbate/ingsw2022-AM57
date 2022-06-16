@@ -19,7 +19,7 @@ public class ExpertGame extends Game implements Serializable, PseudoMotherNature
     private int coinBank;
     private ArrayList<ExpertCard> expertCards;
     private int banTile = 4;
-    private boolean cardHasBeenPlayed;//one player can play only one card in his turn
+    private boolean cardHasBeenPlayed;//one player can play only one card in this turn
 
     /**
      * This constructor adds coins and expert Cards
@@ -96,7 +96,7 @@ public class ExpertGame extends Game implements Serializable, PseudoMotherNature
         for (int j = 1; j <= 12; j++) {
             cardsPlaceHolder.add(j);
         }
-        //xpertCards.add(new BannedIslandCard(this));
+        //expertCards.add(new StudentsBufferCardsCluster(2, this));
         for(int i=0; i<NUMBER_OF_EXPERT_CARDS; i++){//per testare una carta mettere i ad 1 e cambiare il tipo di carta sopra
             temp = rand.nextInt((cardsPlaceHolder.size()));
             switch (cardsPlaceHolder.get(temp)) {

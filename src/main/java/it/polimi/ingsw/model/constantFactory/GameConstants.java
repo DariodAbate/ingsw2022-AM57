@@ -9,7 +9,7 @@ package it.polimi.ingsw.model.constantFactory;
  */
 
 public interface GameConstants {
-     int HALL_SIZE = 10; //maximum number of students that the board's hall can contain
+     int HALL_SIZE = 10; //maximum number of students that the board's hall can contain//FIXME
      int NUM_ASSISTANT_CARD = 10; //number of assistant card initially given to each player
      int INITIAL_ARCHIPELAGO_SIZE = 12; // number of cloudTile that are initially instantiated
      int MAX_SIZE_STUDENT_FOR_COLOR = 26; //number of students stored in studentHandler for each color

@@ -885,8 +885,9 @@ public class GameHandler implements PropertyChangeListener {
                             client.sendMessageToClient("Your Hall is empty!");
                             return false;
                         }
-                        swapStudents(client, card1);
                         game.playVoidEffects(card1);// refresh te boards in each movement
+                        swapStudents(client, card1);
+
                     }
                     else if(card instanceof  StudentsBufferCardsCluster card1){
                         int idx = ((StudentsBufferCardsCluster) card).getIndex();
@@ -902,9 +903,9 @@ public class GameHandler implements PropertyChangeListener {
 
                         }
                         else if(idx == 2){// refresh the boards
-                            askColorStudentsCluster(client, card1);
+                            if(!askColorStudentsCluster(client, card1))
+                                return false;
                             game.playEffect(((IntegerMessage) message).getMessage()-1);
-
                             //copy of boards
                             ArrayList<BoardBean> boardBeans = getBoardBeans();
                             expertCardUpdateAnswer.setUpdatedBoards(boardBeans);
@@ -1043,7 +1044,6 @@ public class GameHandler implements PropertyChangeListener {
                     card.setStudentColorToBeMoved(((ColorChosen) message).getColor());
                     colorChosen = true;
                     islandSelectionManCluster(client, card);
-
                 }
                 else{
                     client.sendMessageToClient("Please select a valid color!");
@@ -1074,13 +1074,17 @@ public class GameHandler implements PropertyChangeListener {
             }
         }
     }
-    private void askColorStudentsCluster(ServerClientHandler client, ExpertCard card) throws IOException, ClassNotFoundException{
+    private boolean askColorStudentsCluster(ServerClientHandler client, ExpertCard card) throws IOException, ClassNotFoundException{//TODO TEST WOMAN CARD
         client.sendMessageToClient("Please select the color to move to your hall");
         Message message;
         boolean colorChosen = false;
         while(!colorChosen){
             message = client.readMessageFromClient();
             if(message instanceof ColorChosen){
+                if(!game.getCurrentPlayer().getBoard().getHall().isAddable(((ColorChosen) message).getColor())){
+                    client.sendMessageToClient("You can't add more "+ ((ColorChosen) message).getColor() + " students in your hall");
+                    return false;
+                }
                 if(((StudentsBufferCardsCluster)card).getStudBuffer().colorsAvailable().contains(((ColorChosen) message).getColor())){
                     card.setStudentColorToBeMoved(((ColorChosen) message).getColor());
                     colorChosen = true;
@@ -1093,6 +1097,7 @@ public class GameHandler implements PropertyChangeListener {
                 client.sendMessageToClient("Wrong Command, chose a color");
             }
         }
+        return true;
     }
     private void putThreeStudentsInBagColor(ServerClientHandler client, ExpertCard card) throws IOException, ClassNotFoundException{
         client.sendMessageToClient("Please select the color to put in the bag");
