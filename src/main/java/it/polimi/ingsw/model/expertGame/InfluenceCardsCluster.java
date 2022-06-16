@@ -52,7 +52,7 @@ public class InfluenceCardsCluster extends ExpertCard implements Serializable {
             price += 1;
         }
         if(index== INDEX_COLOR_EXCEPTION && color == null){
-            throw new IllegalStateException("Devi scegliere un colore prima di attivare questo effetto!");//FIXME
+            throw new IllegalStateException("Devi scegliere un colore prima di attivare questo effetto!");
         }
         game.changeCalculator(cards[index]);
     }

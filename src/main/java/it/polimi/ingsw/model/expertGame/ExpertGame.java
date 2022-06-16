@@ -157,7 +157,7 @@ public class ExpertGame extends Game implements Serializable, PseudoMotherNature
 
     }
 
-    //TODO to be tested
+
     /**
      * This method is called by the controller to activate the effect of a card, identified by an index.
      * it also sets cardHasBeenPlayed to true

@@ -211,7 +211,7 @@ public class Round implements Serializable {
 
     public void setCurrentTurn (Player player){
         currentTurn = player;
-    } //FIXME
+    }
 
     /**
      *

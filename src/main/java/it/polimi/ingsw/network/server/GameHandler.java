@@ -1074,7 +1074,7 @@ public class GameHandler implements PropertyChangeListener {
             }
         }
     }
-    private boolean askColorStudentsCluster(ServerClientHandler client, ExpertCard card) throws IOException, ClassNotFoundException{//TODO TEST WOMAN CARD
+    private boolean askColorStudentsCluster(ServerClientHandler client, ExpertCard card) throws IOException, ClassNotFoundException{
         client.sendMessageToClient("Please select the color to move to your hall");
         Message message;
         boolean colorChosen = false;

@@ -153,7 +153,7 @@ public class ServerClientHandler implements Runnable {
             }
         }
         if(msg instanceof Message) {
-            if(msg instanceof Disconnect) {//TODO close the game
+            if(msg instanceof Disconnect) {
                 start = false;
             }
             return (Message) msg;

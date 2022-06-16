@@ -218,7 +218,7 @@ public class Game implements RoundObserver, RefillInterface, Serializable {
         for(int i = 0; i < gameConstants.INITIAL_ARCHIPELAGO_SIZE ; i++){
             if(i != motherNature && i != idxEmptyIsland){
                 Color colorDrawn = startBag.draw();
-                if(colorDrawn == null){throw new IllegalStateException("At this stage the bag cannot be empty");/*FIXME*/}
+                if(colorDrawn == null){throw new IllegalStateException("At this stage the bag cannot be empty");}
                 archipelago.get(i).add(colorDrawn);
             }
         }
@@ -246,7 +246,7 @@ public class Game implements RoundObserver, RefillInterface, Serializable {
         for(Player player: players){
             while(player.getBoard().entranceIsFillable()){
                 Color colorDrawn = actionBag.draw();
-                if(colorDrawn == null){throw new IllegalStateException("At this stage the bag cannot be empty");/*FIXME*/}
+                if(colorDrawn == null){throw new IllegalStateException("At this stage the bag cannot be empty");}
                 player.getBoard().fillEntrance(colorDrawn);
             }
         }

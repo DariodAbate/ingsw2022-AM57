@@ -273,7 +273,7 @@ public class Board implements Serializable {
         hall.remove(studentColor);
     }
 
-    //TODO Add a method that returns the color of the students that the board has both in the entrance and in the hall
+
 
     /**
      * Gets the number of coin that a player have

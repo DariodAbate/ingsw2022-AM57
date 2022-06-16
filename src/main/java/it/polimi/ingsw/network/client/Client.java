@@ -28,7 +28,7 @@ public class Client {
         }
 
 
-        //TODO case for GUI
+
         CLI cli;
         if(uiType.equalsIgnoreCase("CLI")) {
             cli = new CLI();
