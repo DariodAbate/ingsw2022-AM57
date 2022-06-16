@@ -20,7 +20,9 @@ public class IslandTile implements Serializable {
     private Tower towerColor;
     private InfluenceCalculator calc;
     private boolean isBanned = false;
+    private int banTile = 0;
     public BanTile banTileAdder;
+
 
     /**
      * Constructor of the class, the island starts with 0 towers, and a maximum size students
@@ -115,7 +117,10 @@ public class IslandTile implements Serializable {
         int currentindex = 0;
         int index = 0;
         if (isBanned) {
-            isBanned = false;
+            banTile -= 1;
+            if (banTile == 0) {
+                isBanned = false;
+            }
             banTileAdder.addBanTile();
             return;
         }
@@ -165,9 +170,14 @@ public class IslandTile implements Serializable {
     public void setBanned(boolean isBanned, BanTile banTileAdder) {
         this.isBanned = isBanned;
         this.banTileAdder = banTileAdder;
+        banTile += 1;
     }
 
     public boolean  getIsBanned() {
         return this.isBanned;
+    }
+
+    public int getBanTile() {
+        return this.banTile;
     }
 }

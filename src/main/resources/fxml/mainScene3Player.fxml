@@ -44,5 +44,8 @@
             </Label>
          </children>
       </AnchorPane>
+      <AnchorPane fx:id="myCoin" layoutX="807.0" layoutY="482.0" prefHeight="179.0" prefWidth="62.0" />
+      <AnchorPane fx:id="otherFirstCoin" layoutX="97.0" layoutY="-52.0" prefHeight="187.0" prefWidth="55.0" rotate="90.0" />
+      <AnchorPane fx:id="otherSecondCoin" layoutX="1048.0" layoutY="-52.0" prefHeight="187.0" prefWidth="55.0" rotate="270.0" />
    </children>
 </AnchorPane>

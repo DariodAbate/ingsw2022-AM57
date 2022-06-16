@@ -5,8 +5,10 @@ import it.polimi.ingsw.model.Color;
 import it.polimi.ingsw.model.Tower;
 import it.polimi.ingsw.network.client.messages.ColorChosen;
 import it.polimi.ingsw.network.client.messages.IntegerMessage;
+import it.polimi.ingsw.network.client.view.ExpertCard_ID;
 import it.polimi.ingsw.network.client.view.GUI;
 import javafx.fxml.FXML;
+import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -14,6 +16,7 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.paint.Paint;
 import javafx.scene.shape.Circle;
 
+import java.io.InputStream;
 import java.net.SocketException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -29,6 +32,7 @@ public class MainController2 implements GUIController {
     @FXML private AnchorPane myCoin;
     @FXML private AnchorPane otherCoin;
     @FXML private Label infoMessage;
+    @FXML private Button playExpertCard;
 
 
     private final static Paint BLACK = javafx.scene.paint.Color.BLACK;
@@ -38,6 +42,7 @@ public class MainController2 implements GUIController {
     private final HashMap<Integer, Image> hand = new HashMap<>();
     private final HashMap<Color, Image> studentsColor = new HashMap<>();
     private final HashMap<Color, Image> professorsColor = new HashMap<>();
+    private final HashMap<ExpertCard_ID, Image> characters = new HashMap<>();
 
 
     private ArrayList<ImageView> myProfessors = new ArrayList<>();
@@ -47,42 +52,54 @@ public class MainController2 implements GUIController {
     private ArrayList<ImageView> myHallStudents = new ArrayList<>();
     private ArrayList<ImageView> otherHallStudents = new ArrayList<>();
     private ArrayList<ImageView> cards = new ArrayList<>();
-    private ArrayList<ImageView> cloud1Students = new ArrayList<>();
-    private ArrayList<ImageView> cloud2Students = new ArrayList<>();
     private ArrayList<Circle> towers = new ArrayList<>();
     private ArrayList<AnchorPane> archipelago = new ArrayList<>();
     private ArrayList<ImageView> coins = new ArrayList<>();
     private ArrayList<AnchorPane> clouds = new ArrayList<>();
 
-    private final static Image GREEN_STUDENT = new Image("/Students/student_green.png");
-    private final static Image RED_STUDENT = new Image("/Students/student_red.png");
-    private final static Image YELLOW_STUDENT = new Image("/Students/student_yellow.png");
-    private final static Image PINK_STUDENT = new Image("/Students/student_pink.png");
-    private final static Image BLUE_STUDENT = new Image("Students/student_blue.png");
+    private final Image GREEN_STUDENT = new Image(String.valueOf(getClass().getResource("/Students/student_green.png")));
+    private final  Image RED_STUDENT = new Image(String.valueOf(getClass().getResource("/Students/student_red.png")));
+    private final  Image YELLOW_STUDENT = new Image(String.valueOf(getClass().getResource("/Students/student_yellow.png")));
+    private final  Image PINK_STUDENT = new Image(String.valueOf(getClass().getResource("/Students/student_pink.png")));
+    private final  Image BLUE_STUDENT = new Image(String.valueOf(getClass().getResource("/Students/student_blue.png")));
 
-    private final static Image GREEN_PROF = new Image("/Professors/teacher_green.png");
-    private final static Image RED_PROF = new Image("/Professors/teacher_red.png");
-    private final static Image YELLOW_PROF = new Image("/Professors/teacher_yellow.png");
-    private final static Image PINK_PROF = new Image("/Professors/teacher_pink.png");
-    private final static Image BLUE_PROF = new Image("/Professors/teacher_blue.png");
+    private final  Image GREEN_PROF = new Image(String.valueOf(getClass().getResource("/Professors/teacher_green.png")));
+    private final  Image RED_PROF = new Image(String.valueOf(getClass().getResource("/Professors/teacher_red.png")));
+    private final  Image YELLOW_PROF = new Image(String.valueOf(getClass().getResource("/Professors/teacher_yellow.png")));
+    private final  Image PINK_PROF = new Image(String.valueOf(getClass().getResource("/Professors/teacher_pink.png")));
+    private final  Image BLUE_PROF = new Image(String.valueOf(getClass().getResource("/Professors/teacher_blue.png")));
 
-    private final static Image ISLAND = new Image("/island2.png");
+    private final  Image ISLAND = new Image(String.valueOf(getClass().getResource("/island2.png")));
 
-    private final static Image  PRIO1 = new Image("/Card/Animali_1_1@3x.png");
-    private final static Image  PRIO2 = new Image("/Card/Animali_1_2@3x.png");
-    private final static Image  PRIO3 = new Image("/Card/Animali_1_3@3x.png");
-    private final static Image  PRIO4 = new Image("/Card/Animali_1_4@3x.png");
-    private final static Image  PRIO5 = new Image("/Card/Animali_1_5@3x.png");
-    private final static Image  PRIO6 = new Image("/Card/Animali_1_6@3x.png");
-    private final static Image  PRIO7 = new Image("/Card/Animali_1_7@3x.png");
-    private final static Image  PRIO8 = new Image("/Card/Animali_1_8@3x.png");
-    private final static Image  PRIO9 = new Image("/Card/Animali_1_9@3x.png");
-    private final static Image  PRIO10 = new Image("/Card/Animali_1_10@3x.png");
+    private final  Image  PRIO1 = new Image(String.valueOf(getClass().getResource("/Card/Animali_1_1@3x.png")));
+    private final  Image  PRIO2 = new Image(String.valueOf(getClass().getResource("/Card/Animali_1_2@3x.png")));
+    private final  Image  PRIO3 = new Image(String.valueOf(getClass().getResource("/Card/Animali_1_3@3x.png")));
+    private final  Image  PRIO4 = new Image(String.valueOf(getClass().getResource("/Card/Animali_1_4@3x.png")));
+    private final  Image  PRIO5 = new Image(String.valueOf(getClass().getResource("/Card/Animali_1_5@3x.png")));
+    private final  Image  PRIO6 = new Image(String.valueOf(getClass().getResource("/Card/Animali_1_6@3x.png")));
+    private final  Image  PRIO7 = new Image(String.valueOf(getClass().getResource("/Card/Animali_1_7@3x.png")));
+    private final  Image  PRIO8 = new Image(String.valueOf(getClass().getResource("/Card/Animali_1_8@3x.png")));
+    private final  Image  PRIO9 = new Image(String.valueOf(getClass().getResource("/Card/Animali_1_9@3x.png")));
+    private final  Image  PRIO10 = new Image(String.valueOf(getClass().getResource("/Card/Animali_1_10@3x.png")));
 
-    private final static Image COIN = new Image("/Monetabase.png");
+    private final  Image COIN = new Image(String.valueOf(getClass().getResource("/Monetabase.png")));
 
-    private final static Image CLOUD = new Image("/cloud_card.png");
+    private final  Image CLOUD = new Image(String.valueOf(getClass().getResource("/cloud_card.png")));
 
+    private final Image MONK = new Image(String.valueOf(getClass().getResource("/Expert_card/CarteTOT_front.jpg")));
+    private final Image HERALD = new Image(String.valueOf(getClass().getResource("/Expert_card/CarteTOT_front2.jpg")));
+    private  final Image DELIVERYMAN = new Image(String.valueOf(getClass().getResource("/Expert_card/CarteTOT_front3.jpg")));
+    private final Image HEALER = new Image(String.valueOf(getClass().getResource("/Expert_card/CarteTOT_front4.jpg")));
+    private final Image CENTAUR = new Image(String.valueOf(getClass().getResource("/Expert_card/CarteTOT_front5.jpg")));
+    private final Image JOKER = new Image(String.valueOf(getClass().getResource("/Expert_card/CarteTOT_front6.jpg")));
+    private final Image KNIGHT = new Image(String.valueOf(getClass().getResource("/Expert_card/CarteTOT_front7.jpg")));
+    private final Image POISONER = new Image(String.valueOf(getClass().getResource("/Expert_card/CarteTOT_front8.jpg")));
+    private final Image BARD = new Image(String.valueOf(getClass().getResource("/Expert_card/CarteTOT_front9.jpg")));
+    private  final Image PRINCESS = new Image(String.valueOf(getClass().getResource("/Expert_card/CarteTOT_front10.jpg")));
+    private final Image MONEYLENDER = new Image(String.valueOf(getClass().getResource("/Expert_card/CarteTOT_front11.jpg")));
+    private final Image HOST = new Image(String.valueOf(getClass().getResource("/Expert_card/CarteTOT_front12.jpg")));
+
+    private final Image BAN = new Image(String.valueOf(getClass().getResource("/deny_island_icon.png")));
 
     @Override
     public void setGUI(GUI gui) {
@@ -110,6 +127,18 @@ public class MainController2 implements GUIController {
         professorsColor.put(Color.YELLOW, YELLOW_PROF);
         professorsColor.put(Color.PINK, PINK_PROF);
         professorsColor.put(Color.BLUE, BLUE_PROF);
+        characters.put(ExpertCard_ID.MONK, MONK);
+        characters.put(ExpertCard_ID.HERALD, HERALD);
+        characters.put(ExpertCard_ID.DELIVERYMAN, DELIVERYMAN);
+        characters.put(ExpertCard_ID.HEALER, HEALER);
+        characters.put(ExpertCard_ID.CENTAUR, CENTAUR);
+        characters.put(ExpertCard_ID.JOKER, JOKER);
+        characters.put(ExpertCard_ID.KNIGHT, KNIGHT);
+        characters.put(ExpertCard_ID.POISONER, POISONER);
+        characters.put(ExpertCard_ID.BARD, BARD);
+        characters.put(ExpertCard_ID.PRINCESS, PRINCESS);
+        characters.put(ExpertCard_ID.MONEYLENDER, MONEYLENDER);
+        characters.put(ExpertCard_ID.HOST, HOST);
     }
 
     public void showEntranceStudents(ArrayList<Color> colors) {
@@ -405,7 +434,7 @@ public class MainController2 implements GUIController {
         }
     }
 
-    public void showArchipelago(int archipelagoSize, int motherNature, HashMap<Integer, ArrayList<Color>> islandsStudents, HashMap<Integer, Tower> towerColorMap, HashMap<Integer, Integer> numTowersMap) {
+    public void showArchipelago(int archipelagoSize, int motherNature, HashMap<Integer, ArrayList<Color>> islandsStudents, HashMap<Integer, Tower> towerColorMap, HashMap<Integer, Integer> numTowersMap, HashMap<Integer, Boolean> bannedIslands) {
         double lastCloudX = 650;
         double lastCloudY = 100;
         int count = 0;
@@ -485,6 +514,18 @@ public class MainController2 implements GUIController {
                     case GRAY -> tower.setFill(GRAY);
                 }
             }
+
+            //Banned Islands
+            for (int h = 0; h < bannedIslands.size(); h ++) {
+                if (bannedIslands.get(i)) {
+                    ImageView banTile = new ImageView(BAN);
+                    islandPane.getChildren().add(banTile);
+                    banTile.setFitWidth(20);
+                    banTile.setFitHeight(20);
+                    banTile.setLayoutX(50);
+                    banTile.setLayoutY(50);
+                }
+            }
             archipelago.add(islandPane);
         }
     }
@@ -520,9 +561,53 @@ public class MainController2 implements GUIController {
         showCoin(numCoin, otherCoin);
     }
 
-    public void showExpertCard() {
+    public void showExpertCard(ArrayList<ExpertCard_ID> expertCards, HashMap<Integer, ArrayList<Color>> studBufferColor) {
+        double lastExpertCardX = 810;
+        for (int i = 0; i < expertCards.size(); i ++) {
+            AnchorPane expertCardPane = new AnchorPane();
+            mainPane.getChildren().add(expertCardPane);
+            expertCardPane.setPrefHeight(88);
+            expertCardPane.setPrefWidth(59);
+            expertCardPane.setLayoutX(lastExpertCardX + 62);
+            expertCardPane.setLayoutY(218);
+            lastExpertCardX += 62;
+            ImageView expertCard = new ImageView(characters.get(expertCards.get(i)));
+            expertCardPane.getChildren().add(expertCard);
+            expertCard.setFitHeight(88);
+            expertCard.setFitWidth(59);
+            int finalI = i;
+            expertCard.setOnMouseClicked( event -> {
+                sendExpertCard(finalI);
+            });
 
+            //Stud buffer color
+            //TODO ridisegnare ogni volta
+            if (studBufferColor.get(i) != null) {
+                for (int j = 0; j < studBufferColor.get(i).size(); j++) {
+                    ImageView studCardColor = new ImageView(studentsColor.get(studBufferColor.get(i).get(j)));
+                    expertCardPane.getChildren().add(studCardColor);
+                    studCardColor.setFitWidth(15);
+                    studCardColor.setFitHeight(15);
+                    studCardColor.setLayoutX(10 * j);
+                    studCardColor.setLayoutY(50);
+                    int finalJ = j;
+                    studCardColor.setOnMouseClicked(event -> {
+                        sendStudentToMove(studBufferColor.get(finalI).get(finalJ));
+                    });
+                }
+            }
+        }
     }
+
+    public void sendExpertCard(int index) {
+        try {
+            gui.getSocketClient().send(new IntegerMessage(index +1));
+        } catch (SocketException e) {
+            e.printStackTrace();
+        }
+    }
+
+
 
     public void showInfoMessage(String message) {
         infoMessage.setText(message);

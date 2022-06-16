@@ -6,14 +6,18 @@ import it.polimi.ingsw.network.client.AnswerHandler;
 import it.polimi.ingsw.network.client.SocketClient;
 import it.polimi.ingsw.network.client.modelBean.*;
 import it.polimi.ingsw.network.client.modelBean.ExpertCard.ExpertCardBean;
+import it.polimi.ingsw.network.client.modelBean.ExpertCard.StudBufferExpertCardBean;
 import it.polimi.ingsw.network.client.view.Controllers.*;
 import it.polimi.ingsw.network.server.answers.*;
 import it.polimi.ingsw.network.server.answers.update.*;
 import javafx.application.Application;
 import javafx.application.Platform;
+import javafx.event.EventHandler;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
+import javafx.stage.WindowEvent;
+
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.IOException;
@@ -55,6 +59,10 @@ public class GUI extends Application implements PropertyChangeListener{
         stage.setTitle("Eryantis");
         stage.setScene(currentScene);
         stage.setResizable(false);
+        stage.setOnCloseRequest(t -> {   //FIXME quando viene chiusa la finestra termina soltanto il thread di javafx
+            Platform.exit();
+            System.exit(0);
+        });
         stage.show();
     }
 
@@ -86,6 +94,7 @@ public class GUI extends Application implements PropertyChangeListener{
             case "startMessage" -> startGame((String)evt.getNewValue());
             case "towerChoice" -> displaySelectableTower((ArrayList<Tower>) evt.getNewValue());
             case "cardBackChoice" -> displaySelectableCardBack((ArrayList<CardBack>) evt.getNewValue());
+            case "win" -> displayWinner((String)evt.getNewValue());
             case "nickname" -> this.nickname = (String) evt.getNewValue();
             case "gameState" -> {
                 this.gameBean = (GameBean)evt.getNewValue();
@@ -168,6 +177,20 @@ public class GUI extends Application implements PropertyChangeListener{
         }
     }
 
+    public void displayWinner(String winner) {
+        GenericController controller = (GenericController) controllerMap.get(GENERIC);
+        if(winner.equals(nickname)){
+            Platform.runLater(() -> {
+                controller.winnerInfo(winner);
+            });
+        }else{
+            Platform.runLater(() -> {
+                controller.notWinnerInfo(winner);
+            });
+        }
+
+    }
+
     public void closeUserInterface() {
 
      }
@@ -225,7 +248,7 @@ public class GUI extends Application implements PropertyChangeListener{
         else if(message.contains("Select where you want to move your students")) {
             Platform.runLater(() -> {
                 GenericController controller = (GenericController) controllerMap.get(GENERIC);
-                controller.chooseMovementInfo();
+                controller.chooseMovementInfo(gameBean.isExpertGame());
             });
         }
 
@@ -323,6 +346,9 @@ public class GUI extends Application implements PropertyChangeListener{
             }
             displayClouds();
             displayArchipelago();
+            if (gameBean.isExpertGame()) {
+                displayExpertCard();
+            }
         });
     }
 
@@ -373,6 +399,9 @@ public class GUI extends Application implements PropertyChangeListener{
             MainController3 controller = (MainController3) controllerMap.get(MAIN_SCENE_FOR3);
             if (isMyBoard) {
                 Platform.runLater(() -> {
+                    if (expertGame) {
+                        controller.showMyCoin(board.getNumCoins());
+                    }
                     controller.showEntranceStudents(entranceColors);
                     controller.showHallStudents(hallColors);
                     controller.showMyTower(board.getTowerColor(), board.getNumTowers());
@@ -380,6 +409,9 @@ public class GUI extends Application implements PropertyChangeListener{
                 });
             } else {
                 Platform.runLater(() -> {
+                    if (expertGame) {
+                        controller.showOtherCoin(board.getNumCoins(), playerIndex);
+                    }
                     controller.showOtherPlayerEntrance(entranceColors, playerIndex);
                     controller.showOtherPlayersHall(hallColors, playerIndex);
                     controller.showOtherPlayersProfessors(professorsColors, playerIndex);
@@ -461,6 +493,7 @@ public class GUI extends Application implements PropertyChangeListener{
         HashMap<Integer, ArrayList<Color>> islandColorsMap = new HashMap<>();
         HashMap<Integer, Tower> towerColorMap = new HashMap<>();
         HashMap<Integer, Integer> numTowersMap = new HashMap<>();
+        HashMap<Integer, Boolean> bannedIslands = new HashMap<>();
         ArrayList<Color> islandStudents = new ArrayList<>();
         Tower towerColor;
         int numTowers;
@@ -477,23 +510,50 @@ public class GUI extends Application implements PropertyChangeListener{
             islandColorsMap.put(gameBean.getArchipelago().indexOf(island), copy);
             towerColorMap.put(gameBean.getArchipelago().indexOf(island), towerColor);
             numTowersMap.put(gameBean.getArchipelago().indexOf(island), numTowers);
+            bannedIslands.put(gameBean.getArchipelago().indexOf(island), island.isBanToken());
         }
         Platform.runLater(() -> {
             if (gameBean.getPlayers().size() == 2) {
                 MainController2 controller = (MainController2) controllerMap.get(MAIN_SCENE_FOR2);
-                controller.showArchipelago(gameBean.getArchipelago().size(), gameBean.getMotherNature(), islandColorsMap, towerColorMap, numTowersMap);
+                controller.showArchipelago(gameBean.getArchipelago().size(), gameBean.getMotherNature(), islandColorsMap, towerColorMap, numTowersMap, bannedIslands );
             } else if (gameBean.getPlayers().size() == 3){
                 MainController3 controller = (MainController3) controllerMap.get(MAIN_SCENE_FOR3);
-                controller.showArchipelago(gameBean.getArchipelago().size(), gameBean.getMotherNature(), islandColorsMap, towerColorMap, numTowersMap);
+                controller.showArchipelago(gameBean.getArchipelago().size(), gameBean.getMotherNature(), islandColorsMap, towerColorMap, numTowersMap, bannedIslands);
             }
         });
     }
 
+    //TODO aggiungere bottone stop per le carte "fino a..."
     public void displayExpertCard() {
         ArrayList<ExpertCard_ID> expertCards = new ArrayList<>();
-        MainController2 controller = (MainController2) controllerMap.get(MAIN_SCENE_FOR2);
+        ArrayList<Color> cardColors = new ArrayList<>();
+        HashMap<Integer, ArrayList<Color>> studBufferColor = new HashMap<>();
+
+        expertCards.removeAll(expertCards);
         for (ExpertCardBean expertCardBean : gameBean.getExpertCards()){
             expertCards.add(expertCardBean.getName());
+            if(expertCardBean instanceof StudBufferExpertCardBean){
+                cardColors.removeAll(cardColors);
+                for (Color color : Color.values()){
+                    for (int j = 0; j < ((StudBufferExpertCardBean) expertCardBean).getStudentBuffer().get(color); j++) {
+                        cardColors.add(color);
+                    }
+                }
+                ArrayList<Color> copy = new ArrayList<>(cardColors);
+                studBufferColor.put(gameBean.getExpertCards().indexOf(expertCardBean), copy);
+            }
+            System.out.println(studBufferColor);
+        }
+        if (gameBean.getPlayers().size() == 2) {
+            MainController2 controller = (MainController2) controllerMap.get(MAIN_SCENE_FOR2);
+            Platform.runLater(() -> {
+                controller.showExpertCard(expertCards, studBufferColor);
+            });
+        } else if (gameBean.getPlayers().size() == 3) {
+            MainController3 controller = (MainController3) controllerMap.get(MAIN_SCENE_FOR3);
+            Platform.runLater(() -> {
+                controller.showExpertCard(expertCards, studBufferColor);
+            });
         }
     }
 
@@ -523,6 +583,7 @@ public class GUI extends Application implements PropertyChangeListener{
             });
         }
     }
+
 
     public void startConnection(AnswerHandler answerHandler, SocketClient socketClient) throws IOException {
         this.answerHandler = answerHandler;
