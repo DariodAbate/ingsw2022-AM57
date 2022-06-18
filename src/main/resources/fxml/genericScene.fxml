@@ -1,14 +1,21 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.scene.control.Label?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.text.Font?>
 
 <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="800.0" prefWidth="1200.0" xmlns="http://javafx.com/javafx/18" xmlns:fx="http://javafx.com/fxml/1" fx:controller="it.polimi.ingsw.network.client.view.Controllers.GenericController">
    <children>
-      <Label fx:id="myLabel" alignment="CENTER" layoutX="538.0" layoutY="191.0" text="Generic Scene">
+      <ImageView fitHeight="800.0" fitWidth="1200.0" pickOnBounds="true" preserveRatio="true">
+         <image>
+            <Image url="@../Temp-1200x800.jpg" />
+         </image>
+      </ImageView>
+      <Label fx:id="myLabel" alignment="CENTER" layoutX="-7.0" layoutY="301.0" text="Generic Scene" textFill="WHITE" AnchorPane.bottomAnchor="423.0" AnchorPane.leftAnchor="-7.0" AnchorPane.rightAnchor="47.0" AnchorPane.topAnchor="301.0">
          <font>
-            <Font size="22.0" />
+            <Font name="Monotype Corsiva" size="60.0" />
          </font>
       </Label>
    </children>

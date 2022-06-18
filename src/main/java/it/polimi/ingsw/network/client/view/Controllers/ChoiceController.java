@@ -5,6 +5,7 @@ import it.polimi.ingsw.model.Tower;
 import it.polimi.ingsw.network.client.messages.ChooseCardBack;
 import it.polimi.ingsw.network.client.messages.ChooseTowerColor;
 import it.polimi.ingsw.network.client.view.GUI;
+import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
@@ -44,18 +45,42 @@ public class ChoiceController implements GUIController {
 
     public void witchChosen() throws SocketException {
         gui.getSocketClient().send(new ChooseCardBack(CardBack.WITCH));
+        Platform.runLater(() -> {
+            GenericController controller = (GenericController) gui.getControllerMap().get(GUI.GENERIC);
+            gui.changeStage(GUI.GENERIC);
+            controller.setMyLabel("The other players are making their choice.");
+        });
+
     }
 
     public void sageChosen() throws SocketException {
         gui.getSocketClient().send(new ChooseCardBack(CardBack.SAGE));
+        Platform.runLater(() -> {
+            GenericController controller = (GenericController) gui.getControllerMap().get(GUI.GENERIC);
+            gui.changeStage(GUI.GENERIC);
+            controller.setMyLabel("The other players are making their choice.");
+        });
+
     }
 
     public void druidChosen() throws SocketException {
         gui.getSocketClient().send(new ChooseCardBack(CardBack.DRUID));
+        Platform.runLater(() -> {
+            GenericController controller = (GenericController) gui.getControllerMap().get(GUI.GENERIC);
+            gui.changeStage(GUI.GENERIC);
+            controller.setMyLabel("The other players are making their choice.");
+        });
+
     }
 
     public void kingChosen() throws SocketException {
         gui.getSocketClient().send(new ChooseCardBack(CardBack.KING));
+        Platform.runLater(() -> {
+            GenericController controller = (GenericController) gui.getControllerMap().get(GUI.GENERIC);
+            gui.changeStage(GUI.GENERIC);
+            controller.setMyLabel("The other players are making their choice.");
+        });
+
     }
 
     public void setVisibility() {

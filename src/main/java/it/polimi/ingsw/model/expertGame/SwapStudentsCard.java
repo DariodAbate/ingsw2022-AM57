@@ -57,10 +57,10 @@ public class SwapStudentsCard extends ExpertCard implements Serializable {
      */
     @Override
     public void effect(){
+        board.swapStudents(studentInEntranceColor, studentInHallColor);
         if (!isPlayed()) {
             played = true;
             price += 1;
         }
-            board.swapStudents(studentInEntranceColor, studentInHallColor);
     }
 }
