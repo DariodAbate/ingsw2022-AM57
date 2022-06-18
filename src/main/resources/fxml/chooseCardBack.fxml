@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.scene.Cursor?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
@@ -8,29 +9,46 @@
 
 <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="800.0" prefWidth="1200.0" xmlns="http://javafx.com/javafx/18" xmlns:fx="http://javafx.com/fxml/1" fx:controller="it.polimi.ingsw.network.client.view.Controllers.ChoiceController">
    <children>
+      <ImageView fitHeight="800.0" fitWidth="1200.0" pickOnBounds="true" preserveRatio="true">
+         <image>
+            <Image url="@../Temp-1200x800.jpg" />
+         </image>
+      </ImageView>
       <ImageView fx:id="druid" fitHeight="260.0" fitWidth="226.0" layoutX="396.0" layoutY="322.0" onMouseClicked="#druidChosen" pickOnBounds="true" preserveRatio="true">
          <image>
             <Image url="@../Card_back/CarteTOT_back_1@3x.png" />
          </image>
+         <cursor>
+            <Cursor fx:constant="HAND" />
+         </cursor>
       </ImageView>
       <ImageView fx:id="king" fitHeight="260.0" fitWidth="226.0" layoutX="627.0" layoutY="322.0" onMouseClicked="#kingChosen" pickOnBounds="true" preserveRatio="true">
          <image>
             <Image url="@../Card_back/CarteTOT_back_11@3x.png" />
          </image>
+         <cursor>
+            <Cursor fx:constant="HAND" />
+         </cursor>
       </ImageView>
       <ImageView fx:id="witch" fitHeight="260.0" fitWidth="226.0" layoutX="173.0" layoutY="322.0" onMouseClicked="#witchChosen" pickOnBounds="true" preserveRatio="true">
          <image>
             <Image url="@../Card_back/CarteTOT_back_21@3x.png" />
          </image>
+         <cursor>
+            <Cursor fx:constant="HAND" />
+         </cursor>
       </ImageView>
       <ImageView fx:id="sage" fitHeight="260.0" fitWidth="226.0" layoutX="850.0" layoutY="322.0" onMouseClicked="#sageChosen" pickOnBounds="true" preserveRatio="true">
          <image>
             <Image url="@../Card_back/CarteTOT_back_31@3x.png" />
          </image>
+         <cursor>
+            <Cursor fx:constant="HAND" />
+         </cursor>
       </ImageView>
-      <Label fx:id="header" alignment="CENTER" layoutX="320.0" layoutY="168.0" text="The other players are making their choices">
+      <Label fx:id="header" alignment="CENTER" layoutX="236.0" layoutY="172.0" text="The other players are making their choices" textFill="WHITE" AnchorPane.bottomAnchor="564.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="172.0">
          <font>
-            <Font size="30.0" />
+            <Font name="Monotype Corsiva" size="50.0" />
          </font>
       </Label>
    </children>
