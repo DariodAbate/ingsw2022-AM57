@@ -1,33 +1,47 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.scene.Cursor?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.TextField?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.text.Font?>
 
 <AnchorPane fx:id="mainPane" prefHeight="800.0" prefWidth="1200.0" xmlns="http://javafx.com/javafx/18" xmlns:fx="http://javafx.com/fxml/1" fx:controller="it.polimi.ingsw.network.client.view.Controllers.MainMenuController">
     <children>
-        <Label layoutX="379.0" layoutY="141.0" text="Insert server address, port and username to play!">
+      <ImageView fitHeight="800.0" fitWidth="1200.0" pickOnBounds="true" preserveRatio="true">
+         <image>
+            <Image url="@../Temp-1200x800.jpg" />
+         </image>
+      </ImageView>
+        <Label layoutX="168.0" layoutY="97.0" text="Insert server address, port and username to play!" textFill="WHITE">
             <font>
-                <Font size="18.0" />
+                <Font name="Monotype Corsiva" size="50.0" />
             </font>
         </Label>
-        <Label layoutX="409.0" layoutY="289.0" text="Username">
+        <Label layoutX="409.0" layoutY="289.0" text="Username" textFill="WHITE">
             <font>
-                <Font size="15.0" />
+                <Font name="Monotype Corsiva" size="30.0" />
             </font>
         </Label>
-        <TextField fx:id="username" layoutX="573.0" layoutY="287.0" />
-        <Button layoutX="552.0" layoutY="593.0" mnemonicParsing="false" onAction="#startServer" text="JOIN" />
-      <Label layoutX="409.0" layoutY="389.0" text="Server address">
+        <TextField fx:id="username" layoutX="573.0" layoutY="295.0" />
+        <Button layoutX="543.0" layoutY="588.0" mnemonicParsing="false" onAction="#startServer" text="JOIN">
          <font>
-            <Font size="15.0" />
+            <Font name="Monotype Corsiva" size="30.0" />
+         </font>
+         <cursor>
+            <Cursor fx:constant="HAND" />
+         </cursor></Button>
+      <Label layoutX="392.0" layoutY="381.0" text="Server address" textFill="WHITE">
+         <font>
+            <Font name="Monotype Corsiva" size="30.0" />
          </font>
       </Label>
-      <Label layoutX="409.0" layoutY="485.0" text="Server port">
+      <Label layoutX="409.0" layoutY="477.0" text="Server port" textFill="WHITE">
          <font>
-            <Font size="15.0" />
+            <Font name="Monotype Corsiva" size="30.0" />
          </font>
       </Label>
       <TextField fx:id="serverPort" layoutX="573.0" layoutY="483.0" />

@@ -1,24 +1,37 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.scene.Cursor?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.text.Font?>
 
 <AnchorPane fx:id="mainPane" prefHeight="800.0" prefWidth="1200.0" xmlns="http://javafx.com/javafx/18" xmlns:fx="http://javafx.com/fxml/1" fx:controller="it.polimi.ingsw.network.client.view.Controllers.MainMenuController">
    <children>
-      <Button layoutX="459.0" layoutY="384.0" mnemonicParsing="false" onAction="#play" text="PLAY">
+      <ImageView fitHeight="800.0" fitWidth="1200.0" pickOnBounds="true" preserveRatio="true">
+         <image>
+            <Image url="@../Temp-1200x800.jpg" />
+         </image>
+      </ImageView>
+      <Button layoutX="371.0" layoutY="384.0" mnemonicParsing="false" onAction="#play" text="PLAY">
          <font>
-            <Font size="15.0" />
-         </font></Button>
-      <Button layoutX="746.0" layoutY="384.0" mnemonicParsing="false" onAction="#quit" text="QUIT">
+            <Font name="Monotype Corsiva" size="30.0" />
+         </font>
+         <cursor>
+            <Cursor fx:constant="HAND" />
+         </cursor></Button>
+      <Button layoutX="719.0" layoutY="384.0" mnemonicParsing="false" onAction="#quit" text="QUIT">
          <font>
-            <Font size="15.0" />
-         </font></Button>
-      <Label layoutX="386.0" layoutY="121.0" />
-      <Label alignment="CENTER" layoutX="559.0" layoutY="123.0" text="Welcome">
+            <Font name="Monotype Corsiva" size="30.0" />
+         </font>
+         <cursor>
+            <Cursor fx:constant="HAND" />
+         </cursor></Button>
+      <Label alignment="CENTER" layoutX="155.0" layoutY="106.0" text="Welcome to the magical world of Eriantys" textFill="WHITE">
          <font>
-            <Font size="20.0" />
+            <Font name="Monotype Corsiva" size="60.0" />
          </font>
       </Label>
    </children>
