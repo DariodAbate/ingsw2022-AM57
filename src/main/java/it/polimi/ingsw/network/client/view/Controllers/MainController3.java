@@ -4,9 +4,12 @@ import it.polimi.ingsw.model.Color;
 import it.polimi.ingsw.model.Tower;
 import it.polimi.ingsw.network.client.messages.ColorChosen;
 import it.polimi.ingsw.network.client.messages.IntegerMessage;
+import it.polimi.ingsw.network.client.messages.StopMessage;
 import it.polimi.ingsw.network.client.view.ExpertCard_ID;
 import it.polimi.ingsw.network.client.view.GUI;
 import javafx.fxml.FXML;
+import javafx.scene.Cursor;
+import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -30,6 +33,7 @@ public class MainController3 implements GUIController{
     @FXML private AnchorPane myCoin;
     @FXML private AnchorPane otherFirstCoin;
     @FXML private AnchorPane otherSecondCoin;
+    @FXML private Button stopButton;
     private ArrayList<Integer> otherPlayersIndex;
 
     private final HashMap<Integer, Image> hand = new HashMap<>();
@@ -154,6 +158,7 @@ public class MainController3 implements GUIController{
             entranceStudent.setFitWidth(17);
             entranceStudent.setLayoutX(25);
             entranceStudent.setLayoutY(10 + 18 * i);
+            entranceStudent.setCursor(Cursor.HAND);
             myEntranceStudents.add(entranceStudent);
             entranceStudent.setOnMouseClicked( event -> {
                 sendStudentToMove(colors.get(finalI));
@@ -185,6 +190,7 @@ public class MainController3 implements GUIController{
             myBoard.getChildren().add(hallStudent);
             hallStudent.setFitHeight(18);
             hallStudent.setFitWidth(18);
+            hallStudent.setCursor(Cursor.HAND);
             myHallStudents.add(hallStudent);
             /*if (isMyBoard) */
             hallStudent.setOnMouseClicked(event -> {           //TODO gestire con un unico metodo le board con il booleano come parametro
@@ -282,6 +288,7 @@ public class MainController3 implements GUIController{
             card.setFitWidth(88);
             card.setLayoutX(lastCardX + 90);
             card.setLayoutY(675);
+            card.setCursor(Cursor.HAND);
             lastCardX += 90;
             cards.add(card);
             card.setOnMouseClicked(event -> {
@@ -327,6 +334,7 @@ public class MainController3 implements GUIController{
             cloudPane.getChildren().add(cloud);
             cloud.setFitWidth(120);
             cloud.setFitHeight(120);
+            cloud.setCursor(Cursor.HAND);
             int finalI = i;
             cloud.setOnMouseClicked( event -> {
                 sendCloudIndex(finalI);
@@ -397,6 +405,7 @@ public class MainController3 implements GUIController{
             island.setOnMouseClicked(event -> {
                 sendIslandIndex(finalI);
             });
+            island.setCursor(Cursor.HAND);
 
             //Mother Nature
             if (i == motherNature) {
@@ -423,7 +432,7 @@ public class MainController3 implements GUIController{
                 Circle tower = new Circle();
                 islandPane.getChildren().add(tower);
                 tower.setRadius(10);
-                tower.setLayoutX(20 + 17 * k);
+                tower.setLayoutX(25 + 17 * k);
                 tower.setLayoutY(60);
                 switch (towerColorMap.get(i)) {
                     case WHITE -> tower.setFill(WHITE);
@@ -439,8 +448,8 @@ public class MainController3 implements GUIController{
                     islandPane.getChildren().add(banTile);
                     banTile.setFitWidth(20);
                     banTile.setFitHeight(20);
-                    banTile.setLayoutX(50);
-                    banTile.setLayoutY(50);
+                    banTile.setLayoutX(85);
+                    banTile.setLayoutY(85);
                 }
             }
 
@@ -690,13 +699,13 @@ public class MainController3 implements GUIController{
             expertCardPane.getChildren().add(expertCard);
             expertCard.setFitHeight(88);
             expertCard.setFitWidth(59);
+            expertCard.setCursor(Cursor.HAND);
             int finalI = i;
             expertCard.setOnMouseClicked( event -> {
-                sendExpertCard(finalI);
+                sendExpertCard(finalI, expertCards.get(finalI));
             });
 
             //Stud buffer color
-            //TODO ridisegnare ogni volta
             if (studBufferColor.get(i) != null) {
                 for (int j = 0; j < studBufferColor.get(i).size(); j++) {
                     ImageView studCardColor = new ImageView(studentsColor.get(studBufferColor.get(i).get(j)));
@@ -705,6 +714,7 @@ public class MainController3 implements GUIController{
                     studCardColor.setFitHeight(15);
                     studCardColor.setLayoutX(10 * j);
                     studCardColor.setLayoutY(50);
+                    studCardColor.setCursor(Cursor.HAND);
                     int finalJ = j;
                     studCardColor.setOnMouseClicked(event -> {
                         sendStudentToMove(studBufferColor.get(finalI).get(finalJ));
@@ -714,12 +724,24 @@ public class MainController3 implements GUIController{
         }
     }
 
-    public void sendExpertCard(int index) {
+    public void sendExpertCard(int index, ExpertCard_ID expertcard) {
+        if (expertcard == ExpertCard_ID.BARD || expertcard == ExpertCard_ID.JOKER) {
+            stopButton.setVisible(true);
+        }
         try {
             gui.getSocketClient().send(new IntegerMessage(index +1));
         } catch (SocketException e) {
             e.printStackTrace();
         }
+    }
+
+    public void stopButton () {
+        try {
+            gui.getSocketClient().send(new StopMessage());
+        } catch (SocketException e) {
+            e.printStackTrace();
+        }
+        stopButton.setVisible(false);
     }
 
     public void showInfoMessage(String message) {

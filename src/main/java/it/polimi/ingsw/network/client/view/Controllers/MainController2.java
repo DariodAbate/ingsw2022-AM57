@@ -5,9 +5,11 @@ import it.polimi.ingsw.model.Color;
 import it.polimi.ingsw.model.Tower;
 import it.polimi.ingsw.network.client.messages.ColorChosen;
 import it.polimi.ingsw.network.client.messages.IntegerMessage;
+import it.polimi.ingsw.network.client.messages.StopMessage;
 import it.polimi.ingsw.network.client.view.ExpertCard_ID;
 import it.polimi.ingsw.network.client.view.GUI;
 import javafx.fxml.FXML;
+import javafx.scene.Cursor;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
@@ -16,7 +18,6 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.paint.Paint;
 import javafx.scene.shape.Circle;
 
-import java.io.InputStream;
 import java.net.SocketException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -32,7 +33,8 @@ public class MainController2 implements GUIController {
     @FXML private AnchorPane myCoin;
     @FXML private AnchorPane otherCoin;
     @FXML private Label infoMessage;
-    @FXML private Button playExpertCard;
+    @FXML private Button stopButton;
+
 
 
     private final static Paint BLACK = javafx.scene.paint.Color.BLACK;
@@ -57,7 +59,8 @@ public class MainController2 implements GUIController {
     private ArrayList<ImageView> coins = new ArrayList<>();
     private ArrayList<AnchorPane> clouds = new ArrayList<>();
 
-    private final Image GREEN_STUDENT = new Image(String.valueOf(getClass().getResource("/Students/student_green.png")));
+    //private final Image GREEN_STUDENT = new Image(String.valueOf(getClass().getResource("/Students/student_green.png")));
+    private final Image GREEN_STUDENT = new Image(getClass().getResource("/Students/student_green.png").toExternalForm());
     private final  Image RED_STUDENT = new Image(String.valueOf(getClass().getResource("/Students/student_red.png")));
     private final  Image YELLOW_STUDENT = new Image(String.valueOf(getClass().getResource("/Students/student_yellow.png")));
     private final  Image PINK_STUDENT = new Image(String.valueOf(getClass().getResource("/Students/student_pink.png")));
@@ -100,6 +103,8 @@ public class MainController2 implements GUIController {
     private final Image HOST = new Image(String.valueOf(getClass().getResource("/Expert_card/CarteTOT_front12.jpg")));
 
     private final Image BAN = new Image(String.valueOf(getClass().getResource("/deny_island_icon.png")));
+
+    private final Image BOARD = new Image(getClass().getResource("/PLANCIA_GIOCO_2.png").toExternalForm());
 
     @Override
     public void setGUI(GUI gui) {
@@ -154,6 +159,7 @@ public class MainController2 implements GUIController {
             entranceStudent.setFitWidth(20);
             entranceStudent.setLayoutX(30);
             entranceStudent.setLayoutY(10 + 25 * i);
+            entranceStudent.setCursor(Cursor.HAND);
             myEntranceStudents.add(entranceStudent);
             entranceStudent.setOnMouseClicked(event -> {
                 sendStudentToMove(colors.get(finalI));
@@ -185,11 +191,11 @@ public class MainController2 implements GUIController {
             myBoard.getChildren().add(hallStudent);
             hallStudent.setFitHeight(20);
             hallStudent.setFitWidth(20);
+            hallStudent.setCursor(Cursor.HAND);
             myHallStudents.add(hallStudent);
-            /*if (isMyBoard) */
-                hallStudent.setOnMouseClicked(event -> {
-                    sendStudentToMove(colors.get(finalI));
-                });
+            hallStudent.setOnMouseClicked(event -> {
+                sendStudentToMove(colors.get(finalI));
+            });
             switch (colors.get(i)) {
                 case GREEN -> {
                     hallStudent.setLayoutX(lastGreenStudentX + 24.2);
@@ -275,6 +281,7 @@ public class MainController2 implements GUIController {
             cloudPane.getChildren().add(cloud);
             cloud.setFitWidth(128);
             cloud.setFitHeight(128);
+            cloud.setCursor(Cursor.HAND);
             int finalI = i;
             cloud.setOnMouseClicked( event -> {
                 sendCloudIndex(finalI);
@@ -312,6 +319,7 @@ public class MainController2 implements GUIController {
             card.setFitWidth(88);
             card.setLayoutX(lastCardX + 90);
             card.setLayoutY(650);
+            card.setCursor(Cursor.HAND);
             lastCardX += 90;
             cards.add(card);
             card.setOnMouseClicked(event -> {
@@ -437,6 +445,7 @@ public class MainController2 implements GUIController {
     public void showArchipelago(int archipelagoSize, int motherNature, HashMap<Integer, ArrayList<Color>> islandsStudents, HashMap<Integer, Tower> towerColorMap, HashMap<Integer, Integer> numTowersMap, HashMap<Integer, Boolean> bannedIslands) {
         double lastCloudX = 650;
         double lastCloudY = 100;
+        int studCount = 0;
         int count = 0;
         for (AnchorPane islandPane : archipelago) {
             mainPane.getChildren().remove(islandPane);
@@ -477,6 +486,7 @@ public class MainController2 implements GUIController {
             island.setFitHeight(128);
             island.setFitWidth(128);
             islandPane.getChildren().add(island);
+            island.setCursor(Cursor.HAND);
             island.setOnMouseClicked(event -> {
                 sendIslandIndex(finalI);
             });
@@ -498,7 +508,12 @@ public class MainController2 implements GUIController {
                 student.setFitWidth(15);
                 student.setFitHeight(15);
                 student.setLayoutX(20 + 17 * j);
-                student.setLayoutY(20);
+                //TODO sistemare la x. quando vado a capo non viene resettata
+                /*if (islandsStudents.get(i).indexOf(islandsStudents.get(i).get(j)) > 4) {
+                    student.setLayoutY(35);
+                } else {*/
+                    student.setLayoutY(20);
+                //}
             }
 
             //Tower
@@ -506,7 +521,7 @@ public class MainController2 implements GUIController {
                 Circle tower = new Circle();
                 islandPane.getChildren().add(tower);
                 tower.setRadius(10);
-                tower.setLayoutX(20 + 17 * k);
+                tower.setLayoutX(25 + 20 * k);
                 tower.setLayoutY(60);
                 switch (towerColorMap.get(i)) {
                     case WHITE -> tower.setFill(WHITE);
@@ -522,8 +537,8 @@ public class MainController2 implements GUIController {
                     islandPane.getChildren().add(banTile);
                     banTile.setFitWidth(20);
                     banTile.setFitHeight(20);
-                    banTile.setLayoutX(50);
-                    banTile.setLayoutY(50);
+                    banTile.setLayoutX(85);
+                    banTile.setLayoutY(85);
                 }
             }
             archipelago.add(islandPane);
@@ -575,13 +590,13 @@ public class MainController2 implements GUIController {
             expertCardPane.getChildren().add(expertCard);
             expertCard.setFitHeight(88);
             expertCard.setFitWidth(59);
+            expertCard.setCursor(Cursor.HAND);
             int finalI = i;
             expertCard.setOnMouseClicked( event -> {
-                sendExpertCard(finalI);
+                sendExpertCard(finalI, expertCards.get(finalI));
             });
 
             //Stud buffer color
-            //TODO ridisegnare ogni volta
             if (studBufferColor.get(i) != null) {
                 for (int j = 0; j < studBufferColor.get(i).size(); j++) {
                     ImageView studCardColor = new ImageView(studentsColor.get(studBufferColor.get(i).get(j)));
@@ -599,7 +614,10 @@ public class MainController2 implements GUIController {
         }
     }
 
-    public void sendExpertCard(int index) {
+    public void sendExpertCard(int index, ExpertCard_ID expertcard) {
+        if (expertcard == ExpertCard_ID.BARD || expertcard == ExpertCard_ID.JOKER) {
+            stopButton.setVisible(true);
+        }
         try {
             gui.getSocketClient().send(new IntegerMessage(index +1));
         } catch (SocketException e) {
@@ -607,7 +625,14 @@ public class MainController2 implements GUIController {
         }
     }
 
-
+    public void stopButton () {
+        try {
+            gui.getSocketClient().send(new StopMessage());
+        } catch (SocketException e) {
+            e.printStackTrace();
+        }
+        stopButton.setVisible(false);
+    }
 
     public void showInfoMessage(String message) {
         infoMessage.setText(message);

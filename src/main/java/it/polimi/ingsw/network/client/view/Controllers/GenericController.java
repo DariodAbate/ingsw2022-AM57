@@ -93,11 +93,11 @@ public class GenericController implements GUIController{
 
     }
 
-    public void colorStudentInfo() {
+    public void colorStudentInfo(String message) {
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
         alert.setTitle("Color to move!");
         alert.setHeaderText("Choose the student you want to move.");
-        alert.setContentText("Click on the student in your entrance that you want to move.");
+        alert.setContentText(message);
         alert.showAndWait();
         gui.displayAllGame();
     }
@@ -123,6 +123,13 @@ public class GenericController implements GUIController{
                 gui.getSocketClient().send(new IntegerMessage(Integer.parseInt(num)));
             } catch (SocketException e) {
                 e.printStackTrace();
+            } catch (NumberFormatException e) {
+                Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                alert.setTitle("Invalid parameter!");
+                alert.setHeaderText("Please insert the right parameters.");
+                alert.setContentText("The number of steps shouldn't be a string.");
+                alert.showAndWait();
+                numOfIslandToTravel(message);
             }
         });
     }

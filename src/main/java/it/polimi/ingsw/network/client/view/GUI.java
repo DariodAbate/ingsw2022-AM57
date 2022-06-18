@@ -12,11 +12,10 @@ import it.polimi.ingsw.network.server.answers.*;
 import it.polimi.ingsw.network.server.answers.update.*;
 import javafx.application.Application;
 import javafx.application.Platform;
-import javafx.event.EventHandler;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
+import javafx.scene.image.Image;
 import javafx.stage.Stage;
-import javafx.stage.WindowEvent;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
@@ -38,7 +37,6 @@ public class GUI extends Application implements PropertyChangeListener{
     private Scene currentScene;
     private GameBean gameBean;
     private String nickname;
-    private CardBack cardBack;
     private SocketClient socketClient;
     private AnswerHandler answerHandler;
     private ArrayList<Integer> priorities = new ArrayList<>();
@@ -57,9 +55,10 @@ public class GUI extends Application implements PropertyChangeListener{
         setup();
         stage = primaryStage;
         stage.setTitle("Eryantis");
+        stage.getIcons().add(new Image(getClass().getResource("/eriantys_banner_no_items.png").toExternalForm()));
         stage.setScene(currentScene);
         stage.setResizable(false);
-        stage.setOnCloseRequest(t -> {   //FIXME quando viene chiusa la finestra termina soltanto il thread di javafx
+        stage.setOnCloseRequest(t -> {
             Platform.exit();
             System.exit(0);
         });
@@ -231,19 +230,12 @@ public class GUI extends Application implements PropertyChangeListener{
 
      public void displayGenericMessage(String message){
         System.out.println(message + " (generic message)");
-        if(message.contains("Username not available")) {   //TODO gestire Username not available
+        if(message.contains("Username not available")) {
+            MainMenuController controller = (MainMenuController) controllerMap.get(MENU);
                 Platform.runLater(() -> {
-
+                    controller.userNameNotAvailable(message);
                 });
             }
-
-
-        /*else if(message.contains("Please select the priority of the card")) {
-            Platform.runLater(() -> {
-                GenericController controller = (GenericController) controllerMap.get(GENERIC);
-                controller.priorityCardInfo();
-            });
-        } */
 
         else if(message.contains("Select where you want to move your students")) {
             Platform.runLater(() -> {
@@ -255,16 +247,9 @@ public class GUI extends Application implements PropertyChangeListener{
         else if(message.contains(("Please select the color of the student"))) {
             Platform.runLater(() -> {
                 GenericController controller = (GenericController) controllerMap.get(GENERIC);
-                controller.colorStudentInfo();
+                controller.colorStudentInfo(message);
             });
          }
-
-        /*else if(message.contains("Move mother nature. You can travel")) {
-            Platform.runLater(() -> {
-                GenericController controller = (GenericController) controllerMap.get(GENERIC);
-                controller.movementInfo(message);
-            });
-         }*/
 
         else if(message.contains("Choose the number of islands you want to travel")) {
             Platform.runLater(() -> {
@@ -273,6 +258,7 @@ public class GUI extends Application implements PropertyChangeListener{
             });
         }
 
+        //TODO aggiungere Play Card
         else if(message.contains("Select one of the clouds")) {
             Platform.runLater(() -> {
                 GenericController controller = (GenericController) controllerMap.get(GENERIC);
@@ -286,13 +272,6 @@ public class GUI extends Application implements PropertyChangeListener{
                 controller.numOfIslandToTravel(message);
             });
         }
-
-        /*else if(message.contains("Select the island where you want to place your student")) {
-            Platform.runLater(() -> {
-                GenericController controller = (GenericController) controllerMap.get(GENERIC);
-                controller.selectIslandInfo(message);
-            });
-        }*/
 
         else  {
             Platform.runLater(() -> {
@@ -435,8 +414,7 @@ public class GUI extends Application implements PropertyChangeListener{
         return 0;
     }
 
-    public int otherLastPlayedCard() {   //TODO per adesso funziona solo per 2
-                                         //TODO per 3 fare una mappa <indice player, ultima carta giocata>
+    public int otherLastPlayedCard() {
         int lastPriority;
         for (int i = 0; i < gameBean.getPlayers().size(); i++) {
             if (!gameBean.getPlayers().get(i).getNickname().equals(nickname)) {
@@ -542,7 +520,6 @@ public class GUI extends Application implements PropertyChangeListener{
                 ArrayList<Color> copy = new ArrayList<>(cardColors);
                 studBufferColor.put(gameBean.getExpertCards().indexOf(expertCardBean), copy);
             }
-            System.out.println(studBufferColor);
         }
         if (gameBean.getPlayers().size() == 2) {
             MainController2 controller = (MainController2) controllerMap.get(MAIN_SCENE_FOR2);
@@ -585,7 +562,7 @@ public class GUI extends Application implements PropertyChangeListener{
     }
 
 
-    public void startConnection(AnswerHandler answerHandler, SocketClient socketClient) throws IOException {
+    public void startConnection(AnswerHandler answerHandler, SocketClient socketClient) {
         this.answerHandler = answerHandler;
         this.socketClient = socketClient;
         this.answerHandler.addPropertyChangeListener(this);
@@ -596,6 +573,11 @@ public class GUI extends Application implements PropertyChangeListener{
     public SocketClient getSocketClient() {
         return socketClient;
     }
+
+    public HashMap<String, GUIController> getControllerMap() {
+        return  this.controllerMap;
+    }
 }
+
 
 

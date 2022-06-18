@@ -6,6 +6,7 @@ import it.polimi.ingsw.network.client.SocketClient;
 import it.polimi.ingsw.network.client.messages.GenericMessage;
 import it.polimi.ingsw.network.client.view.GUI;
 import javafx.fxml.FXML;
+import javafx.scene.control.Alert;
 import javafx.scene.control.TextField;
 import java.io.IOException;
 import java.net.SocketException;
@@ -41,11 +42,26 @@ public class MainMenuController implements GUIController {
         System.exit(0);
     }
 
-    public void startServer() throws IOException, NumberFormatException {
-        AnswerHandler answerHandler = new AnswerHandler();
-        SocketClient socketClient = new SocketClient(serverAddress.getText(), Integer.parseInt(serverPort.getText()), answerHandler);
-        gui.startConnection(answerHandler, socketClient);
-        nickname = username.getText();
+    public void startServer() {
+        try {
+            AnswerHandler answerHandler = new AnswerHandler();
+            SocketClient socketClient = new SocketClient(serverAddress.getText(), Integer.parseInt(serverPort.getText()), answerHandler);
+            gui.startConnection(answerHandler, socketClient);
+            nickname = username.getText();
+        } catch (NumberFormatException e) {
+            Alert alert = new Alert(Alert.AlertType.INFORMATION);
+            alert.setTitle("Invalid parameter!");
+            alert.setHeaderText("Please insert the right parameters.");
+            alert.setContentText("The address port should contain only number.");
+            alert.showAndWait();
+        } catch (IOException e) {
+            Alert alert = new Alert(Alert.AlertType.INFORMATION);
+            alert.setTitle("Invalid parameter!");
+            alert.setHeaderText("Server not available.");
+            alert.setContentText("The given address isn't correct.");
+            alert.showAndWait();
+        }
+
     }
 
     public String getNickname() {
@@ -55,6 +71,14 @@ public class MainMenuController implements GUIController {
             e.printStackTrace();
         }
         return nickname;
+    }
+
+    public void userNameNotAvailable (String message) {
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle("Username not available!");
+        alert.setHeaderText(message);
+        alert.setContentText("This username is already taken.");
+        alert.showAndWait();
     }
 
 }
