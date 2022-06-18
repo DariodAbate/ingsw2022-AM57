@@ -59,8 +59,7 @@ public class MainController2 implements GUIController {
     private ArrayList<ImageView> coins = new ArrayList<>();
     private ArrayList<AnchorPane> clouds = new ArrayList<>();
 
-    //private final Image GREEN_STUDENT = new Image(String.valueOf(getClass().getResource("/Students/student_green.png")));
-    private final Image GREEN_STUDENT = new Image(getClass().getResource("/Students/student_green.png").toExternalForm());
+    private final Image GREEN_STUDENT = new Image(String.valueOf(getClass().getResource("/Students/student_green.png")));
     private final  Image RED_STUDENT = new Image(String.valueOf(getClass().getResource("/Students/student_red.png")));
     private final  Image YELLOW_STUDENT = new Image(String.valueOf(getClass().getResource("/Students/student_yellow.png")));
     private final  Image PINK_STUDENT = new Image(String.valueOf(getClass().getResource("/Students/student_pink.png")));

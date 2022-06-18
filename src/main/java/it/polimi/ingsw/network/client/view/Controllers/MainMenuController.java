@@ -7,6 +7,7 @@ import it.polimi.ingsw.network.client.messages.GenericMessage;
 import it.polimi.ingsw.network.client.view.GUI;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
+import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
 import java.io.IOException;
 import java.net.SocketException;
@@ -24,6 +25,12 @@ public class MainMenuController implements GUIController {
 
     @FXML
     private TextField serverPort;
+
+    @FXML
+    private TextField rightNick;
+
+    @FXML
+    private Button sendRightNick;
 
     private static String nickname;
 
@@ -64,7 +71,7 @@ public class MainMenuController implements GUIController {
 
     }
 
-    public String getNickname() {
+    public String sendNickname() {
         try {
             gui.getSocketClient().send(new GenericMessage(nickname));
         } catch (SocketException e) {
@@ -81,4 +88,16 @@ public class MainMenuController implements GUIController {
         alert.showAndWait();
     }
 
+    public void rightNickName () {
+        nickname = rightNick.getText();
+        try {
+            gui.getSocketClient().send(new GenericMessage(rightNick.getText()));
+        } catch (SocketException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public String getNickname() {
+        return nickname;
+    }
 }

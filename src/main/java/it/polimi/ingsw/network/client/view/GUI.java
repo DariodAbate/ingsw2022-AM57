@@ -33,6 +33,7 @@ public class GUI extends Application implements PropertyChangeListener{
     public static final String LOADING = "loading.fxml";
     public static final String GENERIC = "genericScene.fxml";
     public static final String CHOICE = "chooseCardBack.fxml";
+    public static final String NICK = "requestUser.fxml";
     private Stage stage;
     private Scene currentScene;
     private GameBean gameBean;
@@ -66,7 +67,7 @@ public class GUI extends Application implements PropertyChangeListener{
     }
 
     public void setup() throws IOException {
-        ArrayList<String> fxmList = new ArrayList<>(Arrays.asList(MAIN_SCENE_FOR2, MAIN_SCENE_FOR3, MENU, SETUP, LOADING, GENERIC, CHOICE));
+        ArrayList<String> fxmList = new ArrayList<>(Arrays.asList(MAIN_SCENE_FOR2, MAIN_SCENE_FOR3, MENU, SETUP, LOADING, GENERIC, CHOICE, NICK));
         for (String path : fxmList) {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/" + path));
             sceneMap.put(path, new Scene(loader.load()));
@@ -195,10 +196,11 @@ public class GUI extends Application implements PropertyChangeListener{
      }
 
      public void reqNickname(String message) {
+
          System.out.println(message + " (request nickname message)");
          Platform.runLater(() -> {
              MainMenuController controller = (MainMenuController) controllerMap.get(MENU);
-             nickname = controller.getNickname();
+             nickname = controller.sendNickname();
          });
      }
 
@@ -234,7 +236,10 @@ public class GUI extends Application implements PropertyChangeListener{
             MainMenuController controller = (MainMenuController) controllerMap.get(MENU);
                 Platform.runLater(() -> {
                     controller.userNameNotAvailable(message);
+                    changeStage(NICK);
                 });
+                this.nickname = controller.getNickname();
+
             }
 
         else if(message.contains("Select where you want to move your students")) {
@@ -270,6 +275,13 @@ public class GUI extends Application implements PropertyChangeListener{
             Platform.runLater(() -> {
                 GenericController controller = (GenericController) controllerMap.get(GENERIC);
                 controller.numOfIslandToTravel(message);
+            });
+        }
+
+        else if(message.contains("Wait for")) {
+            Platform.runLater(() -> {
+                GenericController controller = (GenericController) controllerMap.get(GENERIC);
+                controller.setMyLabel(message);
             });
         }
 

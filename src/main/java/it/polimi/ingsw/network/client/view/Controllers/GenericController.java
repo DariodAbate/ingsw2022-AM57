@@ -32,14 +32,6 @@ public class GenericController implements GUIController{
         myLabel.setText(message);
     }
 
-    public void priorityCardInfo() {
-        Alert alert = new Alert(Alert.AlertType.INFORMATION);
-        alert.setTitle("Planning phase!");
-        alert.setHeaderText("Choose the card you want to play.");
-        alert.setContentText("Please select the card you want to play by clicking on it.");
-        alert.showAndWait();
-    }
-
     public void chooseMovementInfo(boolean isExpert) {
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
         alert.setTitle("Action phase!");
@@ -102,13 +94,6 @@ public class GenericController implements GUIController{
         gui.displayAllGame();
     }
 
-    public void movementInfo(String message) {                   //TODO remove alert
-        Alert alert = new Alert(Alert.AlertType.INFORMATION);
-        alert.setTitle("Movement!");
-        alert.setHeaderText("You have to move mother nature");
-        alert.setContentText(message);
-        alert.showAndWait();
-    }
 
     public void numOfIslandToTravel(String message) throws NumberFormatException{
         TextInputDialog numOfIsland = new TextInputDialog();
@@ -142,13 +127,6 @@ public class GenericController implements GUIController{
         alert.showAndWait();
     }
 
-    public void selectIslandInfo(String message) {
-        Alert alert = new Alert(Alert.AlertType.INFORMATION);
-        alert.setTitle("Clouds!");
-        alert.setHeaderText(message);
-        alert.setContentText("Select the island by clicking on it");
-        alert.showAndWait();
-    }
 
     public void winnerInfo(String winner) {
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
