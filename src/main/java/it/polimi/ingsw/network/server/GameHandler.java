@@ -327,7 +327,7 @@ public class GameHandler implements PropertyChangeListener {
         ArrayList<IslandBean> islandBeans = new ArrayList<>();
         for(IslandTile islandTile: archipelago){
             IslandBean tempIsland = new IslandBean();
-            tempIsland.setBanToken(islandTile.getIsBanned());
+            tempIsland.setBanToken(islandTile.getBanTile());
             tempIsland.setTowerColor(islandTile.getTowerColor());
             tempIsland.setNumTowers(islandTile.getNumTowers());
 
@@ -805,6 +805,11 @@ public class GameHandler implements PropertyChangeListener {
                     ArrayList<BoardBean> boardBeans = getBoardBeans();
 
                     broadcastMessage(new MotherNatureUpdateAnswer(game.getMotherNature(), boardBeans, copyArchipelago(game.getArchipelago())));
+
+                    //HEALER CARD: refresh the cards
+                    ExpertCardUpdateAnswer expertCardUpdateAnswer = new ExpertCardUpdateAnswer();
+                    expertCardUpdateAnswer.setUpdatedExpertCards(copyExpertCards(game.getExpertCards()));
+                    broadcastMessage(expertCardUpdateAnswer);
                     isIdxChosen = true;
                 } else{
                     client.sendMessageToClient("Please select a valid number of steps.");

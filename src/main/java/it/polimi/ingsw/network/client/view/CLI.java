@@ -624,7 +624,7 @@ public class CLI  implements PropertyChangeListener, UI {
                 mother.append("M");
                 motherCounter++;
             }
-            if(islandBean.isBanToken()){
+            for(int i = 0; i < islandBean.getBanToken(); i++){
                 mother.append("!");
                 motherCounter++;
             }
