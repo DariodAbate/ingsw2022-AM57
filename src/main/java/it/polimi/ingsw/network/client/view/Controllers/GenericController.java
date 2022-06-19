@@ -102,49 +102,34 @@ public class GenericController implements GUIController{
                     e.printStackTrace();
                 }
             } else if (resultAlert.isPresent() && resultAlert.get() == no){
-                TextInputDialog numOfIsland = new TextInputDialog();
-                numOfIsland.setTitle("Movement!");
-                numOfIsland.setHeaderText(message);
-                numOfIsland.setContentText("Number of island:");
-                Optional<String> result = numOfIsland.showAndWait();
-                result.ifPresent(num -> {
-                    try {
-                        gui.getSocketClient().send(new IntegerMessage(Integer.parseInt(num)));
-                    } catch (SocketException e) {
-                        e.printStackTrace();
-                    } catch (NumberFormatException e) {
-                        Alert alert1 = new Alert(Alert.AlertType.INFORMATION);
-                        alert1.setTitle("Invalid parameter!");
-                        alert1.setHeaderText("Please insert the right parameters.");
-                        alert1.setContentText("The number of steps shouldn't be a string.");
-                        alert1.showAndWait();
-                        numOfIslandToTravel(message, isExpert);
-                    }
-                });
+                showTextDialog(message);
             }
-
         } else {
-            TextInputDialog numOfIsland = new TextInputDialog();
-            numOfIsland.setTitle("Movement!");
-            numOfIsland.setHeaderText(message);
-            numOfIsland.setContentText("Number of island:");
-            Optional<String> result = numOfIsland.showAndWait();
-            result.ifPresent(num -> {
-                try {
-                    gui.getSocketClient().send(new IntegerMessage(Integer.parseInt(num)));
-                } catch (SocketException e) {
-                    e.printStackTrace();
-                } catch (NumberFormatException e) {
-                    Alert alert = new Alert(Alert.AlertType.INFORMATION);
-                    alert.setTitle("Invalid parameter!");
-                    alert.setHeaderText("Please insert the right parameters.");
-                    alert.setContentText("The number of steps shouldn't be a string.");
-                    alert.showAndWait();
-                    numOfIslandToTravel(message, isExpert);
-                }
-            });
-        }
+            showTextDialog(message);
+    }}
+
+    public void showTextDialog(String message) {
+        TextInputDialog numOfIsland = new TextInputDialog();
+        numOfIsland.setTitle("Movement!");
+        numOfIsland.setHeaderText(message);
+        numOfIsland.setContentText("Number of island:");
+        Optional<String> result = numOfIsland.showAndWait();
+        result.ifPresent(num -> {
+            try {
+                gui.getSocketClient().send(new IntegerMessage(Integer.parseInt(num)));
+            } catch (SocketException e) {
+                e.printStackTrace();
+            } catch (NumberFormatException e) {
+                Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                alert.setTitle("Invalid parameter!");
+                alert.setHeaderText("Please insert the right parameters.");
+                alert.setContentText("The number of steps shouldn't be a string.");
+                alert.showAndWait();
+                showTextDialog(message);
+            }
+        });
     }
+
 
     //TODO if expert card already played don't show play card button
     public void selectCloudInfo(String message, boolean isExpert) {

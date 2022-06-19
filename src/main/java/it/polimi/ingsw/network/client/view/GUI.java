@@ -263,13 +263,13 @@ public class GUI extends Application implements PropertyChangeListener{
             });
         }
 
-        else if(message.contains("valid number of steps")) {
+       /*else if(message.contains("valid number of steps")) {
             Platform.runLater(() -> {
                 GenericController controller = (GenericController) controllerMap.get(GENERIC);
-                controller.numOfIslandToTravel(message, gameBean.isExpertGame());
+                controller.showTextDialog(message);
                 showInfoMessage(message);
             });
-        }
+        }*/
 
         else if(message.contains("Wait for")) {
             Platform.runLater(() -> {
