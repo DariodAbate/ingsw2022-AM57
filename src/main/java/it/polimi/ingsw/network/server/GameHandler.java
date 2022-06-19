@@ -636,11 +636,7 @@ public class GameHandler implements PropertyChangeListener {
      */
     private synchronized void actionPhase() throws IOException, ClassNotFoundException{
         boolean areCloudsEmpty = false;
-        for(CloudTile cloud : game.getCloudTiles()){ //if at least one cloud is not filled (bag is empty), skip takeCloud
-            if(cloud.isFillable()){
-                areCloudsEmpty = true;
-            }
-        }
+
         server.saveGame(this);// save game
 
         while(game.getGameState() != GameState.PLANNING_STATE && continueGame){
@@ -648,8 +644,11 @@ public class GameHandler implements PropertyChangeListener {
             client.sendMessageToClient("It's your turn!");
             moveStudents(client);
             motherMovement(client);
-            if(!areCloudsEmpty && continueGame) //to avoid problem caused by end game
+            if(!endGameInRound && continueGame) { //to avoid problem caused by end game
                 takeCloud(client);
+            } else{
+                game.nextTurn();
+            }
         }
     }
 
@@ -682,9 +681,10 @@ public class GameHandler implements PropertyChangeListener {
                 } else if(message instanceof PlayExpertCard && expertGame){
                     if(!((ExpertGame) game).isCardHasBeenPlayed()) {
                         correctMove = playCard(client);
-                        client.sendMessageToClient("Select where you want to move your students[\"hall/island\"]");
                         if(correctMove) {
                             game.removeActualNumStudMoves();
+                        } else{
+                            client.sendMessageToClient("Select where you want to move your students[\"hall/island\"]");
                         }
                     } else{
                         client.sendMessageToClient("You have already played a card this turn!");

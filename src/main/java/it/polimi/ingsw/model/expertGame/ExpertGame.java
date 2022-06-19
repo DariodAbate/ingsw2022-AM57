@@ -195,7 +195,7 @@ public class ExpertGame extends Game implements Serializable, PseudoMotherNature
      * of island mother nature can travel and sets cardHasBeenPlayed to false. After this method, motherMovement() can be invoked
      */
     @Override
-    protected void nextTurn(){
+    public void nextTurn(){
         round.nextTurn();
         if(! round.isPlanning()) {
             setMovesMotherNature();

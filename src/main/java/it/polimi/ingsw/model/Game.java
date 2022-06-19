@@ -431,7 +431,7 @@ public class Game implements RoundObserver, RefillInterface, Serializable {
      * This method is used every time a player ends his turn. When the turn is an action, it sets the maximum number
      * of island mother nature can travel. After this method, motherMovement() can be invoked
      */
-    protected void nextTurn(){
+    public void nextTurn(){
         round.nextTurn();
         if(! round.isPlanning())
             setMovesMotherNature();
@@ -708,6 +708,7 @@ public class Game implements RoundObserver, RefillInterface, Serializable {
     public void setActualNumStudMoves(int actualNumStudMoves) {
         this.actualNumStudMoves = actualNumStudMoves;
     }
+
 
     //expertCard methods
     public ArrayList<ExpertCard> getExpertCards(){return new ArrayList<>();}
