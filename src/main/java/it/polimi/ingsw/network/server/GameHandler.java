@@ -688,6 +688,7 @@ public class GameHandler implements PropertyChangeListener {
                         }
                     } else{
                         client.sendMessageToClient("You have already played a card this turn!");
+                        client.sendMessageToClient("Select where you want to move your students[\"hall/island\"]");
                     }
                 } else if(message instanceof PlayExpertCard){
                     client.sendMessageToClient("Not in an expert game");
@@ -789,10 +790,11 @@ public class GameHandler implements PropertyChangeListener {
     private void motherMovement(ServerClientHandler client) throws IOException, ClassNotFoundException{
         boolean isIdxChosen = false;
         Message message;
-        client.sendMessageToClient("Move mother nature. You can travel " + game.getMaxMovement() + " islands.");
-        client.sendMessageToClient("Choose the number of islands you want to travel.");
+
 
         while(!isIdxChosen){
+            client.sendMessageToClient("Move mother nature. You can travel " + game.getMaxMovement() + " islands.");
+            client.sendMessageToClient("Choose the number of islands you want to travel.");
             message = client.readMessageFromClient();
             if(message instanceof IntegerMessage && game.getGameState()==GameState.MOTHER_MOVEMENT_STATE){
                 int step = ((IntegerMessage)message).getMessage();
