@@ -13,7 +13,7 @@
             <Image url="@../Temp-1200x800.jpg" />
          </image>
       </ImageView>
-      <Label fx:id="myLabel" alignment="CENTER" layoutX="-7.0" layoutY="301.0" text="Generic Scene" textFill="WHITE" AnchorPane.bottomAnchor="423.0" AnchorPane.leftAnchor="-7.0" AnchorPane.rightAnchor="47.0" AnchorPane.topAnchor="301.0">
+      <Label fx:id="myLabel" alignment="CENTER" layoutY="311.0" textFill="WHITE" AnchorPane.bottomAnchor="413.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="311.0">
          <font>
             <Font name="Monotype Corsiva" size="60.0" />
          </font>

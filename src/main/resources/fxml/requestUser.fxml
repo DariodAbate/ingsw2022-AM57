@@ -20,12 +20,12 @@
             <Font name="Monotype Corsiva" size="30.0" />
          </font>
       </Label>
-      <Button fx:id="sendRightNick" layoutX="549.0" layoutY="528.0" mnemonicParsing="false" onAction="#rightNickName" text="JOIN">
+      <Button layoutX="549.0" layoutY="528.0" mnemonicParsing="false" onAction="#rightNickName" text="JOIN">
          <font>
             <Font name="Monotype Corsiva" size="30.0" />
          </font></Button>
       <TextField fx:id="rightNick" layoutX="643.0" layoutY="351.0" />
-      <Label layoutX="380.0" layoutY="187.0" text="Choose another username" textFill="WHITE">
+      <Label alignment="CENTER" layoutX="10.0" layoutY="189.0" text="Choose your username" textFill="WHITE" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0">
          <font>
             <Font name="Monotype Corsiva" size="50.0" />
          </font>
