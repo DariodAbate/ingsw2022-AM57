@@ -18,7 +18,7 @@ public class IslandBean implements Serializable {
     private Map<Color, Integer > students;
     private Tower towerColor;
     private int numTowers;
-    private boolean banToken;
+    private int banToken;
 
     public IslandBean(){
         students = new HashMap<>();
@@ -49,11 +49,15 @@ public class IslandBean implements Serializable {
         this.numTowers = numTowers;
     }
 
-    public boolean isBanToken() {
+    public int  getBanToken() {
         return banToken;
     }
 
-    public void setBanToken(boolean banToken) {
+    public boolean  isBanToken() {
+        return banToken > 0;
+    }
+
+    public void setBanToken(int banToken) {
         this.banToken = banToken;
     }
 }

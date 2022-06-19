@@ -96,7 +96,7 @@ public class ExpertGame extends Game implements Serializable, PseudoMotherNature
         for (int j = 1; j <= 12; j++) {
             cardsPlaceHolder.add(j);
         }
-        //expertCards.add(new BannedIslandCard(this));//FIXME
+        //expertCards.add(new BannedIslandCard(this));
         for(int i=0; i<NUMBER_OF_EXPERT_CARDS; i++){//per testare una carta mettere i ad 1 e cambiare il tipo di carta sopra
             temp = rand.nextInt((cardsPlaceHolder.size()));
             switch (cardsPlaceHolder.get(temp)) {
