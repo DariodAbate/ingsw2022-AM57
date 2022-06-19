@@ -30,9 +30,9 @@ public class GUI extends Application implements PropertyChangeListener{
     public static final String MAIN_SCENE_FOR3 = "mainScene3Player.fxml";
     public static final String MENU = "mainMenu.fxml";
     public static final String SETUP = "setup.fxml";
-    public static final String LOADING = "loading.fxml";
     public static final String GENERIC = "genericScene.fxml";
-    public static final String CHOICE = "chooseCardBack.fxml";
+    public static final String CHOOSE_CARD = "chooseCardBack.fxml";
+    public static final String CHOOSE_TOWER = "chooseTower.fxml";
     public static final String NICK = "requestUser.fxml";
     private Stage stage;
     private Scene currentScene;
@@ -67,7 +67,7 @@ public class GUI extends Application implements PropertyChangeListener{
     }
 
     public void setup() throws IOException {
-        ArrayList<String> fxmList = new ArrayList<>(Arrays.asList(MAIN_SCENE_FOR2, MAIN_SCENE_FOR3, MENU, SETUP, LOADING, GENERIC, CHOICE, NICK));
+        ArrayList<String> fxmList = new ArrayList<>(Arrays.asList(MAIN_SCENE_FOR2, MAIN_SCENE_FOR3, MENU, SETUP, GENERIC, CHOOSE_CARD, CHOOSE_TOWER, NICK));
         for (String path : fxmList) {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/" + path));
             sceneMap.put(path, new Scene(loader.load()));
@@ -200,33 +200,30 @@ public class GUI extends Application implements PropertyChangeListener{
          System.out.println(message + " (request nickname message)");
          Platform.runLater(() -> {
              MainMenuController controller = (MainMenuController) controllerMap.get(MENU);
-             nickname = controller.sendNickname();
+             nickname = controller.getNickname();
          });
      }
 
      public void reqNumOfPlayer(String message) {
          System.out.println(message + " (request numPlayer message)");
          Platform.runLater(() -> {
-             LoaderController controller = (LoaderController) controllerMap.get(LOADING);
+             GenericController controller = (GenericController) controllerMap.get(GENERIC);
              controller.requestNumOfPlayer(message);
          });
     }
 
     public void reqExpertMode(String message){
         Platform.runLater(() -> {
-            LoaderController controller = (LoaderController) controllerMap.get(LOADING);
+            GenericController controller = (GenericController) controllerMap.get(GENERIC);
             controller.requestExpertMode(message);
         });
     }
 
     public void startGame(String message) {
-        System.out.println(message + " (start message)");
-        ChoiceController controller = (ChoiceController) controllerMap.get(CHOICE);
-        MainController2 mainController = (MainController2) controllerMap.get(MAIN_SCENE_FOR2);
+        GenericController controller = (GenericController) controllerMap.get(GENERIC);
         Platform.runLater(() -> {
-            controller.setVisibility();
-            mainController.showInfoMessage(message);
-            changeStage(CHOICE);
+            changeStage(GENERIC);
+            controller.setMyLabel(message);
         });
     }
 
@@ -239,27 +236,21 @@ public class GUI extends Application implements PropertyChangeListener{
                     changeStage(NICK);
                 });
                 this.nickname = controller.getNickname();
-
             }
 
         else if(message.contains("Select where you want to move your students")) {
             Platform.runLater(() -> {
                 GenericController controller = (GenericController) controllerMap.get(GENERIC);
-                controller.chooseMovementInfo(gameBean.isExpertGame());
+                controller.chooseMovementInfo(message, gameBean.isExpertGame());
+                showInfoMessage(message);
             });
         }
-
-        else if(message.contains(("Please select the color of the student"))) {
-            Platform.runLater(() -> {
-                GenericController controller = (GenericController) controllerMap.get(GENERIC);
-                controller.colorStudentInfo(message);
-            });
-         }
 
         else if(message.contains("Choose the number of islands you want to travel")) {
             Platform.runLater(() -> {
                 GenericController controller = (GenericController) controllerMap.get(GENERIC);
-                controller.numOfIslandToTravel(message);
+                controller.numOfIslandToTravel(message, gameBean.isExpertGame());
+                showInfoMessage(message);
             });
         }
 
@@ -267,14 +258,16 @@ public class GUI extends Application implements PropertyChangeListener{
         else if(message.contains("Select one of the clouds")) {
             Platform.runLater(() -> {
                 GenericController controller = (GenericController) controllerMap.get(GENERIC);
-                controller.selectCloudInfo(message);
+                controller.selectCloudInfo(message, gameBean.isExpertGame());
+                showInfoMessage(message);
             });
         }
 
         else if(message.contains("valid number of steps")) {
             Platform.runLater(() -> {
                 GenericController controller = (GenericController) controllerMap.get(GENERIC);
-                controller.numOfIslandToTravel(message);
+                controller.numOfIslandToTravel(message, gameBean.isExpertGame());
+                showInfoMessage(message);
             });
         }
 
@@ -282,27 +275,35 @@ public class GUI extends Application implements PropertyChangeListener{
             Platform.runLater(() -> {
                 GenericController controller = (GenericController) controllerMap.get(GENERIC);
                 controller.setMyLabel(message);
+                showInfoMessage(message);
             });
         }
 
         else  {
-            Platform.runLater(() -> {
-                MainController2 controller = (MainController2) controllerMap.get(MAIN_SCENE_FOR2);
-                controller.showInfoMessage(message);
-            });
-            Platform.runLater(() -> {
-                MainController3 controller = (MainController3) controllerMap.get(MAIN_SCENE_FOR3);
-                controller.showInfoMessage(message);
-                });
+         showInfoMessage(message);
         }
+    }
+
+
+    public void showInfoMessage (String message) {
+        Platform.runLater(() -> {
+            MainController2 controller = (MainController2) controllerMap.get(MAIN_SCENE_FOR2);
+            controller.showInfoMessage(message);
+        });
+        Platform.runLater(() -> {
+            MainController3 controller = (MainController3) controllerMap.get(MAIN_SCENE_FOR3);
+            controller.showInfoMessage(message);
+        });
     }
 
 
 
     public void displaySelectableCardBack(ArrayList<CardBack> selectableCardBack) {
         Platform.runLater(() -> {
-            ChoiceController controller = (ChoiceController) controllerMap.get(CHOICE);
+            ChoiceController controller = (ChoiceController) controllerMap.get(CHOOSE_CARD);
+            changeStage(CHOOSE_CARD);
             controller.setHeader("Choose your favourite card back");
+            controller.setCardVisibility();
             for (CardBack cardBack : selectableCardBack) {
                 controller.showCard(cardBack);
             }
@@ -311,8 +312,12 @@ public class GUI extends Application implements PropertyChangeListener{
 
     public void displaySelectableTower(ArrayList<Tower> selectableTowers) {
         Platform.runLater(() -> {
-            ChoiceController controller = (ChoiceController) controllerMap.get(CHOICE);
-            controller.requestTowerColor(selectableTowers);
+            ChoiceController controller = (ChoiceController) controllerMap.get(CHOOSE_TOWER);
+            changeStage(CHOOSE_TOWER);
+            controller.setTowerVisibility();
+            for (Tower tower : selectableTowers) {
+                controller.showTower(tower);
+            }
         });
     }
 

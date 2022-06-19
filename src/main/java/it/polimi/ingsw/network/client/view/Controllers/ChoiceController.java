@@ -7,34 +7,24 @@ import it.polimi.ingsw.network.client.messages.ChooseTowerColor;
 import it.polimi.ingsw.network.client.view.GUI;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
-import javafx.scene.control.Alert;
-import javafx.scene.control.ButtonType;
 import javafx.scene.control.Label;
 import javafx.scene.image.ImageView;
 import java.net.SocketException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Optional;
 
 
 public class ChoiceController implements GUIController {
 
     private GUI gui;
 
-    @FXML
-    private ImageView druid;
+    @FXML private ImageView druid;
+    @FXML private ImageView sage;
+    @FXML private ImageView king;
+    @FXML private ImageView witch;
+    @FXML private Label header;
+    @FXML private ImageView blackT;
+    @FXML private ImageView grayT;
+    @FXML private ImageView whiteT;
 
-    @FXML
-    private ImageView sage;
-
-    @FXML
-    private ImageView king;
-
-    @FXML
-    private ImageView witch;
-
-    @FXML
-    Label header;
 
 
 
@@ -45,45 +35,21 @@ public class ChoiceController implements GUIController {
 
     public void witchChosen() throws SocketException {
         gui.getSocketClient().send(new ChooseCardBack(CardBack.WITCH));
-        Platform.runLater(() -> {
-            GenericController controller = (GenericController) gui.getControllerMap().get(GUI.GENERIC);
-            gui.changeStage(GUI.GENERIC);
-            controller.setMyLabel("The other players are making their choice.");
-        });
-
     }
 
     public void sageChosen() throws SocketException {
         gui.getSocketClient().send(new ChooseCardBack(CardBack.SAGE));
-        Platform.runLater(() -> {
-            GenericController controller = (GenericController) gui.getControllerMap().get(GUI.GENERIC);
-            gui.changeStage(GUI.GENERIC);
-            controller.setMyLabel("The other players are making their choice.");
-        });
-
     }
 
     public void druidChosen() throws SocketException {
         gui.getSocketClient().send(new ChooseCardBack(CardBack.DRUID));
-        Platform.runLater(() -> {
-            GenericController controller = (GenericController) gui.getControllerMap().get(GUI.GENERIC);
-            gui.changeStage(GUI.GENERIC);
-            controller.setMyLabel("The other players are making their choice.");
-        });
-
     }
 
     public void kingChosen() throws SocketException {
         gui.getSocketClient().send(new ChooseCardBack(CardBack.KING));
-        Platform.runLater(() -> {
-            GenericController controller = (GenericController) gui.getControllerMap().get(GUI.GENERIC);
-            gui.changeStage(GUI.GENERIC);
-            controller.setMyLabel("The other players are making their choice.");
-        });
-
     }
 
-    public void setVisibility() {
+    public void setCardVisibility() {
         druid.setVisible(false);
         king.setVisible(false);
         sage.setVisible(false);
@@ -103,25 +69,60 @@ public class ChoiceController implements GUIController {
         header.setText(message);
     }
 
-    public void requestTowerColor(ArrayList<Tower> selectableTowers) {
-        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
-        alert.setTitle("Towers' color");
-        alert.setHeaderText("Choose your towers' color!");
-        alert.setContentText("Choose one of the color below!");
-        HashMap<String, ButtonType> buttons = new HashMap<>();
-        selectableTowers.forEach(n -> buttons.put(n.toString(), new ButtonType(n.toString())));
-        alert.getButtonTypes().setAll(buttons.values());
-        Optional<ButtonType> result = alert.showAndWait();
-        result.ifPresent(
-                buttonType ->
-                {
-                    try {
-                        gui.getSocketClient()
-                                .send(new ChooseTowerColor(Enum.valueOf(Tower.class, buttonType.getText())));
-                    } catch (SocketException e) {
-                        e.printStackTrace();
-                    }
-                });
+    public void sendBlack() {
+        try {
+            gui.getSocketClient()
+                    .send(new ChooseTowerColor(Tower.BLACK));
+        } catch (SocketException e) {
+            e.printStackTrace();
+        }
+        Platform.runLater(() -> {
+            GenericController controller = (GenericController) gui.getControllerMap().get(GUI.GENERIC);
+            gui.changeStage(GUI.GENERIC);
+            controller.setMyLabel("The other players are making their choice.");
+        });
+    }
+
+    public void sendGray() {
+        try {
+            gui.getSocketClient()
+                    .send(new ChooseTowerColor(Tower.GRAY));
+        } catch (SocketException e) {
+            e.printStackTrace();
+        }
+        Platform.runLater(() -> {
+            GenericController controller = (GenericController) gui.getControllerMap().get(GUI.GENERIC);
+            gui.changeStage(GUI.GENERIC);
+            controller.setMyLabel("The other players are making their choice.");
+        });
+    }
+
+    public void sendWhite() {
+        try {
+            gui.getSocketClient()
+                    .send(new ChooseTowerColor(Tower.WHITE));
+        } catch (SocketException e) {
+            e.printStackTrace();
+        }
+        Platform.runLater(() -> {
+            GenericController controller = (GenericController) gui.getControllerMap().get(GUI.GENERIC);
+            gui.changeStage(GUI.GENERIC);
+            controller.setMyLabel("The other players are making their choice.");
+        });
+    }
+
+    public void setTowerVisibility() {
+        blackT.setVisible(false);
+        whiteT.setVisible(false);
+        grayT.setVisible(false);
+    }
+
+    public void showTower(Tower tower) {
+        switch (tower) {
+            case BLACK -> blackT.setVisible(true);
+            case GRAY -> grayT.setVisible(true);
+            case WHITE -> whiteT.setVisible(true);
+        }
     }
 }
 
