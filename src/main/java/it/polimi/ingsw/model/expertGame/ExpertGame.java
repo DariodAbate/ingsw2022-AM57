@@ -251,7 +251,7 @@ public class ExpertGame extends Game implements Serializable, PseudoMotherNature
     public Color draw(){
         Color colorDrawn = actionBag.draw();
         if(colorDrawn == null)
-            propertyChangeSupport.firePropertyChange("endRoundWinning", "", "notEmpty");
+            propertyChangeSupport.firePropertyChange("emptyBagWinning", "", "notEmpty");
         return colorDrawn;
     }
 

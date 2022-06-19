@@ -259,16 +259,13 @@ public class Game implements RoundObserver, RefillInterface, Serializable {
      * @throws IllegalStateException when there's at least one cloud tile that's not empty
      */
     public void bagToClouds() {
-        for (CloudTile cloudTile : cloudTiles) {
-            if (!cloudTile.isEmpty())
-                throw new IllegalStateException("Cloud tiles need to be empty");
-        }
+
         for (CloudTile cloudTile : cloudTiles){
             while (cloudTile.isFillable()) {
                 Color colorDrawn = actionBag.draw();
 
                 if(colorDrawn == null){//last round to play
-                    propertyChangeSupport.firePropertyChange("endRoundWinning", "", "notEmpty");
+                    propertyChangeSupport.firePropertyChange("emptyBagWinning", "", "notEmpty");
                     return;
                 }
                 cloudTile.fill(colorDrawn);

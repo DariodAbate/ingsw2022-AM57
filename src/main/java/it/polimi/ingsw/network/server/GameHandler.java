@@ -46,6 +46,7 @@ public class GameHandler implements PropertyChangeListener {
 
     private volatile boolean endGameInRound;// true if this game end at the end of a round
     private volatile boolean continueGame;//false if this game end now
+    private volatile boolean emptyBag;//false if the bag is empty
     private int moveStudentsSteps;//register how many swap are taken in Move Students state
 
 
@@ -72,6 +73,7 @@ public class GameHandler implements PropertyChangeListener {
         moveStudentsSteps = 0;
         continueGame = true;
         endGameInRound = false;
+        emptyBag = false;
     }
 
     /**
@@ -101,6 +103,7 @@ public class GameHandler implements PropertyChangeListener {
 
         continueGame = true;
         endGameInRound = false;
+        emptyBag =  false;
         //WARNING: playersConnections should have the same order as the arraylist of players saved in the game
     }
 
@@ -121,6 +124,8 @@ public class GameHandler implements PropertyChangeListener {
             }
         }else if(evt.getPropertyName().equals("endRoundWinning")){
             endGameInRound = true;
+        }else if(evt.getPropertyName().equals("emptyBagWinning")){
+            emptyBag = true;
         }
     }
 
@@ -534,6 +539,8 @@ public class GameHandler implements PropertyChangeListener {
 
         while(!endGameInRound && continueGame){
             try{
+                if(emptyBag)
+                    endGameInRound = true;
             planningPhase();
             actionPhase();
             }catch(SocketTimeoutException | SocketException e){//start the mechanism to save the game
@@ -920,7 +927,7 @@ public class GameHandler implements PropertyChangeListener {
                     }
                     else if (card instanceof PutThreeStudentsInTheBagCard){//refresh the boards
                         putThreeStudentsInBagColor(client, card);
-                        game.playEffect(((IntegerMessage) message).getMessage());
+                        game.playEffect(((IntegerMessage) message).getMessage() - 1);
 
                         //copy of boards
                         ArrayList<BoardBean> boardBeans = getBoardBeans();
