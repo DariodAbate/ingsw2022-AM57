@@ -5,11 +5,13 @@ import it.polimi.ingsw.model.Color;
 import it.polimi.ingsw.model.Tower;
 import it.polimi.ingsw.network.client.messages.ColorChosen;
 import it.polimi.ingsw.network.client.messages.IntegerMessage;
+import it.polimi.ingsw.network.client.messages.PlayExpertCard;
 import it.polimi.ingsw.network.client.messages.StopMessage;
 import it.polimi.ingsw.network.client.view.ExpertCard_ID;
 import it.polimi.ingsw.network.client.view.GUI;
 import javafx.fxml.FXML;
 import javafx.scene.Cursor;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
@@ -73,16 +75,16 @@ public class MainController2 implements GUIController {
 
     private final  Image ISLAND = new Image(String.valueOf(getClass().getResource("/island2.png")));
 
-    private final  Image  PRIO1 = new Image(String.valueOf(getClass().getResource("/Card/Animali_1_1@3x.png")));
-    private final  Image  PRIO2 = new Image(String.valueOf(getClass().getResource("/Card/Animali_1_2@3x.png")));
-    private final  Image  PRIO3 = new Image(String.valueOf(getClass().getResource("/Card/Animali_1_3@3x.png")));
-    private final  Image  PRIO4 = new Image(String.valueOf(getClass().getResource("/Card/Animali_1_4@3x.png")));
-    private final  Image  PRIO5 = new Image(String.valueOf(getClass().getResource("/Card/Animali_1_5@3x.png")));
-    private final  Image  PRIO6 = new Image(String.valueOf(getClass().getResource("/Card/Animali_1_6@3x.png")));
-    private final  Image  PRIO7 = new Image(String.valueOf(getClass().getResource("/Card/Animali_1_7@3x.png")));
-    private final  Image  PRIO8 = new Image(String.valueOf(getClass().getResource("/Card/Animali_1_8@3x.png")));
-    private final  Image  PRIO9 = new Image(String.valueOf(getClass().getResource("/Card/Animali_1_9@3x.png")));
-    private final  Image  PRIO10 = new Image(String.valueOf(getClass().getResource("/Card/Animali_1_10@3x.png")));
+    private final  Image  PRIO1 = new Image(String.valueOf(getClass().getResource("/Card/Assistente (1).png")));
+    private final  Image  PRIO2 = new Image(String.valueOf(getClass().getResource("/Card/Assistente (2).png")));
+    private final  Image  PRIO3 = new Image(String.valueOf(getClass().getResource("/Card/Assistente (3).png")));
+    private final  Image  PRIO4 = new Image(String.valueOf(getClass().getResource("/Card/Assistente (4).png")));
+    private final  Image  PRIO5 = new Image(String.valueOf(getClass().getResource("/Card/Assistente (5).png")));
+    private final  Image  PRIO6 = new Image(String.valueOf(getClass().getResource("/Card/Assistente (6).png")));
+    private final  Image  PRIO7 = new Image(String.valueOf(getClass().getResource("/Card/Assistente (7).png")));
+    private final  Image  PRIO8 = new Image(String.valueOf(getClass().getResource("/Card/Assistente (8).png")));
+    private final  Image  PRIO9 = new Image(String.valueOf(getClass().getResource("/Card/Assistente (9).png")));
+    private final  Image  PRIO10 = new Image(String.valueOf(getClass().getResource("/Card/Assistente (10).png")));
 
     private final  Image COIN = new Image(String.valueOf(getClass().getResource("/Monetabase.png")));
 
@@ -632,6 +634,7 @@ public class MainController2 implements GUIController {
         }
         stopButton.setVisible(false);
     }
+
 
     public void showInfoMessage(String message) {
         infoMessage.setText(message);
