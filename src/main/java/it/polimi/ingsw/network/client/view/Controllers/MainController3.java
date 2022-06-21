@@ -367,6 +367,7 @@ public class MainController3 implements GUIController{
             mainPane.getChildren().remove(islandPane);
         }
         for (int i = 0; i < archipelagoSize; i ++) {
+            double lastIslandStudent = 3;
             int finalI = i;
             AnchorPane islandPane = new AnchorPane();
             mainPane.getChildren().add(islandPane);
@@ -423,8 +424,16 @@ public class MainController3 implements GUIController{
                 islandPane.getChildren().add(student);
                 student.setFitWidth(15);
                 student.setFitHeight(15);
-                student.setLayoutX(20 + 17 * j);
-                student.setLayoutY(20);
+                if (j == 5) {
+                    lastIslandStudent = 3;
+                }
+                if (j > 4) {
+                    student.setLayoutY(35);
+                } else {
+                    student.setLayoutY(20);
+                }
+                student.setLayoutX(lastIslandStudent + 17);
+                lastIslandStudent += 17;
             }
 
             //Tower
@@ -432,7 +441,7 @@ public class MainController3 implements GUIController{
                 Circle tower = new Circle();
                 islandPane.getChildren().add(tower);
                 tower.setRadius(10);
-                tower.setLayoutX(25 + 17 * k);
+                tower.setLayoutX(25 + 20 * k);
                 tower.setLayoutY(60);
                 switch (towerColorMap.get(i)) {
                     case WHITE -> tower.setFill(WHITE);
