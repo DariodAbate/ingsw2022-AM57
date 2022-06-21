@@ -43,7 +43,6 @@ public class GUI extends Application implements PropertyChangeListener{
     private ArrayList<Integer> priorities = new ArrayList<>();
     private ArrayList<Color> cloudColors = new ArrayList<>();
 
-
     // Map each Scene to an explanatory String
     private final HashMap<String, Scene> sceneMap = new HashMap<>();
 
@@ -197,11 +196,11 @@ public class GUI extends Application implements PropertyChangeListener{
 
      public void reqNickname(String message) {
 
-         System.out.println(message + " (request nickname message)");
+        /* System.out.println(message + " (request nickname message)");
          Platform.runLater(() -> {
              MainMenuController controller = (MainMenuController) controllerMap.get(MENU);
-             nickname = controller.getNickname();
-         });
+             //this.nickname = controller.getNickname();
+         });*/
      }
 
      public void reqNumOfPlayer(String message) {
@@ -322,6 +321,7 @@ public class GUI extends Application implements PropertyChangeListener{
     }
 
     public void displayAllGame() {
+        System.out.println(nickname);
         ArrayList<Integer> otherPlayersIndex = new ArrayList<>();
         Platform.runLater(() -> {
             if (gameBean.getPlayers().size() == 2) {
@@ -593,6 +593,10 @@ public class GUI extends Application implements PropertyChangeListener{
 
     public HashMap<String, GUIController> getControllerMap() {
         return  this.controllerMap;
+    }
+
+    public void setNickname(String nickname) {
+        this.nickname = nickname;
     }
 }
 

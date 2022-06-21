@@ -71,7 +71,7 @@ public class MainMenuController implements GUIController {
     }
 
     public void rightNickName () {
-        nickname = rightNick.getText();
+        gui.setNickname(rightNick.getText());
         try {
             gui.getSocketClient().send(new GenericMessage(rightNick.getText()));
         } catch (SocketException e) {
