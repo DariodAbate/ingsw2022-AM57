@@ -85,9 +85,9 @@ public class GUI extends Application implements PropertyChangeListener{
 
     public void propertyChange(PropertyChangeEvent evt) {
         switch (evt.getPropertyName()) {
-            case "stopSending" -> closeUserInterface();
+            //case "stopSending" -> closeUserInterface();
             case "genericMessage" -> displayGenericMessage((String)evt.getNewValue());
-            case "requestNickname" -> reqNickname((String)evt.getNewValue());
+            //case "requestNickname" -> reqNickname((String)evt.getNewValue());
             case "requestNumPlayer" -> reqNumOfPlayer((String)evt.getNewValue());
             case "requestExpertMode" -> reqExpertMode((String)evt.getNewValue());
             case "startMessage" -> startGame((String)evt.getNewValue());
@@ -190,18 +190,18 @@ public class GUI extends Application implements PropertyChangeListener{
 
     }
 
-    public void closeUserInterface() {
+    /*public void closeUserInterface() {
 
      }
 
      public void reqNickname(String message) {
 
-        /* System.out.println(message + " (request nickname message)");
+            System.out.println(message + " (request nickname message)");
          Platform.runLater(() -> {
              MainMenuController controller = (MainMenuController) controllerMap.get(MENU);
              //this.nickname = controller.getNickname();
-         });*/
-     }
+         });
+     }*/
 
      public void reqNumOfPlayer(String message) {
          System.out.println(message + " (request numPlayer message)");
@@ -253,7 +253,6 @@ public class GUI extends Application implements PropertyChangeListener{
             });
         }
 
-        //TODO aggiungere Play Card
         else if(message.contains("Select one of the clouds")) {
             Platform.runLater(() -> {
                 GenericController controller = (GenericController) controllerMap.get(GENERIC);
@@ -321,7 +320,6 @@ public class GUI extends Application implements PropertyChangeListener{
     }
 
     public void displayAllGame() {
-        System.out.println(nickname);
         ArrayList<Integer> otherPlayersIndex = new ArrayList<>();
         Platform.runLater(() -> {
             if (gameBean.getPlayers().size() == 2) {
@@ -518,15 +516,16 @@ public class GUI extends Application implements PropertyChangeListener{
         });
     }
 
-    //TODO aggiungere bottone stop per le carte "fino a..."
     public void displayExpertCard() {
         ArrayList<ExpertCard_ID> expertCards = new ArrayList<>();
         ArrayList<Color> cardColors = new ArrayList<>();
         HashMap<Integer, ArrayList<Color>> studBufferColor = new HashMap<>();
+        ArrayList<Boolean> usedCard = new ArrayList<>();
 
         expertCards.removeAll(expertCards);
         for (ExpertCardBean expertCardBean : gameBean.getExpertCards()){
             expertCards.add(expertCardBean.getName());
+            usedCard.add(expertCardBean.isPlayed());
             if(expertCardBean instanceof StudBufferExpertCardBean){
                 cardColors.removeAll(cardColors);
                 for (Color color : Color.values()){
@@ -541,12 +540,12 @@ public class GUI extends Application implements PropertyChangeListener{
         if (gameBean.getPlayers().size() == 2) {
             MainController2 controller = (MainController2) controllerMap.get(MAIN_SCENE_FOR2);
             Platform.runLater(() -> {
-                controller.showExpertCard(expertCards, studBufferColor);
+                controller.showExpertCard(expertCards, studBufferColor, usedCard);
             });
         } else if (gameBean.getPlayers().size() == 3) {
             MainController3 controller = (MainController3) controllerMap.get(MAIN_SCENE_FOR3);
             Platform.runLater(() -> {
-                controller.showExpertCard(expertCards, studBufferColor);
+                controller.showExpertCard(expertCards, studBufferColor, usedCard);
             });
         }
     }

@@ -17,8 +17,6 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.paint.Paint;
 import javafx.scene.shape.Circle;
-
-import javax.naming.event.ObjectChangeListener;
 import java.net.SocketException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -580,7 +578,7 @@ public class MainController2 implements GUIController {
         showCoin(numCoin, otherCoin);
     }
 
-    public void showExpertCard(ArrayList<ExpertCard_ID> expertCards, HashMap<Integer, ArrayList<Color>> studBufferColor) {
+    public void showExpertCard(ArrayList<ExpertCard_ID> expertCards, HashMap<Integer, ArrayList<Color>> studBufferColor, ArrayList<Boolean> usedCard) {
         double lastExpertCardX = 810;
         for (int i = 0; i < expertCards.size(); i ++) {
             AnchorPane expertCardPane = new AnchorPane();
@@ -599,15 +597,16 @@ public class MainController2 implements GUIController {
             expertCard.setOnMouseClicked( event -> {
                 sendExpertCard(finalI, expertCards.get(finalI));
             });
-            /*if(usedCard.get(i) != null) {
+            if(usedCard.get(i) != null) {
                 if (usedCard.get(i)) {
                     ImageView coin = new ImageView(COIN);
+                    expertCardPane.getChildren().add(coin);
                     coin.setFitHeight(40);
                     coin.setFitWidth(40);
-                    coin.setLayoutX(35);
+                    coin.setLayoutX(25);
                     coin.setLayoutY(60);
                 }
-            }*/
+            }
 
             //Stud buffer color
             if (studBufferColor.get(i) != null) {

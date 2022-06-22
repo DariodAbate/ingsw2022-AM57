@@ -192,8 +192,7 @@ public class MainController3 implements GUIController{
             hallStudent.setFitWidth(18);
             hallStudent.setCursor(Cursor.HAND);
             myHallStudents.add(hallStudent);
-            /*if (isMyBoard) */
-            hallStudent.setOnMouseClicked(event -> {           //TODO gestire con un unico metodo le board con il booleano come parametro
+            hallStudent.setOnMouseClicked(event -> {
                 sendStudentToMove(colors.get(finalI));
             });
             switch (colors.get(i)) {
@@ -696,7 +695,7 @@ public class MainController3 implements GUIController{
         }
     }
 
-    public void showExpertCard(ArrayList<ExpertCard_ID> expertCards, HashMap<Integer, ArrayList<Color>> studBufferColor) {
+    public void showExpertCard(ArrayList<ExpertCard_ID> expertCards, HashMap<Integer, ArrayList<Color>> studBufferColor, ArrayList<Boolean> usedCard) {
         double lastExpertCardX = 545;
         for (int i = 0; i < expertCards.size(); i ++) {
             AnchorPane expertCardPane = new AnchorPane();
@@ -715,6 +714,16 @@ public class MainController3 implements GUIController{
             expertCard.setOnMouseClicked( event -> {
                 sendExpertCard(finalI, expertCards.get(finalI));
             });
+            if(usedCard.get(i) != null) {
+                if (usedCard.get(i)) {
+                    ImageView coin = new ImageView(COIN);
+                    expertCardPane.getChildren().add(coin);
+                    coin.setFitHeight(40);
+                    coin.setFitWidth(40);
+                    coin.setLayoutX(25);
+                    coin.setLayoutY(60);
+                }
+            }
 
             //Stud buffer color
             if (studBufferColor.get(i) != null) {
