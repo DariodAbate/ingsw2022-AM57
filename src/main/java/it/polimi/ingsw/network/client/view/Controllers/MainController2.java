@@ -5,13 +5,11 @@ import it.polimi.ingsw.model.Color;
 import it.polimi.ingsw.model.Tower;
 import it.polimi.ingsw.network.client.messages.ColorChosen;
 import it.polimi.ingsw.network.client.messages.IntegerMessage;
-import it.polimi.ingsw.network.client.messages.PlayExpertCard;
 import it.polimi.ingsw.network.client.messages.StopMessage;
 import it.polimi.ingsw.network.client.view.ExpertCard_ID;
 import it.polimi.ingsw.network.client.view.GUI;
 import javafx.fxml.FXML;
 import javafx.scene.Cursor;
-import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
@@ -20,6 +18,7 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.paint.Paint;
 import javafx.scene.shape.Circle;
 
+import javax.naming.event.ObjectChangeListener;
 import java.net.SocketException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -47,7 +46,6 @@ public class MainController2 implements GUIController {
     private final HashMap<Color, Image> studentsColor = new HashMap<>();
     private final HashMap<Color, Image> professorsColor = new HashMap<>();
     private final HashMap<ExpertCard_ID, Image> characters = new HashMap<>();
-
 
     private ArrayList<ImageView> myProfessors = new ArrayList<>();
     private ArrayList<ImageView> otherProfessors = new ArrayList<>();
@@ -446,12 +444,12 @@ public class MainController2 implements GUIController {
     public void showArchipelago(int archipelagoSize, int motherNature, HashMap<Integer, ArrayList<Color>> islandsStudents, HashMap<Integer, Tower> towerColorMap, HashMap<Integer, Integer> numTowersMap, HashMap<Integer, Boolean> bannedIslands) {
         double lastCloudX = 650;
         double lastCloudY = 100;
-        int studCount = 0;
         int count = 0;
         for (AnchorPane islandPane : archipelago) {
             mainPane.getChildren().remove(islandPane);
         }
         for (int i = 0; i < archipelagoSize; i ++) {
+            double lastIslandStudent = 3;
             int finalI = i;
             AnchorPane islandPane = new AnchorPane();
             mainPane.getChildren().add(islandPane);
@@ -499,7 +497,7 @@ public class MainController2 implements GUIController {
                 mother.setFill(javafx.scene.paint.Color.ORANGE);
                 mother.setRadius(10);
                 mother.setLayoutX(25);
-                mother.setLayoutY(85);
+                mother.setLayoutY(100);
             }
 
             //Island students
@@ -508,13 +506,18 @@ public class MainController2 implements GUIController {
                 islandPane.getChildren().add(student);
                 student.setFitWidth(15);
                 student.setFitHeight(15);
-                student.setLayoutX(20 + 17 * j);
-                //TODO sistemare la x. quando vado a capo non viene resettata
-                /*if (islandsStudents.get(i).indexOf(islandsStudents.get(i).get(j)) > 4) {
+                if (j == 5 || j == 10) {
+                    lastIslandStudent = 3;
+                }
+                if (j > 4 &&  j < 10) {
                     student.setLayoutY(35);
-                } else {*/
+                } else if (j > 9){
+                    student.setLayoutY(50);
+                } else {
                     student.setLayoutY(20);
-                //}
+                }
+                student.setLayoutX(lastIslandStudent + 17);
+                lastIslandStudent += 17;
             }
 
             //Tower
@@ -523,7 +526,7 @@ public class MainController2 implements GUIController {
                 islandPane.getChildren().add(tower);
                 tower.setRadius(10);
                 tower.setLayoutX(25 + 20 * k);
-                tower.setLayoutY(60);
+                tower.setLayoutY(75);
                 switch (towerColorMap.get(i)) {
                     case WHITE -> tower.setFill(WHITE);
                     case BLACK -> tower.setFill(BLACK);
@@ -596,6 +599,15 @@ public class MainController2 implements GUIController {
             expertCard.setOnMouseClicked( event -> {
                 sendExpertCard(finalI, expertCards.get(finalI));
             });
+            /*if(usedCard.get(i) != null) {
+                if (usedCard.get(i)) {
+                    ImageView coin = new ImageView(COIN);
+                    coin.setFitHeight(40);
+                    coin.setFitWidth(40);
+                    coin.setLayoutX(35);
+                    coin.setLayoutY(60);
+                }
+            }*/
 
             //Stud buffer color
             if (studBufferColor.get(i) != null) {
