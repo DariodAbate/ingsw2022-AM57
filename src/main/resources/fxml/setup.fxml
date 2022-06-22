@@ -16,7 +16,7 @@
                 <Image url="@../Temp-1200x800.jpg" />
             </image>
         </ImageView>
-        <Label layoutX="168.0" layoutY="97.0" text="Insert server address and port to play!" textFill="WHITE">
+        <Label alignment="CENTER" contentDisplay="CENTER" layoutX="168.0" layoutY="97.0" text="Insert server address and port to play!" textFill="WHITE" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0">
             <font>
                 <Font name="Monotype Corsiva" size="50.0" />
             </font>
