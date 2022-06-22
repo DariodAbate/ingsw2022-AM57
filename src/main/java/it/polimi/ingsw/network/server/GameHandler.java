@@ -375,7 +375,7 @@ public class GameHandler implements PropertyChangeListener {
         ArrayList<ExpertCardBean> expertCardBeans = new ArrayList<>();
         for(ExpertCard expertCard : expertCards){
             ExpertCardBean tempExpertCard  = associateCard(expertCard);
-
+            tempExpertCard.setPlayed(expertCard.isPlayed());
             expertCardBeans.add(tempExpertCard);
         }
         return expertCardBeans;
