@@ -169,6 +169,7 @@ public class GenericController implements GUIController{
         alert.setHeaderText("Winner!");
         alert.setContentText("Congratulation " + winner + " .You just win!");
         alert.showAndWait();
+        System.exit(0);
     }
 
     public void notWinnerInfo(String winner) {
@@ -177,6 +178,7 @@ public class GenericController implements GUIController{
         alert.setHeaderText("Winner!");
         alert.setContentText( winner + " has won!");
         alert.showAndWait();
+        System.exit(0);
     }
 
     public void requestNumOfPlayer(String message) {
@@ -225,5 +227,14 @@ public class GenericController implements GUIController{
         } catch (SocketException e) {
             e.printStackTrace();
         }
+    }
+
+    public void disconnection(String message) {
+        Alert alert = new Alert(Alert.AlertType.ERROR);
+        alert.setTitle("Disconnection");
+        alert.setHeaderText("A player has disconnected");
+        alert.setContentText( message);
+        alert.showAndWait();
+        System.exit(0);
     }
 }

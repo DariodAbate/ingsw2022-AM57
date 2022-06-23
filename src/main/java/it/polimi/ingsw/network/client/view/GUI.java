@@ -24,6 +24,12 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 
+/**
+Main class for the graphic user interface.
+
+@author Luca Bresciani
+ */
+
 public class GUI extends Application implements PropertyChangeListener{
 
     public static final String MAIN_SCENE_FOR2 = "mainScene2Player.fxml";
@@ -49,7 +55,11 @@ public class GUI extends Application implements PropertyChangeListener{
     // Map each controller to an explanatory String
     private final HashMap<String, GUIController> controllerMap = new HashMap<>();
 
-
+    /**
+     * start method start the actual application
+     * @param primaryStage
+     * @throws IOException
+     */
     @Override
     public void start(Stage primaryStage) throws IOException {
         setup();
@@ -65,6 +75,10 @@ public class GUI extends Application implements PropertyChangeListener{
         stage.show();
     }
 
+    /**
+     * setup method fill the controllerMap that associate each controller to his scene
+     * @throws IOException
+     */
     public void setup() throws IOException {
         ArrayList<String> fxmList = new ArrayList<>(Arrays.asList(MAIN_SCENE_FOR2, MAIN_SCENE_FOR3, MENU, SETUP, GENERIC, CHOOSE_CARD, CHOOSE_TOWER, NICK));
         for (String path : fxmList) {
@@ -77,12 +91,20 @@ public class GUI extends Application implements PropertyChangeListener{
         currentScene = sceneMap.get(MENU);
     }
 
+    /**
+     * method changeStage change the current scene with the new scene
+     * @param newStage is the new scene
+     */
     public void changeStage(String newStage) {
         currentScene = sceneMap.get(newStage);
         stage.setScene(currentScene);
         stage.show();
     }
 
+    /**
+     * This method will show content based on the event that the client receives, thus it updates the view
+     * @param evt event occurred due to server
+     */
     public void propertyChange(PropertyChangeEvent evt) {
         switch (evt.getPropertyName()) {
             //case "stopSending" -> closeUserInterface();
@@ -176,6 +198,10 @@ public class GUI extends Application implements PropertyChangeListener{
         }
     }
 
+    /**
+     * this method call the controller's method that display the winner
+     * @param winner winner of the game
+     */
     public void displayWinner(String winner) {
         GenericController controller = (GenericController) controllerMap.get(GENERIC);
         if(winner.equals(nickname)){
@@ -203,6 +229,10 @@ public class GUI extends Application implements PropertyChangeListener{
          });
      }*/
 
+    /**
+     * this method call the controller's method that request the number of player
+     * @param message message received from the server
+     */
      public void reqNumOfPlayer(String message) {
          System.out.println(message + " (request numPlayer message)");
          Platform.runLater(() -> {
@@ -211,6 +241,10 @@ public class GUI extends Application implements PropertyChangeListener{
          });
     }
 
+    /**
+     * This method call the controller's method that request if the game should be in expert mode or not
+     * @param message message received from the server
+     */
     public void reqExpertMode(String message){
         Platform.runLater(() -> {
             GenericController controller = (GenericController) controllerMap.get(GENERIC);
@@ -218,6 +252,10 @@ public class GUI extends Application implements PropertyChangeListener{
         });
     }
 
+    /**
+     * This method change the scene when the game start
+     * @param message message received from the server
+     */
     public void startGame(String message) {
         GenericController controller = (GenericController) controllerMap.get(GENERIC);
         Platform.runLater(() -> {
@@ -226,6 +264,10 @@ public class GUI extends Application implements PropertyChangeListener{
         });
     }
 
+    /**
+     * This method is used to show a generic message received from the server
+     * @param message message received from the server
+     */
      public void displayGenericMessage(String message){
         System.out.println(message + " (generic message)");
         if(message.contains("Username not available")) {
@@ -261,13 +303,12 @@ public class GUI extends Application implements PropertyChangeListener{
             });
         }
 
-       /*else if(message.contains("valid number of steps")) {
+       else if(message.contains("Please login another time on the server to play")) {
             Platform.runLater(() -> {
                 GenericController controller = (GenericController) controllerMap.get(GENERIC);
-                controller.showTextDialog(message);
-                showInfoMessage(message);
+                controller.disconnection(message);
             });
-        }*/
+        }
 
         else if(message.contains("Wait for")) {
             Platform.runLater(() -> {
@@ -277,12 +318,23 @@ public class GUI extends Application implements PropertyChangeListener{
             });
         }
 
+        else if(message.contains("Please reconnect to restart this game")) {
+            Platform.runLater(() -> {
+                GenericController controller = (GenericController) controllerMap.get(GENERIC);
+                controller.disconnection(message);
+            });
+        }
+
         else  {
          showInfoMessage(message);
         }
     }
 
 
+    /**
+     * This method is used to show the messages from the server in the user interface
+     * @param message message received from the server
+     */
     public void showInfoMessage (String message) {
         Platform.runLater(() -> {
             MainController2 controller = (MainController2) controllerMap.get(MAIN_SCENE_FOR2);
@@ -294,8 +346,10 @@ public class GUI extends Application implements PropertyChangeListener{
         });
     }
 
-
-
+    /**
+     * This method is used to show the Card Back during the choosing phase
+     * @param selectableCardBack remaining selectable card back
+     */
     public void displaySelectableCardBack(ArrayList<CardBack> selectableCardBack) {
         Platform.runLater(() -> {
             ChoiceController controller = (ChoiceController) controllerMap.get(CHOOSE_CARD);
@@ -308,6 +362,10 @@ public class GUI extends Application implements PropertyChangeListener{
         });
     }
 
+    /**
+     * This method is used to show the Towers during the choosing phase
+     * @param selectableTowers remaining selectable tower
+     */
     public void displaySelectableTower(ArrayList<Tower> selectableTowers) {
         Platform.runLater(() -> {
             ChoiceController controller = (ChoiceController) controllerMap.get(CHOOSE_TOWER);
@@ -319,6 +377,9 @@ public class GUI extends Application implements PropertyChangeListener{
         });
     }
 
+    /**
+     * This method is used to show the entire game view
+     */
     public void displayAllGame() {
         ArrayList<Integer> otherPlayersIndex = new ArrayList<>();
         Platform.runLater(() -> {
@@ -346,7 +407,13 @@ public class GUI extends Application implements PropertyChangeListener{
         });
     }
 
-
+    /**
+     * This method is used to show the players' board
+     * @param board board to be showed
+     * @param expertGame indicates if the game is expert mode or not
+     * @param isMyBoard indicates if the board is of the gui's player or not
+     * @param playerIndex is the index of the players in the list that contains all of them
+     */
     public void displayBoard(BoardBean board, boolean expertGame, boolean isMyBoard, int playerIndex) {
         ArrayList<Color> entranceColors = new ArrayList<>();
         ArrayList<Color> professorsColors = new ArrayList<>();

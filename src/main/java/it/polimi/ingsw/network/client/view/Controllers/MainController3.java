@@ -727,13 +727,24 @@ public class MainController3 implements GUIController{
 
             //Stud buffer color
             if (studBufferColor.get(i) != null) {
+                double lastCardStudent = - 10;
                 for (int j = 0; j < studBufferColor.get(i).size(); j++) {
                     ImageView studCardColor = new ImageView(studentsColor.get(studBufferColor.get(i).get(j)));
                     expertCardPane.getChildren().add(studCardColor);
-                    studCardColor.setFitWidth(15);
-                    studCardColor.setFitHeight(15);
-                    studCardColor.setLayoutX(10 * j);
-                    studCardColor.setLayoutY(50);
+                    studCardColor.setFitWidth(16);
+                    studCardColor.setFitHeight(16);
+                    if (j == 2 || j == 4) {
+                        lastCardStudent = -10;
+                    }
+                    if (j > 1 && j < 4) {
+                        studCardColor.setLayoutY(48);
+                    } else if (j > 3) {
+                        studCardColor.setLayoutY(66);
+                    } else {
+                        studCardColor.setLayoutY(30);
+                    }
+                    studCardColor.setLayoutX(lastCardStudent + 20);
+                    lastCardStudent += 20;
                     studCardColor.setCursor(Cursor.HAND);
                     int finalJ = j;
                     studCardColor.setOnMouseClicked(event -> {
