@@ -2,8 +2,6 @@ package it.polimi.ingsw.model.statePattern;
 
 import it.polimi.ingsw.model.IslandTile;
 import it.polimi.ingsw.model.Player;
-import it.polimi.ingsw.model.RoundObserver;
-import it.polimi.ingsw.model.expertGame.ExpertCard;
 import it.polimi.ingsw.model.expertGame.InfluenceCardsCluster;
 
 import java.io.Serializable;

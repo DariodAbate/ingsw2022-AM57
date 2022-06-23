@@ -286,7 +286,6 @@ public class MultiServer {
         ArrayList<String> playersNick = gameHandler.getNicknamePlayers();
         Game game = gameHandler.getGame();
         reconnectionHandler.addGame(game, playersNick);
-        System.out.println("Game saved!");
     }
 
 

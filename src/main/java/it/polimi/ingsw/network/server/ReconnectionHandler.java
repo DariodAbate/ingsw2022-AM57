@@ -306,6 +306,9 @@ public class ReconnectionHandler {
 
             // Write objects to file
             o.writeObject(this.gameIdByUserMap);
+            o.close();
+            f.close();
+
 
             path = "SavedServerParameters/nextId.ser";
             f = new FileOutputStream(path);

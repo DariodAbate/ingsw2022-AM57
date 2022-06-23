@@ -91,10 +91,4 @@ public class CloudTile implements Serializable {
         return temp;
     }
 
-    /**
-     * @return returns the color of students that are on a cloud tile
-     */
-    public ArrayList<Color> colorsAvailable() {
-        return cloudStud.colorsAvailable();
-    }
 }

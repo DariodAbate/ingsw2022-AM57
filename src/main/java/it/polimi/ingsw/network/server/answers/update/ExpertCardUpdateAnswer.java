@@ -1,6 +1,5 @@
 package it.polimi.ingsw.network.server.answers.update;
 
-import it.polimi.ingsw.model.expertGame.ExpertCard;
 import it.polimi.ingsw.network.client.modelBean.BoardBean;
 import it.polimi.ingsw.network.client.modelBean.ExpertCard.ExpertCardBean;
 import it.polimi.ingsw.network.client.modelBean.IslandBean;

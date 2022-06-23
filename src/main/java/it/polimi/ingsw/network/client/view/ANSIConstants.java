@@ -11,7 +11,6 @@ public class ANSIConstants {
     public static final String UNDERLINE = "\033[4m";
 
 
-    public static final String BACKGROUND_BLACK = "\033[40m";
     public static final String RED = "\033[31m";
     public static final String GREEN = "\033[32m";
     public static final String YELLOW = "\033[33m";
