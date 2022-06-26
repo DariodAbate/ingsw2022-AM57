@@ -1,10 +1,8 @@
 package it.polimi.ingsw.network.client.view.Controllers;
 
 
-import it.polimi.ingsw.network.client.messages.GenericMessage;
-import it.polimi.ingsw.network.client.messages.IntegerMessage;
-import it.polimi.ingsw.network.client.messages.MoveStudentMessage;
-import it.polimi.ingsw.network.client.messages.PlayExpertCard;
+import it.polimi.ingsw.model.Color;
+import it.polimi.ingsw.network.client.messages.*;
 import it.polimi.ingsw.network.client.view.GUI;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
@@ -236,5 +234,37 @@ public class GenericController implements GUIController{
         alert.setContentText( message);
         alert.showAndWait();
         System.exit(0);
+    }
+
+    public void colorsToChoose(String message) {
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+        alert.setTitle("Colors");
+        alert.setHeaderText(message);
+
+        ButtonType r = new ButtonType("Red");
+        ButtonType y = new ButtonType("Yellow");
+        ButtonType b = new ButtonType("Blue");
+        ButtonType g = new ButtonType("Green");
+        ButtonType p = new ButtonType("Pink");
+
+        alert.getButtonTypes().setAll(r,y, b, g, p);
+        Optional<ButtonType> result = alert.showAndWait();
+        Color choice = null;
+        if (result.isPresent() && result.get() == r) {
+            choice = Color.RED;
+        } else if (result.isPresent() && result.get() == y) {
+            choice = Color.YELLOW;
+        }else if (result.isPresent() && result.get() == b) {
+            choice = Color.BLUE;
+        }else if (result.isPresent() && result.get() == g) {
+            choice = Color.GREEN;
+        }else if (result.isPresent() && result.get() == p) {
+            choice = Color.PINK;
+        }
+        try {
+            gui.getSocketClient().send(new ColorChosen(choice));
+        } catch (SocketException e) {
+            e.printStackTrace();
+        }
     }
 }

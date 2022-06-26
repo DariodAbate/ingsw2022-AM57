@@ -325,6 +325,20 @@ public class GUI extends Application implements PropertyChangeListener{
             });
         }
 
+        else if(message.contains("Please select the color to put in the bag")) {
+            Platform.runLater(() -> {
+                GenericController controller = (GenericController) controllerMap.get(GENERIC);
+                controller.colorsToChoose(message);
+            });
+        }
+
+        else if(message.contains("Please select the color to ignore for the influence calculation")) {
+            Platform.runLater(() -> {
+                GenericController controller = (GenericController) controllerMap.get(GENERIC);
+                controller.colorsToChoose(message);
+            });
+        }
+
         else  {
          showInfoMessage(message);
         }
