@@ -920,7 +920,7 @@ public class GameHandler implements PropertyChangeListener {
                     }
                     else if (card instanceof PutThreeStudentsInTheBagCard){//refresh the boards
                         putThreeStudentsInBagColor(client, card);
-                        game.playEffect(((IntegerMessage) message).getMessage());
+                        game.playEffect(((IntegerMessage) message).getMessage()-1);
 
                         //copy of boards
                         ArrayList<BoardBean> boardBeans = getBoardBeans();
@@ -928,7 +928,7 @@ public class GameHandler implements PropertyChangeListener {
                     }
                     else if (card instanceof  PseudoMotherNatureCard){//refresh the archipelago and the boards
                         pseudoMotherIslandSelector(client, card);
-                        game.playEffect(((IntegerMessage) message).getMessage()-1);
+                        game.playEffect(((IntegerMessage) message).getMessage());
 
                         //copy of boards
                         ArrayList<BoardBean> boardBeans = getBoardBeans();
