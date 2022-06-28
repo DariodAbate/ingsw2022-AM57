@@ -216,25 +216,11 @@ public class GUI extends Application implements PropertyChangeListener{
 
     }
 
-    /*public void closeUserInterface() {
-
-     }
-
-     public void reqNickname(String message) {
-
-            System.out.println(message + " (request nickname message)");
-         Platform.runLater(() -> {
-             MainMenuController controller = (MainMenuController) controllerMap.get(MENU);
-             //this.nickname = controller.getNickname();
-         });
-     }*/
-
     /**
      * this method call the controller's method that request the number of player
      * @param message message received from the server
      */
      public void reqNumOfPlayer(String message) {
-         System.out.println(message + " (request numPlayer message)");
          Platform.runLater(() -> {
              GenericController controller = (GenericController) controllerMap.get(GENERIC);
              controller.requestNumOfPlayer(message);
@@ -269,7 +255,6 @@ public class GUI extends Application implements PropertyChangeListener{
      * @param message message received from the server
      */
      public void displayGenericMessage(String message){
-        System.out.println(message + " (generic message)");
         if(message.contains("Username not available")) {
             MainMenuController controller = (MainMenuController) controllerMap.get(MENU);
                 Platform.runLater(() -> {
