@@ -1,7 +1,6 @@
 package it.polimi.ingsw.network.server;
 
 import it.polimi.ingsw.model.*;
-import it.polimi.ingsw.model.Color;
 import it.polimi.ingsw.model.constantFactory.ThreePlayersConstants;
 import it.polimi.ingsw.model.constantFactory.TwoPlayersConstants;
 import it.polimi.ingsw.model.expertGame.*;
@@ -46,6 +45,7 @@ public class GameHandler implements PropertyChangeListener {
 
     private volatile boolean endGameInRound;// true if this game end at the end of a round
     private volatile boolean continueGame;//false if this game end now
+    private volatile boolean emptyBag;//false if the bag is empty
     private int moveStudentsSteps;//register how many swap are taken in Move Students state
 
 
@@ -72,6 +72,7 @@ public class GameHandler implements PropertyChangeListener {
         moveStudentsSteps = 0;
         continueGame = true;
         endGameInRound = false;
+        emptyBag = false;
     }
 
     /**
@@ -101,6 +102,7 @@ public class GameHandler implements PropertyChangeListener {
 
         continueGame = true;
         endGameInRound = false;
+        emptyBag =  false;
         //WARNING: playersConnections should have the same order as the arraylist of players saved in the game
     }
 
@@ -121,6 +123,8 @@ public class GameHandler implements PropertyChangeListener {
             }
         }else if(evt.getPropertyName().equals("endRoundWinning")){
             endGameInRound = true;
+        }else if(evt.getPropertyName().equals("emptyBagWinning")){
+            emptyBag = true;
         }
     }
 
@@ -228,7 +232,7 @@ public class GameHandler implements PropertyChangeListener {
             try {
                 client.sendMessageToClient(message);
             }catch(SocketException e){
-                System.out.println("Client already disconnected, do not need to send message");
+                //Client already disconnected, do not need to send message or report to log
             }
         }
     }
@@ -242,7 +246,7 @@ public class GameHandler implements PropertyChangeListener {
             try {
                 client.sendMessageToClient(answer);
             }catch(SocketException e){
-                System.out.println("Client already disconnected, do not need to send message");
+                //Client already disconnected, do not need to send message or report to log
             }
         }
     }
@@ -255,7 +259,7 @@ public class GameHandler implements PropertyChangeListener {
             try {
                 client.sendShutDownToClient();
             }catch(SocketException e){
-                System.out.println("Client already disconnected, do not need to disconnect manually");
+                //Client already disconnected, do not need to send message or report to log
             }
     }
 
@@ -370,7 +374,7 @@ public class GameHandler implements PropertyChangeListener {
         ArrayList<ExpertCardBean> expertCardBeans = new ArrayList<>();
         for(ExpertCard expertCard : expertCards){
             ExpertCardBean tempExpertCard  = associateCard(expertCard);
-
+            tempExpertCard.setPlayed(expertCard.isPlayed());
             expertCardBeans.add(tempExpertCard);
         }
         return expertCardBeans;
@@ -534,6 +538,8 @@ public class GameHandler implements PropertyChangeListener {
 
         while(!endGameInRound && continueGame){
             try{
+                if(emptyBag)
+                    endGameInRound = true;
             planningPhase();
             actionPhase();
             }catch(SocketTimeoutException | SocketException e){//start the mechanism to save the game
@@ -559,7 +565,7 @@ public class GameHandler implements PropertyChangeListener {
             try {
                 client.sendMessageToClient(new WinningAnswer(winner));
             }catch(SocketException e){
-                System.out.println("Client already disconnected, do not need to send message");
+                //Client already disconnected, do not need to send message or report to log
             }
         }
 
@@ -576,7 +582,7 @@ public class GameHandler implements PropertyChangeListener {
             try {
                 client.sendMessageToClient(new WinningAnswer(winner));
             }catch(SocketException e){
-                System.out.println("Client already disconnected, do not need to send message");
+                //Client already disconnected, do not need to send message or report to log
             }
         }
 
@@ -920,7 +926,7 @@ public class GameHandler implements PropertyChangeListener {
                     }
                     else if (card instanceof PutThreeStudentsInTheBagCard){//refresh the boards
                         putThreeStudentsInBagColor(client, card);
-                        game.playEffect(((IntegerMessage) message).getMessage()-1);
+                        game.playEffect(((IntegerMessage) message).getMessage() - 1);
 
                         //copy of boards
                         ArrayList<BoardBean> boardBeans = getBoardBeans();
@@ -928,7 +934,7 @@ public class GameHandler implements PropertyChangeListener {
                     }
                     else if (card instanceof  PseudoMotherNatureCard){//refresh the archipelago and the boards
                         pseudoMotherIslandSelector(client, card);
-                        game.playEffect(((IntegerMessage) message).getMessage());
+                        game.playEffect(((IntegerMessage) message).getMessage()-1);
 
                         //copy of boards
                         ArrayList<BoardBean> boardBeans = getBoardBeans();

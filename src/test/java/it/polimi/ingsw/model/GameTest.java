@@ -158,24 +158,7 @@ class GameTest {
             assertFalse(cloudTile.isFillable());
     }
 
-    /**
-     * This method tests the mechanism of refilling cloud tiles
-     * when  the cloud tiles are not empty
-     *
-     * @throws IllegalStateException when a not empty cloud tile is
-     *                               filled with students
-     */
-    @DisplayName("Refill not empty cloud tile test")
-    @Test
-    void bagToCloudNotEmpty() {
-        setupFullPlayer();
-        g.startGame();
 
-        g.getCloudTiles().get(2).fill(Color.YELLOW);
-        assertThrows(IllegalStateException.class,
-                () -> g.bagToClouds());
-
-    }
 
     /**
      * This method test the mechanism of refilling the current player's board

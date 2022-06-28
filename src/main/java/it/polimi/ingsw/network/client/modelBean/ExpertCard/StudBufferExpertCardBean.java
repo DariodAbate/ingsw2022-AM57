@@ -3,7 +3,6 @@ package it.polimi.ingsw.network.client.modelBean.ExpertCard;
 import it.polimi.ingsw.model.Color;
 
 import java.io.Serializable;
-import java.util.HashMap;
 import java.util.Map;
 
 

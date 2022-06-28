@@ -4,7 +4,6 @@ import it.polimi.ingsw.model.*;
 import it.polimi.ingsw.model.statePattern.InfluenceCalculator;
 import it.polimi.ingsw.model.statePattern.StandardCalculator;
 
-import java.beans.PropertyChangeEvent;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Random;
@@ -251,7 +250,7 @@ public class ExpertGame extends Game implements Serializable, PseudoMotherNature
     public Color draw(){
         Color colorDrawn = actionBag.draw();
         if(colorDrawn == null)
-            propertyChangeSupport.firePropertyChange("endRoundWinning", "", "notEmpty");
+            propertyChangeSupport.firePropertyChange("emptyBagWinning", "", "notEmpty");
         return colorDrawn;
     }
 

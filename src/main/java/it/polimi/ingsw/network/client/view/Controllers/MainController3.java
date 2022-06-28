@@ -75,16 +75,16 @@ public class MainController3 implements GUIController{
 
     private final  Image ISLAND = new Image(String.valueOf(getClass().getResource("/island2.png")));
 
-    private final  Image  PRIO1 = new Image(String.valueOf(getClass().getResource("/Card/Animali_1_1@3x.png")));
-    private final  Image  PRIO2 = new Image(String.valueOf(getClass().getResource("/Card/Animali_1_2@3x.png")));
-    private final  Image  PRIO3 = new Image(String.valueOf(getClass().getResource("/Card/Animali_1_3@3x.png")));
-    private final  Image  PRIO4 = new Image(String.valueOf(getClass().getResource("/Card/Animali_1_4@3x.png")));
-    private final  Image  PRIO5 = new Image(String.valueOf(getClass().getResource("/Card/Animali_1_5@3x.png")));
-    private final  Image  PRIO6 = new Image(String.valueOf(getClass().getResource("/Card/Animali_1_6@3x.png")));
-    private final  Image  PRIO7 = new Image(String.valueOf(getClass().getResource("/Card/Animali_1_7@3x.png")));
-    private final  Image  PRIO8 = new Image(String.valueOf(getClass().getResource("/Card/Animali_1_8@3x.png")));
-    private final  Image  PRIO9 = new Image(String.valueOf(getClass().getResource("/Card/Animali_1_9@3x.png")));
-    private final  Image  PRIO10 = new Image(String.valueOf(getClass().getResource("/Card/Animali_1_10@3x.png")));
+    private final  Image  PRIO1 = new Image(String.valueOf(getClass().getResource("/Card/Assistente (1).png")));
+    private final  Image  PRIO2 = new Image(String.valueOf(getClass().getResource("/Card/Assistente (2).png")));
+    private final  Image  PRIO3 = new Image(String.valueOf(getClass().getResource("/Card/Assistente (3).png")));
+    private final  Image  PRIO4 = new Image(String.valueOf(getClass().getResource("/Card/Assistente (4).png")));
+    private final  Image  PRIO5 = new Image(String.valueOf(getClass().getResource("/Card/Assistente (5).png")));
+    private final  Image  PRIO6 = new Image(String.valueOf(getClass().getResource("/Card/Assistente (6).png")));
+    private final  Image  PRIO7 = new Image(String.valueOf(getClass().getResource("/Card/Assistente (7).png")));
+    private final  Image  PRIO8 = new Image(String.valueOf(getClass().getResource("/Card/Assistente (8).png")));
+    private final  Image  PRIO9 = new Image(String.valueOf(getClass().getResource("/Card/Assistente (9).png")));
+    private final  Image  PRIO10 = new Image(String.valueOf(getClass().getResource("/Card/Assistente (10).png")));
 
     private final  Image COIN = new Image(String.valueOf(getClass().getResource("/Monetabase.png")));
 
@@ -192,8 +192,7 @@ public class MainController3 implements GUIController{
             hallStudent.setFitWidth(18);
             hallStudent.setCursor(Cursor.HAND);
             myHallStudents.add(hallStudent);
-            /*if (isMyBoard) */
-            hallStudent.setOnMouseClicked(event -> {           //TODO gestire con un unico metodo le board con il booleano come parametro
+            hallStudent.setOnMouseClicked(event -> {
                 sendStudentToMove(colors.get(finalI));
             });
             switch (colors.get(i)) {
@@ -367,6 +366,7 @@ public class MainController3 implements GUIController{
             mainPane.getChildren().remove(islandPane);
         }
         for (int i = 0; i < archipelagoSize; i ++) {
+            double lastIslandStudent = 3;
             int finalI = i;
             AnchorPane islandPane = new AnchorPane();
             mainPane.getChildren().add(islandPane);
@@ -414,7 +414,7 @@ public class MainController3 implements GUIController{
                 mother.setFill(javafx.scene.paint.Color.ORANGE);
                 mother.setRadius(10);
                 mother.setLayoutX(25);
-                mother.setLayoutY(85);
+                mother.setLayoutY(100);
             }
 
             //Island students
@@ -423,8 +423,18 @@ public class MainController3 implements GUIController{
                 islandPane.getChildren().add(student);
                 student.setFitWidth(15);
                 student.setFitHeight(15);
-                student.setLayoutX(20 + 17 * j);
-                student.setLayoutY(20);
+                if (j == 5 || j == 10) {
+                    lastIslandStudent = 3;
+                }
+                if (j > 4 &&  j < 10) {
+                    student.setLayoutY(35);
+                } else if (j > 9){
+                    student.setLayoutY(50);
+                } else {
+                    student.setLayoutY(20);
+                }
+                student.setLayoutX(lastIslandStudent + 17);
+                lastIslandStudent += 17;
             }
 
             //Tower
@@ -432,8 +442,8 @@ public class MainController3 implements GUIController{
                 Circle tower = new Circle();
                 islandPane.getChildren().add(tower);
                 tower.setRadius(10);
-                tower.setLayoutX(25 + 17 * k);
-                tower.setLayoutY(60);
+                tower.setLayoutX(25 + 20 * k);
+                tower.setLayoutY(75);
                 switch (towerColorMap.get(i)) {
                     case WHITE -> tower.setFill(WHITE);
                     case BLACK -> tower.setFill(BLACK);
@@ -591,7 +601,7 @@ public class MainController3 implements GUIController{
         double lastYellowStudentX = 56.3;
         double lastPinkStudentX = 56.3;
         double lastBlueStudentX = 56.3;
-        for(ImageView hallStudent : otherFirstHall) {
+        for(ImageView hallStudent : otherSecondHall) {
             otherSecondBoard.getChildren().remove(hallStudent);
         }
         otherSecondHall.removeAll(otherSecondHall);
@@ -685,7 +695,7 @@ public class MainController3 implements GUIController{
         }
     }
 
-    public void showExpertCard(ArrayList<ExpertCard_ID> expertCards, HashMap<Integer, ArrayList<Color>> studBufferColor) {
+    public void showExpertCard(ArrayList<ExpertCard_ID> expertCards, HashMap<Integer, ArrayList<Color>> studBufferColor, ArrayList<Boolean> usedCard) {
         double lastExpertCardX = 545;
         for (int i = 0; i < expertCards.size(); i ++) {
             AnchorPane expertCardPane = new AnchorPane();
@@ -704,16 +714,37 @@ public class MainController3 implements GUIController{
             expertCard.setOnMouseClicked( event -> {
                 sendExpertCard(finalI, expertCards.get(finalI));
             });
+            if(usedCard.get(i) != null) {
+                if (usedCard.get(i)) {
+                    ImageView coin = new ImageView(COIN);
+                    expertCardPane.getChildren().add(coin);
+                    coin.setFitHeight(40);
+                    coin.setFitWidth(40);
+                    coin.setLayoutX(25);
+                    coin.setLayoutY(60);
+                }
+            }
 
             //Stud buffer color
             if (studBufferColor.get(i) != null) {
+                double lastCardStudent = - 10;
                 for (int j = 0; j < studBufferColor.get(i).size(); j++) {
                     ImageView studCardColor = new ImageView(studentsColor.get(studBufferColor.get(i).get(j)));
                     expertCardPane.getChildren().add(studCardColor);
-                    studCardColor.setFitWidth(15);
-                    studCardColor.setFitHeight(15);
-                    studCardColor.setLayoutX(10 * j);
-                    studCardColor.setLayoutY(50);
+                    studCardColor.setFitWidth(16);
+                    studCardColor.setFitHeight(16);
+                    if (j == 2 || j == 4) {
+                        lastCardStudent = -10;
+                    }
+                    if (j > 1 && j < 4) {
+                        studCardColor.setLayoutY(48);
+                    } else if (j > 3) {
+                        studCardColor.setLayoutY(66);
+                    } else {
+                        studCardColor.setLayoutY(30);
+                    }
+                    studCardColor.setLayoutX(lastCardStudent + 20);
+                    lastCardStudent += 20;
                     studCardColor.setCursor(Cursor.HAND);
                     int finalJ = j;
                     studCardColor.setOnMouseClicked(event -> {

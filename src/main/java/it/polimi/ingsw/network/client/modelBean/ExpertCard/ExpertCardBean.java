@@ -14,6 +14,7 @@ import java.io.Serializable;
 public class ExpertCardBean  implements Serializable {
     private ExpertCard_ID name;
     private int activationCost;
+    private boolean played;
 
     public ExpertCard_ID getName() {
         return name;
@@ -30,4 +31,8 @@ public class ExpertCardBean  implements Serializable {
     public void setActivationCost(int activationCost) {
         this.activationCost = activationCost;
     }
+
+    public void setPlayed(boolean played) {this.played = played;}
+
+    public boolean isPlayed() {return played;}
 }

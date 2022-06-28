@@ -286,7 +286,6 @@ public class MultiServer {
         ArrayList<String> playersNick = gameHandler.getNicknamePlayers();
         Game game = gameHandler.getGame();
         reconnectionHandler.addGame(game, playersNick);
-        System.out.println("Game saved!");
     }
 
 
@@ -459,13 +458,18 @@ public class MultiServer {
      * @param args args[0] contain the port number
      */
     public static void main(String[] args) {
-        System.out.println("Server");
+        System.out.println("Server\n");
         if (args.length != 1) {
             System.err.println("Missing port number");
             System.exit(1);
         }
-        int portNumber = Integer.parseInt(args[0]);
-
+        int portNumber = -1;
+        try {
+             portNumber = Integer.parseInt(args[0]);
+        }catch (NumberFormatException e){
+            System.err.println("Not a valid port number");
+            System.exit(1);
+        }
         MultiServer server = new MultiServer(portNumber);
         ExecutorService executor = Executors.newCachedThreadPool();
         System.out.println("Creating server class...");
