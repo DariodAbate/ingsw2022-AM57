@@ -232,7 +232,7 @@ public class GameHandler implements PropertyChangeListener {
             try {
                 client.sendMessageToClient(message);
             }catch(SocketException e){
-                System.out.println("Client already disconnected, do not need to send message");
+                //Client already disconnected, do not need to send message or report to log
             }
         }
     }
@@ -246,7 +246,7 @@ public class GameHandler implements PropertyChangeListener {
             try {
                 client.sendMessageToClient(answer);
             }catch(SocketException e){
-                System.out.println("Client already disconnected, do not need to send message");
+                //Client already disconnected, do not need to send message or report to log
             }
         }
     }
@@ -259,7 +259,7 @@ public class GameHandler implements PropertyChangeListener {
             try {
                 client.sendShutDownToClient();
             }catch(SocketException e){
-                System.out.println("Client already disconnected, do not need to disconnect manually");
+                //Client already disconnected, do not need to send message or report to log
             }
     }
 
@@ -565,7 +565,7 @@ public class GameHandler implements PropertyChangeListener {
             try {
                 client.sendMessageToClient(new WinningAnswer(winner));
             }catch(SocketException e){
-                System.out.println("Client already disconnected, do not need to send message");
+                //Client already disconnected, do not need to send message or report to log
             }
         }
 
@@ -582,7 +582,7 @@ public class GameHandler implements PropertyChangeListener {
             try {
                 client.sendMessageToClient(new WinningAnswer(winner));
             }catch(SocketException e){
-                System.out.println("Client already disconnected, do not need to send message");
+                //Client already disconnected, do not need to send message or report to log
             }
         }
 
