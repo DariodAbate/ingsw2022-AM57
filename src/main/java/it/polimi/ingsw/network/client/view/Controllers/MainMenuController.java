@@ -11,7 +11,10 @@ import javafx.scene.control.TextField;
 import java.io.IOException;
 import java.net.SocketException;
 
-
+/**
+ * Main controller for the menu scene
+ * @author Luca Bresciani
+ */
 public class MainMenuController implements GUIController {
 
     private GUI gui;
@@ -24,6 +27,10 @@ public class MainMenuController implements GUIController {
     private static String nickname;
 
 
+    /**
+     * send a message with the witch card back to the server
+     * @throws SocketException
+     */
     @Override
     public void setGUI(GUI gui) {
         this.gui = gui;

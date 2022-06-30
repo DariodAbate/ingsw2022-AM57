@@ -11,7 +11,10 @@ import javafx.scene.control.Label;
 import javafx.scene.image.ImageView;
 import java.net.SocketException;
 
-
+/**
+ * Main controller for the choice scene
+ * @author Luca Bresciani
+ */
 public class ChoiceController implements GUIController {
 
     private GUI gui;
@@ -25,9 +28,10 @@ public class ChoiceController implements GUIController {
     @FXML private ImageView grayT;
     @FXML private ImageView whiteT;
 
-
-
-
+    /**
+     * This method set the gui objet in the controller
+     * @param gui is the gui reference
+     */
     @Override
     public void setGUI(GUI gui) {
         this.gui = gui;

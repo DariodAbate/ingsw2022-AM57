@@ -13,6 +13,10 @@ import javafx.scene.control.TextInputDialog;
 import java.net.SocketException;
 import java.util.Optional;
 
+/**
+ * Main controller for the Generic scene
+ * @author Luca Bresciani
+ */
 public class GenericController implements GUIController{
 
     private GUI gui;
@@ -20,6 +24,10 @@ public class GenericController implements GUIController{
     @FXML private Label myLabel;
 
 
+    /**
+     * This method set the gui objet in the controller
+     * @param gui is the gui reference
+     */
     @Override
     public void setGUI(GUI gui) {
         this.gui = gui;
@@ -31,6 +39,11 @@ public class GenericController implements GUIController{
     }
 
 
+    /**
+     * Create alert for the students movement
+     * @param message
+     * @param isExpert
+     */
     public void chooseMovementInfo(String message, boolean isExpert) {
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
         alert.setTitle("Action phase!");
@@ -84,6 +97,12 @@ public class GenericController implements GUIController{
 
     }
 
+    /**
+     * Create alert for the mother movement
+     * @param message
+     * @param isExpert
+     * @throws NumberFormatException
+     */
     public void numOfIslandToTravel(String message, boolean isExpert) throws NumberFormatException{
         if (isExpert) {
             Alert alert = new Alert(Alert.AlertType.INFORMATION);
@@ -128,8 +147,11 @@ public class GenericController implements GUIController{
         });
     }
 
-
-
+    /**
+     * Create alert for the selection of the clouds
+     * @param message
+     * @param isExpert
+     */
     public void selectCloudInfo(String message, boolean isExpert) {
         if (isExpert) {
             Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
@@ -161,6 +183,10 @@ public class GenericController implements GUIController{
     }
 
 
+    /**
+     * Create alert for the winning player
+     * @param winner
+     */
     public void winnerInfo(String winner) {
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
         alert.setTitle("WIN!");
@@ -170,6 +196,10 @@ public class GenericController implements GUIController{
         System.exit(0);
     }
 
+    /**
+     * Create alert that notify not winning players that a player has won
+     * @param winner
+     */
     public void notWinnerInfo(String winner) {
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
         alert.setTitle("WIN!");
@@ -179,6 +209,10 @@ public class GenericController implements GUIController{
         System.exit(0);
     }
 
+    /**
+     * Create alert for choosing the number of player
+     * @param message
+     */
     public void requestNumOfPlayer(String message) {
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
         alert.setTitle("Lobby capacity");
@@ -203,6 +237,10 @@ public class GenericController implements GUIController{
         }
     }
 
+    /**
+     * Create alert for choosing the mode of the game
+     * @param message
+     */
     public void requestExpertMode(String message) {
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
         alert.setTitle("Mode");
@@ -227,6 +265,10 @@ public class GenericController implements GUIController{
         }
     }
 
+    /**
+     * Create error alert when a player disconnects from the game
+     * @param message
+     */
     public void disconnection(String message) {
         Alert alert = new Alert(Alert.AlertType.ERROR);
         alert.setTitle("Disconnection");
@@ -236,6 +278,10 @@ public class GenericController implements GUIController{
         System.exit(0);
     }
 
+    /**
+     * Craete alert with colors for specific expert cards
+     * @param message
+     */
     public void colorsToChoose(String message) {
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
         alert.setTitle("Colors");

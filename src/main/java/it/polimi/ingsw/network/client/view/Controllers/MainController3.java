@@ -157,7 +157,7 @@ public class MainController3 implements GUIController{
     }
 
     /**
-     * This method is used to show the students in the entrance of the central board in the scene (my board)
+     * This method is used to show the students in the entrance of the current player's board (my board)
      * @param colors is the array of student to be shown
      */
     public void showEntranceStudents(ArrayList<Color> colors) {
@@ -194,7 +194,7 @@ public class MainController3 implements GUIController{
     }
 
     /**
-     * This method is used to show the students  in the hall of the central board in the scene (my hall)
+     * This method is used to show the students  in the hall of the current player's board (my hall)
      * @param colors is the Array of students to be shown
      */
     public void showHallStudents(ArrayList<Color> colors) {
@@ -249,7 +249,7 @@ public class MainController3 implements GUIController{
     }
 
     /**
-     * This method is used to show the remaining towers on the central board in the scene
+     * This method is used to show the remaining towers on the current player's board
      * @param towerColor is the color of my towers
      * @param numTowers is the number of remaining towers
      */
@@ -283,7 +283,7 @@ public class MainController3 implements GUIController{
     }
 
     /**
-     * This method is used to show the professors on the central board of the scene
+     * This method is used to show the professors on the current player's board
      * @param professorsColors is the Array of professors to be shown
      */
     public void showMyProfessors(ArrayList<Color> professorsColors) {
@@ -921,7 +921,7 @@ public class MainController3 implements GUIController{
 
     /**
      * This method is used to show informative message received by the server
-     * @param message
+     * @param message received from the server
      */
     public void showInfoMessage(String message) {
         infoMessage.setText(message);
