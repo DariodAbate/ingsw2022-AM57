@@ -21,7 +21,10 @@ import java.net.SocketException;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-
+/**
+ * This is the main controller for the 2 player scene
+ * @author Luca Bresciani
+ */
 public class MainController2 implements GUIController {
 
     private GUI gui;
@@ -33,8 +36,6 @@ public class MainController2 implements GUIController {
     @FXML private AnchorPane otherCoin;
     @FXML private Label infoMessage;
     @FXML private Button stopButton;
-
-
 
     private final static Paint BLACK = javafx.scene.paint.Color.BLACK;
     private final static Paint WHITE = javafx.scene.paint.Color.WHITE;
@@ -101,13 +102,18 @@ public class MainController2 implements GUIController {
 
     private final Image BAN = new Image(String.valueOf(getClass().getResource("/deny_island_icon.png")));
 
-    private final Image BOARD = new Image(getClass().getResource("/PLANCIA_GIOCO_2.png").toExternalForm());
-
+    /**
+     * This method set the gui objet in the controller
+     * @param gui is the gui reference
+     */
     @Override
     public void setGUI(GUI gui) {
         this.gui = gui;
     }
 
+    /**
+     * Constructor of the class initialize the three map that contains the resources and the image
+     */
     public MainController2() {
         hand.put(1, PRIO1);
         hand.put(2, PRIO2);
@@ -143,6 +149,10 @@ public class MainController2 implements GUIController {
         characters.put(ExpertCard_ID.HOST, HOST);
     }
 
+    /**
+     * This method is used to show the students in the entrance of the current player's board (my board)
+     * @param colors is the array of student to be shown
+     */
     public void showEntranceStudents(ArrayList<Color> colors) {
             for(ImageView entranceStudent : myEntranceStudents) {
                myBoard.getChildren().remove(entranceStudent);
@@ -164,6 +174,10 @@ public class MainController2 implements GUIController {
         }
     }
 
+    /**
+     * This method send a message with the color of the student clicked
+     * @param studentColor is the color to be sent
+     */
     public void sendStudentToMove(Color studentColor) {
         try {
             gui.getSocketClient().send(new ColorChosen(studentColor));
@@ -172,6 +186,10 @@ public class MainController2 implements GUIController {
         }
     }
 
+    /**
+     * This method is used to show the students  in the hall of the current player's board (my hall)
+     * @param colors is the Array of students to be shown
+     */
     public void showHallStudents(ArrayList<Color> colors) {
         double lastGreenStudentX = 71.8;
         double lastRedStudentX = 71.8;
@@ -223,7 +241,11 @@ public class MainController2 implements GUIController {
         }
     }
 
-
+    /**
+     * This method is used to show the remaining towers on the current player's board
+     * @param towerColor is the color of my towers
+     * @param numTowers is the number of remaining towers
+     */
     public void showMyTower(Tower towerColor, int numTowers) {
         switch(towerColor) {
             case WHITE -> setTowerColor(WHITE, numTowers, myBoard);
@@ -232,6 +254,11 @@ public class MainController2 implements GUIController {
         }
     }
 
+    /**
+     * This method is used to show the remaining towers on the other player's board
+     * @param towerColor is the color of my towers
+     * @param numTowers is the number of remaining towers
+     */
     public void showOtherTower(Tower towerColor, int numTowers) {
         switch(towerColor) {
             case WHITE -> setTowerColor(WHITE, numTowers, otherBoard);
@@ -240,6 +267,12 @@ public class MainController2 implements GUIController {
         }
     }
 
+    /**
+     * Helper method used to set the towers' color
+     * @param paint towers' color
+     * @param numTowers number of towers remaining
+     * @param Board board reference
+     */
     private void setTowerColor(Paint paint, int numTowers, AnchorPane Board) {
         for (Circle tower : towers) {
             Board.getChildren().remove(tower);
@@ -255,10 +288,18 @@ public class MainController2 implements GUIController {
         }
     }
 
+    /**
+     * This method is used to show the professors on the current player's board
+     * @param professorsColors is the Array of professors to be shown
+     */
     public void showMyProfessors(ArrayList<Color> professorsColors) {
         showProfessors(professorsColors, myProfessors, myBoard);
     }
 
+    /**
+     * This method show the three clouds
+     * @param cloudColorsMap is a map that associates the index of the cloud with th students on it
+     */
     public void showClouds(HashMap<Integer, ArrayList<Color>> cloudColorsMap) {
         double lastCloudX = -43;
         for (AnchorPane cloud : clouds) {
@@ -294,6 +335,10 @@ public class MainController2 implements GUIController {
         }
     }
 
+    /**
+     * This method send an integer message with the index of the chosen cloud
+     * @param index is the index to be sent
+     */
     public void sendCloudIndex(int index) {
         try {
             gui.getSocketClient().send(new IntegerMessage((index+1)));
@@ -302,7 +347,10 @@ public class MainController2 implements GUIController {
         }
     }
 
-
+    /**
+     * This method is used to show the assistant cards of the player
+     * @param priorities is the array of priorities of the remaining card to be shown
+     */
     public void showAssistantCards(ArrayList<Integer> priorities) {
         double lastCardX = 90;
         for (ImageView card : cards) {
@@ -325,6 +373,10 @@ public class MainController2 implements GUIController {
         }
     }
 
+    /**
+     * This method send an integer message to the server with the priority of the chosen card
+     * @param priority is the priority to be sent
+     */
     public void sendChosenCard(Integer priority) {
         try {
             gui.getSocketClient().send(new IntegerMessage(priority));
@@ -333,6 +385,10 @@ public class MainController2 implements GUIController {
         }
     }
 
+    /**
+     * This method show the last played card
+     * @param lastPriority priority of the card to be shown
+     */
     public void showLastPlayedCard(int lastPriority) {
         ImageView lastPlayedCard = new ImageView(hand.get(lastPriority));
         mainPane.getChildren().add(lastPlayedCard);
@@ -342,6 +398,10 @@ public class MainController2 implements GUIController {
         lastPlayedCard.setLayoutY(505);
     }
 
+    /**
+     * This method is used to show the students in the entrance of the other player's board
+     * @param colors is the array of student to be shown
+     */
     public void showOtherPlayerEntrance(ArrayList<Color> colors) {
         for(ImageView entranceStudent : otherEntranceStudents) {
             otherBoard.getChildren().remove(entranceStudent);
@@ -357,7 +417,11 @@ public class MainController2 implements GUIController {
             otherEntranceStudents.add(entranceStudent);
         }
     }
-    
+
+    /**
+     * This method show the last played card of the other player
+     * @param lastPriority priority of the card to be shown
+     */
     public void showOtherLastPlayedCard(int lastPriority) {
         ImageView lastPlayedCard = new ImageView(hand.get(lastPriority));
         mainPane.getChildren().add(lastPlayedCard);
@@ -367,10 +431,18 @@ public class MainController2 implements GUIController {
         lastPlayedCard.setLayoutY(22);
     }
 
+    /**
+     * This method is used to show the professors on the other player's board
+     * @param professorsColors is the Array of professors to be shown
+     */
     public void showOtherPlayerProfessors(ArrayList<Color> professorsColors) {
         showProfessors(professorsColors, otherProfessors, otherBoard);
     }
-    
+
+    /**
+     * This method is used to show the students  in the hall of the other player's board
+     * @param colors is the Array of students to be shown
+     */
     public void showOtherPLayerHall(ArrayList<Color> colors) {
         double lastGreenStudentX = 71.8;
         double lastRedStudentX = 71.8;
@@ -417,6 +489,12 @@ public class MainController2 implements GUIController {
         }
     }
 
+    /**
+     * Helper method used to show professors
+     * @param professorsColors is the Array of professors to be shown
+     * @param professorsList helper Array of imageview used to remove the previously displayed professors
+     * @param Board board reference
+     */
     private void showProfessors(ArrayList<Color> professorsColors, ArrayList<ImageView> professorsList, AnchorPane Board) {
         for (ImageView professor : professorsList) {
             Board.getChildren().remove(professor);
@@ -439,6 +517,15 @@ public class MainController2 implements GUIController {
         }
     }
 
+    /**
+     * This method is used tho show the archipelago of islands
+     * @param archipelagoSize is the number of islands
+     * @param motherNature is the index of mother nature
+     * @param islandsStudents is a map that associates the integer of each island to the array of students on that island
+     * @param towerColorMap is a map that associates the integer of each island to the Tower on that island
+     * @param numTowersMap is a map that associates the integer of each island to the number of towers on that island
+     * @param bannedIslands is a map that associates the integer of each island to an array of boolean that indicates if the island is banned or not
+     */
     public void showArchipelago(int archipelagoSize, int motherNature, HashMap<Integer, ArrayList<Color>> islandsStudents, HashMap<Integer, Tower> towerColorMap, HashMap<Integer, Integer> numTowersMap, HashMap<Integer, Boolean> bannedIslands) {
         double lastCloudX = 650;
         double lastCloudY = 100;
@@ -547,6 +634,10 @@ public class MainController2 implements GUIController {
         }
     }
 
+    /**
+     * This method send an integer message to the server with the index of the clicked island
+     * @param index is the index to be sent
+     */
     public void sendIslandIndex(int index) {
         try {
             gui.getSocketClient().send(new IntegerMessage(index + 1));
@@ -555,6 +646,11 @@ public class MainController2 implements GUIController {
         }
     }
 
+    /**
+     * This method is used to show the coin of each player in the expert mode
+     * @param numCoin number of remaining coin
+     * @param Board board reference
+     */
     public void showCoin(int numCoin, AnchorPane Board) {
         for (ImageView coin : coins) {
             Board.getChildren().remove(coin);
@@ -578,6 +674,12 @@ public class MainController2 implements GUIController {
         showCoin(numCoin, otherCoin);
     }
 
+    /**
+     * This method is used to show the expert cards
+     * @param expertCards expert cards to be shown
+     * @param studBufferColor students to put on the card that requires this feature
+     * @param usedCard boolean that indicates if a card has been used or not
+     */
     public void showExpertCard(ArrayList<ExpertCard_ID> expertCards, HashMap<Integer, ArrayList<Color>> studBufferColor, ArrayList<Boolean> usedCard) {
         double lastExpertCardX = 810;
         for (int i = 0; i < expertCards.size(); i ++) {
@@ -638,6 +740,11 @@ public class MainController2 implements GUIController {
         }
     }
 
+    /**
+     * this method send an integer message with the index of the chosen expert card
+     * @param index index to be sent
+     * @param expertcard expert card reference
+     */
     public void sendExpertCard(int index, ExpertCard_ID expertcard) {
         if (expertcard == ExpertCard_ID.BARD || expertcard == ExpertCard_ID.JOKER) {
             stopButton.setVisible(true);
@@ -649,6 +756,9 @@ public class MainController2 implements GUIController {
         }
     }
 
+    /**
+     * This method send a stop message for the card that use this feature
+     */
     public void stopButton () {
         try {
             gui.getSocketClient().send(new StopMessage());
@@ -659,6 +769,10 @@ public class MainController2 implements GUIController {
     }
 
 
+    /**
+     * This method is used to show informative message received by the server
+     * @param message received from the server
+     */
     public void showInfoMessage(String message) {
         infoMessage.setText(message);
     }
