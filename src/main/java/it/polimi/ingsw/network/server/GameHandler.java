@@ -217,7 +217,7 @@ public class GameHandler implements PropertyChangeListener {
     /**
      * Helper method used to associate a client with the nickname chosen in the UI class
      */
-    private void sendNickname() throws IOException {
+    public void sendNickname() throws IOException {
         for (ServerClientHandler client : playersConnections) {
                 client.sendMessageToClient(new NicknameAnswer(client.getNickname()));
         }

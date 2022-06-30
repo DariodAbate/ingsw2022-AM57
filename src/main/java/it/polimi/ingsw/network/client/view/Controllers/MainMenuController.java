@@ -68,11 +68,18 @@ public class MainMenuController implements GUIController {
     }
 
     public void rightNickName () {
-        gui.setNickname(rightNick.getText());
-        try {
-            gui.getSocketClient().send(new GenericMessage(rightNick.getText()));
-        } catch (SocketException e) {
-            e.printStackTrace();
+        if (rightNick.getText().equals("")) {
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Username not inserted");
+            alert.setHeaderText("Please insert your username!");
+            alert.showAndWait();
+        } else {
+            gui.setNickname(rightNick.getText());
+            try {
+                gui.getSocketClient().send(new GenericMessage(rightNick.getText()));
+            } catch (SocketException e) {
+                e.printStackTrace();
+            }
         }
     }
 

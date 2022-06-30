@@ -234,8 +234,15 @@ public class CLI  implements PropertyChangeListener, UI {
                     socketClient.send(new ChooseCardBack(back));
                 } else if (userInput.equalsIgnoreCase("black") || userInput.equalsIgnoreCase("white")
                         || userInput.equalsIgnoreCase("gray")) {
+
+                    System.out.print(ANSIConstants.TEXT_RESET);
+                    clearScreen();
+                    System.out.println("The other players are making their choice");
+                    System.out.flush();
+
                     Tower tower = Tower.valueOf(userInput.toUpperCase());
                     socketClient.send(new ChooseTowerColor(tower));
+
                 } else if (userInput.equalsIgnoreCase("hall") || userInput.equalsIgnoreCase("island")) {
                     socketClient.send(new MoveStudentMessage(userInput));
                 } else if (userInput.equalsIgnoreCase("blue") || userInput.equalsIgnoreCase("pink")

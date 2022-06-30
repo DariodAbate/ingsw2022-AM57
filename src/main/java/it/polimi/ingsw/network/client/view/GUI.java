@@ -216,25 +216,11 @@ public class GUI extends Application implements PropertyChangeListener{
 
     }
 
-    /*public void closeUserInterface() {
-
-     }
-
-     public void reqNickname(String message) {
-
-            System.out.println(message + " (request nickname message)");
-         Platform.runLater(() -> {
-             MainMenuController controller = (MainMenuController) controllerMap.get(MENU);
-             //this.nickname = controller.getNickname();
-         });
-     }*/
-
     /**
      * this method call the controller's method that request the number of player
      * @param message message received from the server
      */
      public void reqNumOfPlayer(String message) {
-         System.out.println(message + " (request numPlayer message)");
          Platform.runLater(() -> {
              GenericController controller = (GenericController) controllerMap.get(GENERIC);
              controller.requestNumOfPlayer(message);
@@ -269,7 +255,6 @@ public class GUI extends Application implements PropertyChangeListener{
      * @param message message received from the server
      */
      public void displayGenericMessage(String message){
-        System.out.println(message + " (generic message)");
         if(message.contains("Username not available")) {
             MainMenuController controller = (MainMenuController) controllerMap.get(MENU);
                 Platform.runLater(() -> {
@@ -496,7 +481,10 @@ public class GUI extends Application implements PropertyChangeListener{
         }
     }
 
-
+    /**
+     * This method returns the player's associated with the gui last played card
+     * @return the priority of my last played card
+     */
     public int myLastPlayedCard() {
         int lastPriority = 0;
         for (int i = 0; i < gameBean.getPlayers().size(); i++) {
@@ -510,6 +498,10 @@ public class GUI extends Application implements PropertyChangeListener{
         return 0;
     }
 
+    /**
+     * This method returns the others players last played card
+     * @return the priority of the others players card
+     */
     public int otherLastPlayedCard() {
         int lastPriority;
         for (int i = 0; i < gameBean.getPlayers().size(); i++) {
@@ -523,6 +515,11 @@ public class GUI extends Application implements PropertyChangeListener{
         return 0;
     }
 
+
+    /**
+     * This method is used to display the assistant card
+     * @param playerBean is the player bean that contains the card information
+     */
     public void displayCard(PlayerBean playerBean) {
         priorities.removeAll(priorities);
         if (gameBean.getPlayers().size() == 2) {
@@ -563,6 +560,9 @@ public class GUI extends Application implements PropertyChangeListener{
     }
 
 
+    /**
+     * This method is used to display the archipelago
+     */
     public void displayArchipelago() {
         HashMap<Integer, ArrayList<Color>> islandColorsMap = new HashMap<>();
         HashMap<Integer, Tower> towerColorMap = new HashMap<>();
@@ -597,6 +597,9 @@ public class GUI extends Application implements PropertyChangeListener{
         });
     }
 
+    /**
+     * This method is used to display the expert card
+     */
     public void displayExpertCard() {
         ArrayList<ExpertCard_ID> expertCards = new ArrayList<>();
         ArrayList<Color> cardColors = new ArrayList<>();
@@ -631,6 +634,9 @@ public class GUI extends Application implements PropertyChangeListener{
         }
     }
 
+    /**
+     * This method is used to display the clouds
+     */
     public void displayClouds() {
         HashMap<Integer, ArrayList<Color>> cloudColorsMap = new HashMap<>();
         cloudColors.removeAll(cloudColors);
@@ -659,6 +665,11 @@ public class GUI extends Application implements PropertyChangeListener{
     }
 
 
+    /**
+     * This method is used to start the connection with the server
+     * @param answerHandler is the object that handle the messages from the server
+     * @param socketClient is the socket
+     */
     public void startConnection(AnswerHandler answerHandler, SocketClient socketClient) {
         this.answerHandler = answerHandler;
         this.socketClient = socketClient;

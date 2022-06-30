@@ -94,8 +94,6 @@ public class MultiServer {
             //delete old content
             for (File file : Objects.requireNonNull(directory.listFiles())) {
                 boolean control = file.delete();
-                System.out.println("Deleting: " + file.getName());
-                System.out.println(control ? ("File deleted"):"Cannot delete this file, please remove manually from the folder!");
             }
         }
     }
@@ -266,6 +264,7 @@ public class MultiServer {
 
         Thread t = new Thread(() -> {
             try {
+                gameHandler.sendNickname();
                 gameHandler.sendGameView();//resend the view
                 gameHandler.gameTurns(); //restart a game at the point where a player has disconnected
             } catch (IOException | ClassNotFoundException e) {
