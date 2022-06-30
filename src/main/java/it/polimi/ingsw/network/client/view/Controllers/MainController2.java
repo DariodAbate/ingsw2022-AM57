@@ -378,7 +378,7 @@ public class MainController2 implements GUIController {
         double lastPinkStudentX = 71.8;
         double lastBlueStudentX = 71.8;
         for(ImageView hallStudent : otherHallStudents) {
-            myBoard.getChildren().remove(hallStudent);
+            otherBoard.getChildren().remove(hallStudent);
         }
         otherHallStudents.removeAll(otherHallStudents);
         for (int i = 0; i < colors.size(); i++) {

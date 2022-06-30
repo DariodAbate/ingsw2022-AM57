@@ -740,6 +740,11 @@ public class GameHandler implements PropertyChangeListener {
         }
 
     }
+
+    /**
+     * In this method the player chose the color of the student to move and then he chose the index of the island
+     * where he wants to move the student
+     */
     public void toIsland(ServerClientHandler client) throws IOException, ClassNotFoundException{
         boolean isColorChosen = false;
         Message message;
@@ -761,6 +766,9 @@ public class GameHandler implements PropertyChangeListener {
         }
     }
 
+    /**
+     * As for the method above, this method request the input of the index of the island chosen for the movement.
+     */
     private void islandSelection(ServerClientHandler client, Color color) throws IOException, ClassNotFoundException{
         boolean isIdxChosen = false;
         Message message;
@@ -793,6 +801,10 @@ public class GameHandler implements PropertyChangeListener {
         return  boardBeans;
     }
 
+    /**
+     * This method handles the phase where the player can move MotherNature, in an Expert Game is also possible to play
+     * a card.
+     */
     private void motherMovement(ServerClientHandler client) throws IOException, ClassNotFoundException{
         boolean isIdxChosen = false;
         Message message;
@@ -835,6 +847,10 @@ public class GameHandler implements PropertyChangeListener {
         }
     }
 
+    /**
+     * This method handles the phase where the player should take a cloud. Is first requested to the player to choose
+     * a cloud index, then the cloud is selected and the students are taken.
+     */
     private void takeCloud(ServerClientHandler client) throws IOException, ClassNotFoundException{
         boolean cloudTaken = false;
         Message message;
@@ -871,7 +887,12 @@ public class GameHandler implements PropertyChangeListener {
         }
     }
 
-
+    /**
+     * This method is only usable in an expert game, it's purpose is to let the player chose an index from the 3 cards
+     * and play one of the cards
+     * @param client player that played the card.
+     * @return true if the card is played, false if it was not possible to play the card.
+     */
     private boolean playCard(ServerClientHandler client) throws IOException, ClassNotFoundException{
         Message message;
         client.sendMessageToClient("Select the card you want to play!");
@@ -984,8 +1005,12 @@ public class GameHandler implements PropertyChangeListener {
         }
     }
 
-
-
+    /**
+     * This method can swap color between entrance and the card for a maximum of three times, simulating the play
+     * of the related card.
+     * @param client the player that is playing the card
+     * @param card the card that has been played
+     */
     private void swapCardCluster(ServerClientHandler client, StudentsBufferCardsCluster card) throws IOException, ClassNotFoundException {
         Message message;
         Board board = game.getCurrentPlayer().getBoard();
@@ -1026,6 +1051,12 @@ public class GameHandler implements PropertyChangeListener {
         }
 
     }
+
+    /**
+     * This method is an auxiliary method for the card above, it permits to set the color to take from the card.
+     * @param client the player that is playing the card
+     * @param card the card that has been played
+     */
     private void setSwapCardStudentsBuffer(ServerClientHandler client, StudentsBufferCardsCluster card) throws IOException, ClassNotFoundException{
         client.sendMessageToClient("Please select the color of the student on the card");
         Message message;
@@ -1046,6 +1077,13 @@ public class GameHandler implements PropertyChangeListener {
             }
         }
     }
+
+    /**
+     * This method simulates the card that put one student from the card on one island chosen by the player.
+     * It requests the player to chose both the color and the island index.
+     *  @param client the player that is playing the card
+     * @param card the card that has been played
+     */
     private void manStudentCluster(ServerClientHandler client, ExpertCard card) throws IOException, ClassNotFoundException{
         client.sendMessageToClient("Please select the color of the student to take");
         Message message;
@@ -1067,6 +1105,12 @@ public class GameHandler implements PropertyChangeListener {
         }
 
     }
+
+    /**
+     * This method is an auxiliary method for the card above, permits the selection of the island.
+     *  @param client the player that is playing the card
+     * @param card the card that has been played
+     */
     private void islandSelectionManCluster(ServerClientHandler client, ExpertCard card) throws IOException, ClassNotFoundException{
         Message message;
         boolean choseIsland = false;
@@ -1087,6 +1131,13 @@ public class GameHandler implements PropertyChangeListener {
             }
         }
     }
+
+    /**
+     * This color simulates the card that take a student from her buffer and put it in a player's hall.
+     * @param client player that plays the card
+     * @param card  card that has been played
+     * @return false if the hall for that color is full, true otherwise.
+     */
     private boolean askColorStudentsCluster(ServerClientHandler client, ExpertCard card) throws IOException, ClassNotFoundException{
         client.sendMessageToClient("Please select the color to move to your hall");
         Message message;
@@ -1112,6 +1163,13 @@ public class GameHandler implements PropertyChangeListener {
         }
         return true;
     }
+
+    /**
+     * This method let the player chose a color, that color will be subtracted from all the player's hall
+     * (up to maximum 3 students)
+     * @param client the player that is playing the card
+     * @param card the card that has been played
+     */
     private void putThreeStudentsInBagColor(ServerClientHandler client, ExpertCard card) throws IOException, ClassNotFoundException{
         client.sendMessageToClient("Please select the color to put in the bag");
         Message message;
@@ -1133,6 +1191,12 @@ public class GameHandler implements PropertyChangeListener {
 
         }
     }
+
+    /**
+     * This method selects the island where the Game.Bantile should be placed.
+     *  @param client the player that is playing the card
+     *  @param card the card that has been played
+     */
     private void bannedIslandSelector(ServerClientHandler client, ExpertCard card) throws IOException,ClassNotFoundException{
         client.sendMessageToClient("Please select the island where you want to put your ban token");
         Message message;
@@ -1153,6 +1217,12 @@ public class GameHandler implements PropertyChangeListener {
             }
         }
     }
+
+    /**
+     * This method permit the player to select an island and simulates the motherNature behaviour.
+     *  @param client the player that is playing the card
+     *  @param card the card that has been played
+     */
     private void pseudoMotherIslandSelector(ServerClientHandler client, ExpertCard card) throws IOException,ClassNotFoundException{
         client.sendMessageToClient("Please select the island where you want to calculate your influence");
         Message message;
@@ -1173,6 +1243,12 @@ public class GameHandler implements PropertyChangeListener {
             }
         }
     }
+
+    /**
+     * This method permits the player to swap students between entrance and hall up to two times.
+     *  @param client the player that is playing the card
+     * @param card the card that has been played
+     */
     private void swapStudents(ServerClientHandler client, SwapStudentsCard card) throws IOException, ClassNotFoundException{
         Message message;
         Board board = game.getCurrentPlayer().getBoard();
@@ -1213,6 +1289,12 @@ public class GameHandler implements PropertyChangeListener {
                 }
             }
     }
+
+    /**
+     * This method is an auxiliary method for selecting the color of the hall to swap. (See precedent method)
+     *  @param client the player that is playing the card
+     * @param card the card that has been played
+     */
     private void setSwapHall(ServerClientHandler client, SwapStudentsCard card) throws IOException, ClassNotFoundException{
         Message message;
         boolean hallColor = false;
@@ -1234,6 +1316,12 @@ public class GameHandler implements PropertyChangeListener {
             }
         }
     }
+
+    /**
+     * This method is an helper method to chose the color to ignore for the influence calculation.
+     *  @param client the player that is playing the card
+     *  @param card the card that has been played
+     */
     private void choseColorInfluenceCalculator(ServerClientHandler client, InfluenceCardsCluster card) throws IOException, ClassNotFoundException{
         boolean choseColor = false;
         Message message;
