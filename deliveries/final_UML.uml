@@ -1,0 +1,924 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Diagram>
+  <ID>JAVA</ID>
+  <OriginalElement>C:/Users/dario/IdeaProjects/ingsw2022-AM57/src/main/java/it/polimi/ingsw</OriginalElement>
+  <nodes>
+    <node x="2050.0" y="2353.5">it.polimi.ingsw.network.client.view.Controllers.MainController3</node>
+    <node x="784.5" y="6420.0">it.polimi.ingsw.network.server.exception.SetupGameDisconnectionException</node>
+    <node x="1243.5" y="6791.0">it.polimi.ingsw.network.client.modelBean.ExpertCard.StudBufferExpertCardBean</node>
+    <node x="3494.5" y="4012.5">it.polimi.ingsw.network.client.messages</node>
+    <node x="4965.5" y="3532.5">it.polimi.ingsw.model.RefillInterface</node>
+    <node x="6763.0" y="1631.5">it.polimi.ingsw.model.statePattern.NoTowerCalculator</node>
+    <node x="7570.5" y="5372.5">it.polimi.ingsw.model.expertGame.PseudoMotherNatureCard</node>
+    <node x="1702.0" y="3308.0">it.polimi.ingsw.network.client.view.Controllers.ChoiceController</node>
+    <node x="6203.0" y="1631.5">it.polimi.ingsw.model.statePattern.InfluenceCalculator</node>
+    <node x="4531.5" y="3272.5">it.polimi.ingsw.model.Round</node>
+    <node x="962.5" y="6754.0">it.polimi.ingsw.network.client.modelBean.ExpertCard.ExpertCardBean</node>
+    <node x="944.0" y="6591.0">it.polimi.ingsw.network.client.modelBean.ExpertCard.BanExpertCardBean</node>
+    <node x="3888.5" y="306.0">it.polimi.ingsw.model.StudentsHandler</node>
+    <node x="3662.0" y="3812.5">it.polimi.ingsw.model.AdjacentIslands</node>
+    <node x="5457.0" y="931.0">it.polimi.ingsw.model.IslandTile</node>
+    <node x="5523.0" y="1631.5">it.polimi.ingsw.model.statePattern.StandardCalculator</node>
+    <node x="2363.0" y="7175.5">it.polimi.ingsw.network.client.modelBean.PlayerBean</node>
+    <node x="3111.5" y="5190.5">it.polimi.ingsw.network.client.view.CLI</node>
+    <node x="6408.5" y="5994.5">it.polimi.ingsw.model.expertGame.SwapStudentsCard</node>
+    <node x="2187.0" y="2152.5">it.polimi.ingsw.network.client.view.ExpertCard_ID</node>
+    <node x="6953.5" y="6551.0">it.polimi.ingsw.model.expertGame.IncrementMaxMovementCard</node>
+    <node x="665.0" y="7120.0">it.polimi.ingsw.network.client.modelBean.GameBean</node>
+    <node x="3266.5" y="814.5">it.polimi.ingsw.model.Bag</node>
+    <node x="784.5" y="6505.0">it.polimi.ingsw.network.server.exception.GameDisconnectionException</node>
+    <node x="7592.0" y="4891.0">it.polimi.ingsw.model.expertGame.PseudoMotherNature</node>
+    <node x="5477.5" y="5921.5">it.polimi.ingsw.model.expertGame.StudentsBufferCluster</node>
+    <node x="169.0" y="6059.0">it.polimi.ingsw.network.server.GameHandler</node>
+    <node x="1237.0" y="5620.0">it.polimi.ingsw.network.server.ReconnectionHandler</node>
+    <node x="4965.5" y="5001.5">it.polimi.ingsw.model.expertGame.ExpertGame</node>
+    <node x="1300.5" y="6952.5">it.polimi.ingsw.model.Color</node>
+    <node x="5477.5" y="6160.5">it.polimi.ingsw.model.expertGame.InfluenceCluster</node>
+    <node x="3522.5" y="3572.5">it.polimi.ingsw.model.constantFactory</node>
+    <node x="935.5" y="4952.5">it.polimi.ingsw.network.client.AnswerHandler</node>
+    <node x="-267.0" y="5693.0">it.polimi.ingsw.network.server.SocketServer</node>
+    <node x="1263.5" y="7476.0">it.polimi.ingsw.network.client.modelBean.IslandBean</node>
+    <node x="1637.5" y="7532.5">it.polimi.ingsw.model.Tower</node>
+    <node x="4990.5" y="4811.0">it.polimi.ingsw.model.expertGame.PutThreeStudentsInTheBag</node>
+    <node x="1665.5" y="899.0">it.polimi.ingsw.network.client.view.Controllers.MainMenuController</node>
+    <node x="1733.0" y="2891.0">it.polimi.ingsw.network.client.view.Controllers.GUIController</node>
+    <node x="637.5" y="5583.0">it.polimi.ingsw.network.server.MultiServer</node>
+    <node x="1952.0" y="7458.5">it.polimi.ingsw.network.client.modelBean.BoardBean</node>
+    <node x="-256.5" y="6022.0">it.polimi.ingsw.network.server.ServerClientHandler</node>
+    <node x="7382.5" y="6551.0">it.polimi.ingsw.model.expertGame.IncrementMaxMovement</node>
+    <node x="1252.5" y="3026.5">it.polimi.ingsw.network.client.view.Controllers.GenericController</node>
+    <node x="3630.8669083804625" y="5608.181019393315">it.polimi.ingsw.network.client.view.ANSIConstants</node>
+    <node x="5051.5" y="6211.5">it.polimi.ingsw.model.expertGame.BannedIslandCard</node>
+    <node x="2691.5" y="3924.5">it.polimi.ingsw.network.client.view.GUI</node>
+    <node x="3439.5" y="1632.5">it.polimi.ingsw.model.GameState</node>
+    <node x="5243.0" y="2451.0">it.polimi.ingsw.model.RoundObserver</node>
+    <node x="6150.5" y="6231.0">it.polimi.ingsw.model.expertGame.BannedIsland</node>
+    <node x="4101.0" y="6420.5">it.polimi.ingsw.model.expertGame.ExpertCard</node>
+    <node x="4496.5" y="6051.0">it.polimi.ingsw.model.expertGame.TakeProfessorEqualStudents</node>
+    <node x="4249.0" y="4454.0">it.polimi.ingsw.model.AssistantCard</node>
+    <node x="5905.5" y="6160.5">it.polimi.ingsw.model.expertGame.BanTile</node>
+    <node x="703.5" y="6971.0">it.polimi.ingsw.network.client.modelBean.CloudBean</node>
+    <node x="4531.5" y="3983.5">it.polimi.ingsw.model.Player</node>
+    <node x="949.0" y="5431.0">it.polimi.ingsw.network.client.Client</node>
+    <node x="6882.0" y="3669.0">it.polimi.ingsw.model.Board</node>
+    <node x="3683.5" y="5371.5">it.polimi.ingsw.model.expertGame.PutThreeStudentsInTheBagCard</node>
+    <node x="3111.5" y="5826.0">it.polimi.ingsw.network.client.view.UI</node>
+    <node x="3936.5" y="937.5">it.polimi.ingsw.model.CloudTile</node>
+    <node x="3813.5" y="1784.0">it.polimi.ingsw.model.Game</node>
+    <node x="5852.5" y="2376.0">it.polimi.ingsw.model.expertGame.InfluenceCardsCluster</node>
+    <node x="5523.0" y="2191.5">it.polimi.ingsw.model.statePattern.TwoMoreCalculator</node>
+    <node x="3244.0" y="4897.0">it.polimi.ingsw.network.client.SocketClient</node>
+    <node x="4285.0" y="-22.5">it.polimi.ingsw.model.expertGame.StudentsBufferCardsCluster</node>
+    <node x="2050.0" y="1106.0">it.polimi.ingsw.network.client.view.Controllers.MainController2</node>
+    <node x="3500.0" y="3692.5">it.polimi.ingsw.network.server.answers</node>
+    <node x="6512.0" y="1811.5">it.polimi.ingsw.model.statePattern.ExceptOneColorCalculator</node>
+    <node x="4478.0" y="5891.0">it.polimi.ingsw.model.expertGame.TakeProfessorEqualStudentsCard</node>
+    <node x="6776.5" y="6051.0">it.polimi.ingsw.model.expertGame.SwapStudents</node>
+    <node x="3925.5" y="4472.5">it.polimi.ingsw.model.CardBack</node>
+  </nodes>
+  <notes />
+  <edges>
+    <edge source="it.polimi.ingsw.model.expertGame.ExpertGame" target="it.polimi.ingsw.model.expertGame.BanTile" relationship="REALIZATION">
+      <point x="48.0" y="433.5" />
+      <point x="5229.0" y="5919.5" />
+      <point x="6012.5" y="5919.5" />
+      <point x="0.0" y="-44.0" />
+    </edge>
+    <edge source="it.polimi.ingsw.network.client.modelBean.PlayerBean" target="it.polimi.ingsw.network.client.modelBean.BoardBean" relationship="TO_ONE">
+      <point x="0.0" y="99.5" />
+      <point x="2521.0" y="7595.0" />
+      <point x="189.0" y="0.0" />
+    </edge>
+    <edge source="it.polimi.ingsw.network.client.view.GUI" target="it.polimi.ingsw.network.client.view.Controllers.GUIController" relationship="TO_MANY">
+      <point x="-249.5" y="15.0" />
+      <point x="-89.0" y="4410.0" />
+      <point x="-89.0" y="2935.0" />
+      <point x="-108.0" y="0.0" />
+    </edge>
+    <edge source="it.polimi.ingsw.network.client.view.Controllers.MainMenuController" target="it.polimi.ingsw.network.client.view.Controllers.GUIController" relationship="REALIZATION">
+      <point x="-5.0" y="156.0" />
+      <point x="-5.0" y="-44.0" />
+    </edge>
+    <edge source="it.polimi.ingsw.model.Game" target="it.polimi.ingsw.model.Player" relationship="CREATE">
+      <point x="247.5" y="343.5" />
+      <point x="4912.5" y="2838.5" />
+      <point x="4912.5" y="4175.0" />
+      <point x="189.5" y="-20.0" />
+    </edge>
+    <edge source="it.polimi.ingsw.model.Game" target="it.polimi.ingsw.model.statePattern.StandardCalculator" relationship="CREATE">
+      <point x="85.5" y="-711.0" />
+      <point x="4146.5" y="1690.0" />
+      <point x="-138.0" y="-5.0" />
+    </edge>
+    <edge source="it.polimi.ingsw.network.client.modelBean.ExpertCard.BanExpertCardBean" target="it.polimi.ingsw.network.client.modelBean.ExpertCard.ExpertCardBean" relationship="GENERALIZATION">
+      <point x="0.0" y="44.0" />
+      <point x="0.0" y="-81.0" />
+    </edge>
+    <edge source="it.polimi.ingsw.model.Round" target="it.polimi.ingsw.model.Player" relationship="TO_MANY">
+      <point x="0.0" y="322.5" />
+      <point x="0.0" y="-211.5" />
+    </edge>
+    <edge source="it.polimi.ingsw.network.client.modelBean.GameBean" target="it.polimi.ingsw.network.client.modelBean.IslandBean" relationship="TO_MANY">
+      <point x="-0.0" y="155.0" />
+      <point x="861.0" y="7590.0" />
+      <point x="-157.5" y="-5.0" />
+    </edge>
+    <edge source="it.polimi.ingsw.model.expertGame.StudentsBufferCardsCluster" target="it.polimi.ingsw.model.StudentsHandler" relationship="CREATE">
+      <point x="-176.0" y="0.0" />
+      <point x="4066.0" y="115.0" />
+      <point x="5.0" y="-229.0" />
+    </edge>
+    <edge source="it.polimi.ingsw.network.server.GameHandler" target="it.polimi.ingsw.network.server.ServerClientHandler" relationship="TO_MANY">
+      <point x="-212.0" y="5.0" />
+      <point x="177.5" y="5.0" />
+    </edge>
+    <edge source="it.polimi.ingsw.model.statePattern.ExceptOneColorCalculator" target="it.polimi.ingsw.model.IslandTile" relationship="TO_ONE">
+      <point x="-0.0" y="-63.5" />
+      <point x="6681.0" y="1235.0" />
+      <point x="204.0" y="0.0" />
+    </edge>
+    <edge source="it.polimi.ingsw.model.expertGame.InfluenceCardsCluster" target="it.polimi.ingsw.model.expertGame.InfluenceCluster" relationship="TO_ONE">
+      <point x="28.0" y="119.0" />
+      <point x="6029.0" y="6141.0" />
+      <point x="5686.5" y="6141.0" />
+      <point x="5.0" y="-44.0" />
+    </edge>
+    <edge source="it.polimi.ingsw.model.expertGame.IncrementMaxMovementCard" target="it.polimi.ingsw.model.expertGame.IncrementMaxMovement" relationship="TO_ONE">
+      <point x="187.5" y="0.0" />
+      <point x="-158.5" y="0.0" />
+    </edge>
+    <edge source="it.polimi.ingsw.model.expertGame.IncrementMaxMovementCard" target="it.polimi.ingsw.model.expertGame.ExpertCard" relationship="GENERALIZATION">
+      <point x="-187.5" y="0.0" />
+      <point x="160.0" y="0.0" />
+    </edge>
+    <edge source="it.polimi.ingsw.network.client.view.CLI" target="it.polimi.ingsw.network.client.view.UI" relationship="REALIZATION">
+      <point x="0.0" y="284.5" />
+      <point x="0.0" y="-229.0" />
+    </edge>
+    <edge source="it.polimi.ingsw.model.Game" target="it.polimi.ingsw.model.IslandTile" relationship="TO_MANY">
+      <point x="65.5" y="-711.0" />
+      <point x="4126.5" y="1580.25" />
+      <point x="5656.0" y="1580.25" />
+      <point x="-5.0" y="304.0" />
+    </edge>
+    <edge source="it.polimi.ingsw.network.client.modelBean.IslandBean" target="it.polimi.ingsw.model.Color" relationship="TO_MANY">
+      <point x="0.0" y="-119.0" />
+      <point x="0.0" y="62.5" />
+    </edge>
+    <edge source="it.polimi.ingsw.model.Board" target="it.polimi.ingsw.model.Color" relationship="TO_MANY">
+      <point x="-199.0" y="20.0" />
+      <point x="4912.5" y="4215.0" />
+      <point x="4912.5" y="7025.0" />
+      <point x="120.5" y="10.0" />
+    </edge>
+    <edge source="it.polimi.ingsw.network.client.modelBean.ExpertCard.ExpertCardBean" target="it.polimi.ingsw.network.client.view.ExpertCard_ID" relationship="TO_ONE">
+      <point x="-118.5" y="5.0" />
+      <point x="-287.0" y="6840.0" />
+      <point x="-287.0" y="2215.0" />
+      <point x="-154.0" y="0.0" />
+    </edge>
+    <edge source="it.polimi.ingsw.network.client.view.Controllers.MainController2" target="it.polimi.ingsw.model.Color" relationship="TO_MANY">
+      <point x="-291.0" y="47.5" />
+      <point x="1680.75" y="1642.5" />
+      <point x="1680.75" y="6965.0" />
+      <point x="120.5" y="-50.0" />
+    </edge>
+    <edge source="it.polimi.ingsw.network.client.modelBean.PlayerBean" target="it.polimi.ingsw.model.AssistantCard" relationship="TO_MANY">
+      <point x="158.0" y="0.0" />
+      <point x="4423.0" y="7275.0" />
+      <point x="62.0" y="81.0" />
+    </edge>
+    <edge source="it.polimi.ingsw.network.server.GameHandler" target="it.polimi.ingsw.network.client.modelBean.ExpertCard.BanExpertCardBean" relationship="CREATE">
+      <point x="15.0" y="156.0" />
+      <point x="396.0" y="6635.0" />
+      <point x="-137.0" y="0.0" />
+    </edge>
+    <edge source="it.polimi.ingsw.network.server.MultiServer" target="it.polimi.ingsw.network.server.ReconnectionHandler" relationship="CREATE">
+      <point x="5.0" y="192.0" />
+      <point x="906.0" y="6061.0" />
+      <point x="1441.0" y="6061.0" />
+      <point x="0.0" y="155.0" />
+    </edge>
+    <edge source="it.polimi.ingsw.model.IslandTile" target="it.polimi.ingsw.model.StudentsHandler" relationship="CREATE">
+      <point x="204.0" y="-20.0" />
+      <point x="5867.0" y="1215.0" />
+      <point x="5867.0" y="535.0" />
+      <point x="172.5" y="0.0" />
+    </edge>
+    <edge source="it.polimi.ingsw.model.IslandTile" target="it.polimi.ingsw.model.expertGame.BanTile" relationship="TO_ONE">
+      <point x="204.0" y="20.0" />
+      <point x="6152.5" y="1255.0" />
+      <point x="6152.5" y="6204.5" />
+      <point x="107.0" y="0.0" />
+    </edge>
+    <edge source="it.polimi.ingsw.network.client.modelBean.GameBean" target="it.polimi.ingsw.network.client.modelBean.CloudBean" relationship="TO_MANY">
+      <point x="0.0" y="-155.0" />
+      <point x="0.0" y="44.0" />
+    </edge>
+    <edge source="it.polimi.ingsw.network.client.view.Controllers.MainController3" target="it.polimi.ingsw.model.Color" relationship="TO_MANY">
+      <point x="-4.0" y="581.5" />
+      <point x="2337.0" y="6975.0" />
+      <point x="120.5" y="-40.0" />
+    </edge>
+    <edge source="it.polimi.ingsw.model.expertGame.InfluenceCardsCluster" target="it.polimi.ingsw.model.statePattern.InfluenceCalculator" relationship="TO_MANY">
+      <point x="5.0" y="-119.0" />
+      <point x="6006.0" y="1700.0" />
+      <point x="-138.0" y="5.0" />
+    </edge>
+    <edge source="it.polimi.ingsw.model.expertGame.ExpertGame" target="it.polimi.ingsw.model.expertGame.BannedIsland" relationship="REALIZATION">
+      <point x="215.5" y="210.5" />
+      <point x="6261.0" y="5645.5" />
+      <point x="-0.0" y="-44.0" />
+    </edge>
+    <edge source="it.polimi.ingsw.model.Player" target="it.polimi.ingsw.model.Board" relationship="TO_ONE">
+      <point x="189.5" y="10.0" />
+      <point x="-199.0" y="10.0" />
+    </edge>
+    <edge source="it.polimi.ingsw.model.statePattern.TwoMoreCalculator" target="it.polimi.ingsw.model.statePattern.StandardCalculator" relationship="GENERALIZATION">
+      <point x="0.0" y="-63.5" />
+      <point x="0.0" y="63.5" />
+    </edge>
+    <edge source="it.polimi.ingsw.model.expertGame.InfluenceCardsCluster" target="it.polimi.ingsw.model.statePattern.ExceptOneColorCalculator" relationship="CREATE">
+      <point x="148.5" y="5.0" />
+      <point x="6852.0" y="2500.0" />
+      <point x="6852.0" y="1875.0" />
+      <point x="169.0" y="0.0" />
+    </edge>
+    <edge source="it.polimi.ingsw.model.expertGame.ExpertGame" target="it.polimi.ingsw.model.expertGame.IncrementMaxMovement" relationship="REALIZATION">
+      <point x="215.5" y="170.5" />
+      <point x="7541.0" y="5605.5" />
+      <point x="-0.0" y="-44.0" />
+    </edge>
+    <edge source="it.polimi.ingsw.model.Game" target="it.polimi.ingsw.model.Round" relationship="TO_ONE">
+      <point x="118.0" y="711.0" />
+      <point x="4179.0" y="3595.0" />
+      <point x="-189.5" y="0.0" />
+    </edge>
+    <edge source="it.polimi.ingsw.model.Game" target="it.polimi.ingsw.model.Round" relationship="CREATE">
+      <point x="128.0" y="711.0" />
+      <point x="4189.0" y="3208.0" />
+      <point x="4721.0" y="3208.0" />
+      <point x="0.0" y="-322.5" />
+    </edge>
+    <edge source="it.polimi.ingsw.model.expertGame.ExpertGame" target="it.polimi.ingsw.model.expertGame.BannedIslandCard" relationship="CREATE">
+      <point x="0.0" y="433.5" />
+      <point x="0.0" y="-63.5" />
+    </edge>
+    <edge source="it.polimi.ingsw.network.client.view.Controllers.MainController2" target="it.polimi.ingsw.network.client.view.Controllers.GUIController" relationship="REALIZATION">
+      <point x="-291.0" y="57.5" />
+      <point x="1846.0" y="1652.5" />
+      <point x="5.0" y="-44.0" />
+    </edge>
+    <edge source="it.polimi.ingsw.network.server.GameHandler" target="it.polimi.ingsw.network.server.MultiServer" relationship="TO_ONE">
+      <point x="212.0" y="-10.0" />
+      <point x="896.0" y="6205.0" />
+      <point x="-5.0" y="192.0" />
+    </edge>
+    <edge source="it.polimi.ingsw.network.client.modelBean.BoardBean" target="it.polimi.ingsw.model.Tower" relationship="TO_ONE">
+      <point x="-189.0" y="0.0" />
+      <point x="123.5" y="0.0" />
+    </edge>
+    <edge source="it.polimi.ingsw.network.client.view.Controllers.MainController3" target="it.polimi.ingsw.network.client.view.Controllers.GUIController" relationship="REALIZATION">
+      <point x="-291.0" y="0.0" />
+      <point x="108.0" y="0.0" />
+    </edge>
+    <edge source="it.polimi.ingsw.network.server.GameHandler" target="it.polimi.ingsw.network.client.modelBean.ExpertCard.ExpertCardBean" relationship="CREATE">
+      <point x="5.0" y="156.0" />
+      <point x="386.0" y="6830.0" />
+      <point x="-118.5" y="-5.0" />
+    </edge>
+    <edge source="it.polimi.ingsw.model.statePattern.ExceptOneColorCalculator" target="it.polimi.ingsw.model.expertGame.InfluenceCardsCluster" relationship="TO_ONE">
+      <point x="-0.0" y="63.5" />
+      <point x="6681.0" y="2490.0" />
+      <point x="148.5" y="-5.0" />
+    </edge>
+    <edge source="it.polimi.ingsw.network.server.GameHandler" target="it.polimi.ingsw.network.client.modelBean.GameBean" relationship="CREATE">
+      <point x="-15.0" y="156.0" />
+      <point x="366.0" y="7275.0" />
+      <point x="-196.0" y="0.0" />
+    </edge>
+    <edge source="it.polimi.ingsw.network.server.GameHandler" target="it.polimi.ingsw.network.server.exception.SetupGameDisconnectionException" relationship="CREATE">
+      <point x="35.0" y="156.0" />
+      <point x="416.0" y="6406.0" />
+      <point x="998.5" y="6406.0" />
+      <point x="0.0" y="-22.5" />
+    </edge>
+    <edge source="it.polimi.ingsw.model.statePattern.ExceptOneColorCalculator" target="it.polimi.ingsw.model.statePattern.InfluenceCalculator" relationship="REALIZATION">
+      <point x="-169.0" y="0.0" />
+      <point x="6346.0" y="1875.0" />
+      <point x="5.0" y="63.5" />
+    </edge>
+    <edge source="it.polimi.ingsw.model.expertGame.StudentsBufferCardsCluster" target="it.polimi.ingsw.model.expertGame.StudentsBufferCluster" relationship="TO_ONE">
+      <point x="15.75" y="137.5" />
+      <point x="4476.75" y="6021.0" />
+      <point x="-215.5" y="0.0" />
+    </edge>
+    <edge source="it.polimi.ingsw.network.client.modelBean.CloudBean" target="it.polimi.ingsw.model.Color" relationship="TO_MANY">
+      <point x="157.5" y="0.0" />
+      <point x="-120.5" y="0.0" />
+    </edge>
+    <edge source="it.polimi.ingsw.model.expertGame.InfluenceCardsCluster" target="it.polimi.ingsw.model.statePattern.InfluenceCalculator" relationship="CREATE">
+      <point x="148.5" y="-15.0" />
+      <point x="6336.0" y="2480.0" />
+      <point x="-5.0" y="63.5" />
+    </edge>
+    <edge source="it.polimi.ingsw.model.expertGame.BannedIslandCard" target="it.polimi.ingsw.model.expertGame.ExpertCard" relationship="GENERALIZATION">
+      <point x="-0.0" y="63.5" />
+      <point x="5181.0" y="6519.75" />
+      <point x="160.0" y="-75.25" />
+    </edge>
+    <edge source="it.polimi.ingsw.model.expertGame.TakeProfessorEqualStudentsCard" target="it.polimi.ingsw.model.expertGame.ExpertCard" relationship="GENERALIZATION">
+      <point x="-203.0" y="0.0" />
+      <point x="4314.75" y="5935.0" />
+      <point x="53.75" y="-174.5" />
+    </edge>
+    <edge source="it.polimi.ingsw.network.client.view.Controllers.MainMenuController" target="it.polimi.ingsw.network.client.AnswerHandler" relationship="CREATE">
+      <point x="-175.5" y="0.0" />
+      <point x="1201.0" y="1055.0" />
+      <point x="0.0" y="-62.5" />
+    </edge>
+    <edge source="it.polimi.ingsw.network.client.SocketClient" target="it.polimi.ingsw.network.client.AnswerHandler" relationship="TO_ONE">
+      <point x="-117.0" y="5.0" />
+      <point x="265.5" y="5.0" />
+    </edge>
+    <edge source="it.polimi.ingsw.model.AssistantCard" target="it.polimi.ingsw.model.CardBack" relationship="TO_ONE">
+      <point x="-112.0" y="0.0" />
+      <point x="135.5" y="0.0" />
+    </edge>
+    <edge source="it.polimi.ingsw.model.expertGame.ExpertGame" target="it.polimi.ingsw.model.expertGame.StudentsBufferCardsCluster" relationship="CREATE">
+      <point x="-215.5" y="-101.5" />
+      <point x="4480.0" y="5333.5" />
+      <point x="19.0" y="137.5" />
+    </edge>
+    <edge source="it.polimi.ingsw.model.expertGame.InfluenceCardsCluster" target="it.polimi.ingsw.model.statePattern.TwoMoreCalculator" relationship="CREATE">
+      <point x="-148.5" y="-42.5" />
+      <point x="5661.0" y="2452.5" />
+      <point x="-0.0" y="63.5" />
+    </edge>
+    <edge source="it.polimi.ingsw.network.client.view.GUI" target="it.polimi.ingsw.network.client.AnswerHandler" relationship="TO_ONE">
+      <point x="-49.5" y="470.5" />
+      <point x="2891.5" y="5010.0" />
+      <point x="265.5" y="-5.0" />
+    </edge>
+    <edge source="it.polimi.ingsw.model.CloudTile" target="it.polimi.ingsw.model.StudentsHandler" relationship="CREATE">
+      <point x="124.5" y="0.0" />
+      <point x="4639.0" y="1075.0" />
+      <point x="4639.0" y="555.0" />
+      <point x="172.5" y="20.0" />
+    </edge>
+    <edge source="it.polimi.ingsw.model.Bag" target="it.polimi.ingsw.model.StudentsHandler" relationship="CREATE">
+      <point x="114.5" y="0.0" />
+      <point x="4032.0" y="915.0" />
+      <point x="-29.0" y="229.0" />
+    </edge>
+    <edge source="it.polimi.ingsw.model.IslandTile" target="it.polimi.ingsw.model.Tower" relationship="TO_ONE">
+      <point x="-204.0" y="135.75" />
+      <point x="2666.75" y="1370.75" />
+      <point x="2666.75" y="4863.5" />
+      <point x="1782.625" y="4863.5" />
+      <point x="21.625" y="-62.5" />
+    </edge>
+    <edge source="it.polimi.ingsw.network.server.MultiServer" target="it.polimi.ingsw.network.server.SocketServer" relationship="CREATE">
+      <point x="-124.5" y="-192.0" />
+      <point x="776.5" y="4925.0" />
+      <point x="-74.0" y="4925.0" />
+      <point x="5.0" y="-82.0" />
+    </edge>
+    <edge source="it.polimi.ingsw.network.server.SocketServer" target="it.polimi.ingsw.network.server.ServerClientHandler" relationship="CREATE">
+      <point x="0.0" y="82.0" />
+      <point x="0.0" y="-193.0" />
+    </edge>
+    <edge source="it.polimi.ingsw.model.expertGame.PseudoMotherNatureCard" target="it.polimi.ingsw.model.expertGame.ExpertCard" relationship="GENERALIZATION">
+      <point x="0.0" y="62.5" />
+      <point x="7741.0" y="7733.5" />
+      <point x="4261.0" y="7733.5" />
+      <point x="0.0" y="174.5" />
+    </edge>
+    <edge source="it.polimi.ingsw.model.expertGame.ExpertGame" target="it.polimi.ingsw.model.expertGame.SwapStudents" relationship="REALIZATION">
+      <point x="215.5" y="190.5" />
+      <point x="6941.0" y="5625.5" />
+      <point x="-0.0" y="-44.0" />
+    </edge>
+    <edge source="it.polimi.ingsw.network.server.GameHandler" target="it.polimi.ingsw.model.Player" relationship="TO_MANY">
+      <point x="212.0" y="71.0" />
+      <point x="4886.0" y="6286.0" />
+      <point x="165.0" y="211.5" />
+    </edge>
+    <edge source="it.polimi.ingsw.model.expertGame.SwapStudentsCard" target="it.polimi.ingsw.model.expertGame.SwapStudents" relationship="TO_ONE">
+      <point x="152.5" y="0.0" />
+      <point x="-164.5" y="0.0" />
+    </edge>
+    <edge source="it.polimi.ingsw.model.expertGame.ExpertGame" target="it.polimi.ingsw.model.expertGame.StudentsBufferCluster" relationship="REALIZATION">
+      <point x="58.0" y="433.5" />
+      <point x="5239.0" y="5893.0" />
+      <point x="5693.0" y="5893.0" />
+      <point x="0.0" y="-99.5" />
+    </edge>
+    <edge source="it.polimi.ingsw.model.Board" target="it.polimi.ingsw.model.StudentsHandler" relationship="CREATE">
+      <point x="83.5" y="-526.0" />
+      <point x="7164.5" y="-24.5" />
+      <point x="4056.0" y="-24.5" />
+      <point x="-5.0" y="-229.0" />
+    </edge>
+    <edge source="it.polimi.ingsw.network.client.view.Controllers.ChoiceController" target="it.polimi.ingsw.network.client.view.GUI" relationship="TO_ONE">
+      <point x="-0.0" y="267.0" />
+      <point x="1841.0" y="4390.0" />
+      <point x="-249.5" y="-5.0" />
+    </edge>
+    <edge source="it.polimi.ingsw.network.client.view.Controllers.GenericController" target="it.polimi.ingsw.network.client.view.GUI" relationship="TO_ONE">
+      <point x="-0.0" y="248.5" />
+      <point x="1461.0" y="4400.0" />
+      <point x="-249.5" y="5.0" />
+    </edge>
+    <edge source="it.polimi.ingsw.network.client.view.Controllers.ChoiceController" target="it.polimi.ingsw.network.client.view.Controllers.GUIController" relationship="REALIZATION">
+      <point x="5.0" y="-267.0" />
+      <point x="5.0" y="44.0" />
+    </edge>
+    <edge source="it.polimi.ingsw.model.Game" target="it.polimi.ingsw.model.CloudTile" relationship="TO_MANY">
+      <point x="-126.5" y="-711.0" />
+      <point x="3934.5" y="1075.0" />
+      <point x="-124.5" y="0.0" />
+    </edge>
+    <edge source="it.polimi.ingsw.model.Game" target="it.polimi.ingsw.model.IslandTile" relationship="CREATE">
+      <point x="55.5" y="-711.0" />
+      <point x="4116.5" y="1380.75" />
+      <point x="-204.0" y="145.75" />
+    </edge>
+    <edge source="it.polimi.ingsw.model.expertGame.ExpertGame" target="it.polimi.ingsw.model.statePattern.StandardCalculator" relationship="CREATE">
+      <point x="215.5" y="-200.5" />
+      <point x="5481.0" y="5234.5" />
+      <point x="5481.0" y="1700.0" />
+      <point x="-138.0" y="5.0" />
+    </edge>
+    <edge source="it.polimi.ingsw.model.StudentsHandler" target="it.polimi.ingsw.model.Color" relationship="TO_MANY">
+      <point x="-172.5" y="-5.0" />
+      <point x="2656.75" y="530.0" />
+      <point x="2656.75" y="6985.0" />
+      <point x="120.5" y="-30.0" />
+    </edge>
+    <edge source="it.polimi.ingsw.network.server.GameHandler" target="it.polimi.ingsw.network.client.modelBean.IslandBean" relationship="CREATE">
+      <point x="-25.0" y="156.0" />
+      <point x="356.0" y="7600.0" />
+      <point x="-157.5" y="5.0" />
+    </edge>
+    <edge source="it.polimi.ingsw.model.expertGame.ExpertGame" target="it.polimi.ingsw.model.expertGame.IncrementMaxMovementCard" relationship="CREATE">
+      <point x="215.5" y="180.5" />
+      <point x="7141.0" y="5615.5" />
+      <point x="-0.0" y="-44.0" />
+    </edge>
+    <edge source="it.polimi.ingsw.model.Board" target="it.polimi.ingsw.model.Tower" relationship="TO_ONE">
+      <point x="26.5" y="526.0" />
+      <point x="7107.5" y="6340.5" />
+      <point x="1792.625" y="6340.5" />
+      <point x="31.625" y="-62.5" />
+    </edge>
+    <edge source="it.polimi.ingsw.model.Game" target="it.polimi.ingsw.model.Bag" relationship="TO_ONE">
+      <point x="-247.5" y="0.0" />
+      <point x="3398.125" y="2495.0" />
+      <point x="17.125" y="100.5" />
+    </edge>
+    <edge source="it.polimi.ingsw.model.Game" target="it.polimi.ingsw.model.RefillInterface" relationship="REALIZATION">
+      <point x="247.5" y="333.5" />
+      <point x="5081.0" y="2828.5" />
+      <point x="-0.0" y="-62.5" />
+    </edge>
+    <edge source="it.polimi.ingsw.network.client.view.Controllers.MainMenuController" target="it.polimi.ingsw.network.client.SocketClient" relationship="CREATE">
+      <point x="175.5" y="0.75" />
+      <point x="3346.75" y="1055.75" />
+      <point x="-14.25" y="-118.0" />
+    </edge>
+    <edge source="it.polimi.ingsw.network.server.GameHandler" target="it.polimi.ingsw.model.Game" relationship="TO_ONE">
+      <point x="-5.0" y="-156.0" />
+      <point x="376.0" y="2118.25" />
+      <point x="-247.5" y="-376.75" />
+    </edge>
+    <edge source="it.polimi.ingsw.network.client.modelBean.ExpertCard.StudBufferExpertCardBean" target="it.polimi.ingsw.model.Color" relationship="TO_MANY">
+      <point x="0.0" y="44.0" />
+      <point x="0.0" y="-62.5" />
+    </edge>
+    <edge source="it.polimi.ingsw.model.Game" target="it.polimi.ingsw.model.RoundObserver" relationship="REALIZATION">
+      <point x="247.5" y="0.0" />
+      <point x="-118.0" y="0.0" />
+    </edge>
+    <edge source="it.polimi.ingsw.model.expertGame.ExpertGame" target="it.polimi.ingsw.model.expertGame.PseudoMotherNatureCard" relationship="CREATE">
+      <point x="215.5" y="0.0" />
+      <point x="-170.5" y="0.0" />
+    </edge>
+    <edge source="it.polimi.ingsw.model.expertGame.ExpertGame" target="it.polimi.ingsw.model.expertGame.PutThreeStudentsInTheBagCard" relationship="CREATE">
+      <point x="-215.5" y="0.0" />
+      <point x="197.5" y="0.0" />
+    </edge>
+    <edge source="it.polimi.ingsw.model.Player" target="it.polimi.ingsw.model.AssistantCard" relationship="CREATE">
+      <point x="-189.5" y="5.0" />
+      <point x="4361.0" y="4200.0" />
+      <point x="-0.0" y="-81.0" />
+    </edge>
+    <edge source="it.polimi.ingsw.model.Round" target="it.polimi.ingsw.model.RefillInterface" relationship="TO_ONE">
+      <point x="189.5" y="0.0" />
+      <point x="-115.5" y="0.0" />
+    </edge>
+    <edge source="it.polimi.ingsw.model.expertGame.InfluenceCardsCluster" target="it.polimi.ingsw.model.Player" relationship="TO_ONE">
+      <point x="-10.0" y="119.0" />
+      <point x="5991.0" y="4195.0" />
+      <point x="189.5" y="0.0" />
+    </edge>
+    <edge source="it.polimi.ingsw.network.client.view.GUI" target="it.polimi.ingsw.network.client.SocketClient" relationship="TO_ONE">
+      <point x="249.5" y="0.0" />
+      <point x="3336.75" y="4395.0" />
+      <point x="-24.25" y="-118.0" />
+    </edge>
+    <edge source="it.polimi.ingsw.model.Game" target="it.polimi.ingsw.model.CardBack" relationship="TO_MANY">
+      <point x="57.0" y="711.0" />
+      <point x="57.0" y="-62.5" />
+    </edge>
+    <edge source="it.polimi.ingsw.network.client.Client" target="it.polimi.ingsw.network.client.view.CLI" relationship="CREATE">
+      <point x="112.0" y="4.0" />
+      <point x="-249.5" y="4.0" />
+    </edge>
+    <edge source="it.polimi.ingsw.model.expertGame.InfluenceCardsCluster" target="it.polimi.ingsw.model.expertGame.ExpertCard" relationship="GENERALIZATION">
+      <point x="128.5" y="119.0" />
+      <point x="6129.5" y="6529.75" />
+      <point x="160.0" y="-65.25" />
+    </edge>
+    <edge source="it.polimi.ingsw.model.expertGame.ExpertGame" target="it.polimi.ingsw.model.expertGame.TakeProfessorEqualStudents" relationship="REALIZATION">
+      <point x="-43.0" y="433.5" />
+      <point x="5138.0" y="6095.0" />
+      <point x="184.5" y="0.0" />
+    </edge>
+    <edge source="it.polimi.ingsw.network.client.modelBean.GameBean" target="it.polimi.ingsw.network.client.modelBean.ExpertCard.ExpertCardBean" relationship="TO_MANY">
+      <point x="196.0" y="-37.75" />
+      <point x="1081.0" y="7237.25" />
+      <point x="-0.0" y="81.0" />
+    </edge>
+    <edge source="it.polimi.ingsw.model.expertGame.InfluenceCardsCluster" target="it.polimi.ingsw.model.statePattern.NoTowerCalculator" relationship="CREATE">
+      <point x="148.5" y="15.0" />
+      <point x="6901.0" y="2510.0" />
+      <point x="-0.0" y="63.5" />
+    </edge>
+    <edge source="it.polimi.ingsw.network.server.MultiServer" target="it.polimi.ingsw.network.server.ServerClientHandler" relationship="TO_MANY">
+      <point x="-104.5" y="-192.0" />
+      <point x="796.5" y="4905.0" />
+      <point x="-277.0" y="4905.0" />
+      <point x="-277.0" y="6215.0" />
+      <point x="-177.5" y="0.0" />
+    </edge>
+    <edge source="it.polimi.ingsw.network.client.modelBean.ExpertCard.StudBufferExpertCardBean" target="it.polimi.ingsw.network.client.modelBean.ExpertCard.ExpertCardBean" relationship="GENERALIZATION">
+      <point x="-177.5" y="0.0" />
+      <point x="118.5" y="0.0" />
+    </edge>
+    <edge source="it.polimi.ingsw.network.client.view.Controllers.GenericController" target="it.polimi.ingsw.network.client.view.Controllers.GUIController" relationship="REALIZATION">
+      <point x="208.5" y="0.0" />
+      <point x="1836.0" y="3275.0" />
+      <point x="-5.0" y="44.0" />
+    </edge>
+    <edge source="it.polimi.ingsw.model.expertGame.StudentsBufferCardsCluster" target="it.polimi.ingsw.model.Color" relationship="TO_ONE">
+      <point x="14.5" y="137.5" />
+      <point x="4475.5" y="7015.0" />
+      <point x="120.5" y="0.0" />
+    </edge>
+    <edge source="it.polimi.ingsw.network.server.GameHandler" target="it.polimi.ingsw.network.client.modelBean.ExpertCard.StudBufferExpertCardBean" relationship="CREATE">
+      <point x="212.0" y="10.0" />
+      <point x="1421.0" y="6225.0" />
+      <point x="-0.0" y="-44.0" />
+    </edge>
+    <edge source="it.polimi.ingsw.model.statePattern.TwoMoreCalculator" target="it.polimi.ingsw.model.Player" relationship="TO_ONE">
+      <point x="-138.0" y="0.0" />
+      <point x="5198.5" y="2255.0" />
+      <point x="5198.5" y="4185.0" />
+      <point x="189.5" y="-10.0" />
+    </edge>
+    <edge source="it.polimi.ingsw.network.server.GameHandler" target="it.polimi.ingsw.network.server.exception.GameDisconnectionException" relationship="CREATE">
+      <point x="25.0" y="156.0" />
+      <point x="406.0" y="6467.0" />
+      <point x="970.0" y="6467.0" />
+      <point x="0.0" y="-22.5" />
+    </edge>
+    <edge source="it.polimi.ingsw.model.Bag" target="it.polimi.ingsw.model.StudentsHandler" relationship="TO_ONE">
+      <point x="-0.0" y="-100.5" />
+      <point x="3381.0" y="540.0" />
+      <point x="-172.5" y="5.0" />
+    </edge>
+    <edge source="it.polimi.ingsw.model.expertGame.ExpertGame" target="it.polimi.ingsw.model.expertGame.InfluenceCluster" relationship="REALIZATION">
+      <point x="38.0" y="433.5" />
+      <point x="5219.0" y="6141.0" />
+      <point x="5676.5" y="6141.0" />
+      <point x="-5.0" y="-44.0" />
+    </edge>
+    <edge source="it.polimi.ingsw.model.expertGame.InfluenceCardsCluster" target="it.polimi.ingsw.model.RoundObserver" relationship="TO_ONE">
+      <point x="-148.5" y="0.0" />
+      <point x="118.0" y="0.0" />
+    </edge>
+    <edge source="it.polimi.ingsw.model.CloudTile" target="it.polimi.ingsw.model.StudentsHandler" relationship="TO_ONE">
+      <point x="0.0" y="-137.5" />
+      <point x="0.0" y="229.0" />
+    </edge>
+    <edge source="it.polimi.ingsw.network.client.modelBean.IslandBean" target="it.polimi.ingsw.model.Tower" relationship="TO_ONE">
+      <point x="157.5" y="0.0" />
+      <point x="-123.5" y="0.0" />
+    </edge>
+    <edge source="it.polimi.ingsw.model.statePattern.StandardCalculator" target="it.polimi.ingsw.model.statePattern.InfluenceCalculator" relationship="REALIZATION">
+      <point x="138.0" y="-5.0" />
+      <point x="-138.0" y="-5.0" />
+    </edge>
+    <edge source="it.polimi.ingsw.network.server.MultiServer" target="it.polimi.ingsw.network.server.GameHandler" relationship="CREATE">
+      <point x="-263.5" y="65.0" />
+      <point x="396.0" y="5840.0" />
+      <point x="15.0" y="-156.0" />
+    </edge>
+    <edge source="it.polimi.ingsw.model.expertGame.ExpertGame" target="it.polimi.ingsw.model.expertGame.TakeProfessorEqualStudentsCard" relationship="CREATE">
+      <point x="-53.0" y="433.5" />
+      <point x="5128.0" y="5935.0" />
+      <point x="203.0" y="0.0" />
+    </edge>
+    <edge source="it.polimi.ingsw.network.client.modelBean.GameBean" target="it.polimi.ingsw.network.client.modelBean.PlayerBean" relationship="TO_MANY">
+      <point x="196.0" y="0.0" />
+      <point x="-158.0" y="0.0" />
+    </edge>
+    <edge source="it.polimi.ingsw.network.client.view.CLI" target="it.polimi.ingsw.network.client.SocketClient" relationship="TO_ONE">
+      <point x="0.0" y="-284.5" />
+      <point x="0.0" y="118.0" />
+    </edge>
+    <edge source="it.polimi.ingsw.model.expertGame.StudentsBufferCardsCluster" target="it.polimi.ingsw.model.StudentsHandler" relationship="TO_ONE">
+      <point x="-0.0" y="137.5" />
+      <point x="4461.0" y="515.0" />
+      <point x="172.5" y="-20.0" />
+    </edge>
+    <edge source="it.polimi.ingsw.model.Player" target="it.polimi.ingsw.model.AssistantCard" relationship="TO_MANY">
+      <point x="-5.0" y="211.5" />
+      <point x="4716.0" y="4535.0" />
+      <point x="112.0" y="0.0" />
+    </edge>
+    <edge source="it.polimi.ingsw.model.expertGame.ExpertGame" target="it.polimi.ingsw.model.expertGame.PseudoMotherNature" relationship="REALIZATION">
+      <point x="17.5" y="-433.5" />
+      <point x="5198.5" y="4935.0" />
+      <point x="-149.0" y="0.0" />
+    </edge>
+    <edge source="it.polimi.ingsw.model.expertGame.ExpertGame" target="it.polimi.ingsw.model.IslandTile" relationship="CREATE">
+      <point x="215.5" y="-190.5" />
+      <point x="5521.0" y="5244.5" />
+      <point x="-140.0" y="304.0" />
+    </edge>
+    <edge source="it.polimi.ingsw.model.Game" target="it.polimi.ingsw.model.Tower" relationship="TO_MANY">
+      <point x="-247.5" y="-366.75" />
+      <point x="1690.75" y="2128.25" />
+      <point x="-70.25" y="-62.5" />
+    </edge>
+    <edge source="it.polimi.ingsw.model.expertGame.StudentsBufferCardsCluster" target="it.polimi.ingsw.model.expertGame.ExpertCard" relationship="GENERALIZATION">
+      <point x="13.25" y="137.5" />
+      <point x="4474.25" y="6509.75" />
+      <point x="160.0" y="-85.25" />
+    </edge>
+    <edge source="it.polimi.ingsw.model.expertGame.PseudoMotherNatureCard" target="it.polimi.ingsw.model.expertGame.PseudoMotherNature" relationship="TO_ONE">
+      <point x="0.0" y="-62.5" />
+      <point x="0.0" y="44.0" />
+    </edge>
+    <edge source="it.polimi.ingsw.model.statePattern.NoTowerCalculator" target="it.polimi.ingsw.model.statePattern.InfluenceCalculator" relationship="REALIZATION">
+      <point x="-138.0" y="0.0" />
+      <point x="138.0" y="0.0" />
+    </edge>
+    <edge source="it.polimi.ingsw.model.statePattern.ExceptOneColorCalculator" target="it.polimi.ingsw.model.Color" relationship="TO_ONE">
+      <point x="34.5" y="63.5" />
+      <point x="6715.5" y="7055.0" />
+      <point x="120.5" y="40.0" />
+    </edge>
+    <edge source="it.polimi.ingsw.network.server.GameHandler" target="it.polimi.ingsw.network.client.modelBean.PlayerBean" relationship="CREATE">
+      <point x="212.0" y="0.0" />
+      <point x="2521.0" y="6215.0" />
+      <point x="-0.0" y="-99.5" />
+    </edge>
+    <edge source="it.polimi.ingsw.model.expertGame.ExpertGame" target="it.polimi.ingsw.model.expertGame.ExpertCard" relationship="TO_MANY">
+      <point x="-215.5" y="190.0" />
+      <point x="4304.75" y="5625.0" />
+      <point x="43.75" y="-174.5" />
+    </edge>
+    <edge source="it.polimi.ingsw.network.client.view.Controllers.MainController3" target="it.polimi.ingsw.network.client.view.GUI" relationship="TO_ONE">
+      <point x="6.0" y="581.5" />
+      <point x="2347.0" y="4380.0" />
+      <point x="-249.5" y="-15.0" />
+    </edge>
+    <edge source="it.polimi.ingsw.model.expertGame.ExpertGame" target="it.polimi.ingsw.model.Game" relationship="GENERALIZATION">
+      <point x="-215.5" y="-91.5" />
+      <point x="4198.5" y="5343.5" />
+      <point x="137.5" y="711.0" />
+    </edge>
+    <edge source="it.polimi.ingsw.network.client.view.Controllers.MainController2" target="it.polimi.ingsw.network.client.view.GUI" relationship="TO_ONE">
+      <point x="291.0" y="0.0" />
+      <point x="2936.0" y="1595.0" />
+      <point x="-5.0" y="-470.5" />
+    </edge>
+    <edge source="it.polimi.ingsw.model.Player" target="it.polimi.ingsw.model.Board" relationship="CREATE">
+      <point x="5.0" y="211.5" />
+      <point x="4726.0" y="4723.0" />
+      <point x="7081.0" y="4723.0" />
+      <point x="0.0" y="526.0" />
+    </edge>
+    <edge source="it.polimi.ingsw.model.IslandTile" target="it.polimi.ingsw.model.StudentsHandler" relationship="TO_ONE">
+      <point x="-0.0" y="-304.0" />
+      <point x="5661.0" y="545.0" />
+      <point x="172.5" y="10.0" />
+    </edge>
+    <edge source="it.polimi.ingsw.network.server.GameHandler" target="it.polimi.ingsw.model.expertGame.ExpertGame" relationship="CREATE">
+      <point x="5.0" y="-156.0" />
+      <point x="386.0" y="5188.5" />
+      <point x="-215.5" y="-246.5" />
+    </edge>
+    <edge source="it.polimi.ingsw.network.server.MultiServer" target="it.polimi.ingsw.network.server.ReconnectionHandler" relationship="TO_ONE">
+      <point x="-92.75" y="-192.0" />
+      <point x="808.25" y="5429.0" />
+      <point x="1441.0" y="5429.0" />
+      <point x="0.0" y="-155.0" />
+    </edge>
+    <edge source="it.polimi.ingsw.network.server.ReconnectionHandler" target="it.polimi.ingsw.network.server.MultiServer" relationship="TO_ONE">
+      <point x="-204.0" y="0.0" />
+      <point x="263.5" y="0.0" />
+    </edge>
+    <edge source="it.polimi.ingsw.network.server.GameHandler" target="it.polimi.ingsw.network.client.modelBean.BoardBean" relationship="CREATE">
+      <point x="-35.0" y="156.0" />
+      <point x="346.0" y="7733.5" />
+      <point x="2141.0" y="7733.5" />
+      <point x="0.0" y="136.5" />
+    </edge>
+    <edge source="it.polimi.ingsw.model.expertGame.SwapStudentsCard" target="it.polimi.ingsw.model.Color" relationship="TO_ONE">
+      <point x="5.0" y="100.5" />
+      <point x="6566.0" y="7045.0" />
+      <point x="120.5" y="30.0" />
+    </edge>
+    <edge source="it.polimi.ingsw.network.client.view.CLI" target="it.polimi.ingsw.network.client.SocketClient" relationship="CREATE">
+      <point x="249.5" y="0.0" />
+      <point x="3612.5" y="5475.0" />
+      <point x="3612.5" y="5015.0" />
+      <point x="117.0" y="0.0" />
+    </edge>
+    <edge source="it.polimi.ingsw.model.Game" target="it.polimi.ingsw.model.statePattern.InfluenceCalculator" relationship="TO_ONE">
+      <point x="75.5" y="-711.0" />
+      <point x="4136.5" y="1621.5" />
+      <point x="6336.0" y="1621.5" />
+      <point x="-5.0" y="-63.5" />
+    </edge>
+    <edge source="it.polimi.ingsw.model.Game" target="it.polimi.ingsw.model.GameState" relationship="TO_ONE">
+      <point x="-6.0" y="-711.0" />
+      <point x="4055.0" y="1695.0" />
+      <point x="141.5" y="0.0" />
+    </edge>
+    <edge source="it.polimi.ingsw.network.server.ServerClientHandler" target="it.polimi.ingsw.network.server.MultiServer" relationship="TO_ONE">
+      <point x="177.5" y="-5.0" />
+      <point x="167.0" y="6210.0" />
+      <point x="167.0" y="5830.0" />
+      <point x="-263.5" y="55.0" />
+    </edge>
+    <edge source="it.polimi.ingsw.model.IslandTile" target="it.polimi.ingsw.model.statePattern.InfluenceCalculator" relationship="TO_ONE">
+      <point x="204.0" y="10.0" />
+      <point x="6346.0" y="1245.0" />
+      <point x="5.0" y="-63.5" />
+    </edge>
+    <edge source="it.polimi.ingsw.network.client.view.CLI" target="it.polimi.ingsw.network.client.modelBean.GameBean" relationship="TO_ONE">
+      <point x="-249.5" y="129.25" />
+      <point x="2052.0" y="5604.25" />
+      <point x="2052.0" y="7247.25" />
+      <point x="196.0" y="-27.75" />
+    </edge>
+    <edge source="it.polimi.ingsw.model.expertGame.PutThreeStudentsInTheBagCard" target="it.polimi.ingsw.model.Color" relationship="TO_ONE">
+      <point x="-5.0" y="63.5" />
+      <point x="3876.0" y="7005.0" />
+      <point x="120.5" y="-10.0" />
+    </edge>
+    <edge source="it.polimi.ingsw.model.Game" target="it.polimi.ingsw.model.Bag" relationship="CREATE">
+      <point x="-61.0" y="711.0" />
+      <point x="4000.0" y="3274.5" />
+      <point x="3388.125" y="3274.5" />
+      <point x="7.125" y="100.5" />
+    </edge>
+    <edge source="it.polimi.ingsw.model.expertGame.InfluenceCardsCluster" target="it.polimi.ingsw.model.Color" relationship="TO_ONE">
+      <point x="138.5" y="119.0" />
+      <point x="6139.5" y="7035.0" />
+      <point x="120.5" y="20.0" />
+    </edge>
+    <edge source="it.polimi.ingsw.model.expertGame.BannedIslandCard" target="it.polimi.ingsw.model.expertGame.BannedIsland" relationship="TO_ONE">
+      <point x="129.5" y="0.0" />
+      <point x="-110.5" y="0.0" />
+    </edge>
+    <edge source="it.polimi.ingsw.network.server.MultiServer" target="it.polimi.ingsw.network.server.SocketServer" relationship="TO_ONE">
+      <point x="-114.5" y="-192.0" />
+      <point x="786.5" y="4915.0" />
+      <point x="-84.0" y="4915.0" />
+      <point x="-5.0" y="-82.0" />
+    </edge>
+    <edge source="it.polimi.ingsw.network.server.SocketServer" target="it.polimi.ingsw.network.server.MultiServer" relationship="TO_ONE">
+      <point x="188.0" y="0.0" />
+      <point x="-263.5" y="0.0" />
+    </edge>
+    <edge source="it.polimi.ingsw.model.expertGame.ExpertGame" target="it.polimi.ingsw.model.expertGame.PutThreeStudentsInTheBag" relationship="REALIZATION">
+      <point x="0.0" y="-433.5" />
+      <point x="0.0" y="44.0" />
+    </edge>
+    <edge source="it.polimi.ingsw.network.client.view.GUI" target="it.polimi.ingsw.network.client.modelBean.GameBean" relationship="TO_ONE">
+      <point x="-29.5" y="470.5" />
+      <point x="2911.5" y="7376.5" />
+      <point x="196.0" y="101.5" />
+    </edge>
+    <edge source="it.polimi.ingsw.model.Game" target="it.polimi.ingsw.model.CloudTile" relationship="CREATE">
+      <point x="4.0" y="-711.0" />
+      <point x="4.0" y="137.5" />
+    </edge>
+    <edge source="it.polimi.ingsw.network.server.GameHandler" target="it.polimi.ingsw.network.client.modelBean.CloudBean" relationship="CREATE">
+      <point x="-5.0" y="156.0" />
+      <point x="376.0" y="7015.0" />
+      <point x="-157.5" y="0.0" />
+    </edge>
+    <edge source="it.polimi.ingsw.network.client.view.Controllers.MainMenuController" target="it.polimi.ingsw.network.client.view.GUI" relationship="TO_ONE">
+      <point x="175.5" y="10.75" />
+      <point x="2946.0" y="1065.75" />
+      <point x="5.0" y="-470.5" />
+    </edge>
+    <edge source="it.polimi.ingsw.model.expertGame.ExpertGame" target="it.polimi.ingsw.model.expertGame.InfluenceCardsCluster" relationship="CREATE">
+      <point x="215.5" y="-180.5" />
+      <point x="6001.0" y="5254.5" />
+      <point x="-0.0" y="119.0" />
+    </edge>
+    <edge source="it.polimi.ingsw.model.expertGame.TakeProfessorEqualStudentsCard" target="it.polimi.ingsw.model.expertGame.TakeProfessorEqualStudents" relationship="TO_ONE">
+      <point x="0.0" y="44.0" />
+      <point x="0.0" y="-44.0" />
+    </edge>
+    <edge source="it.polimi.ingsw.network.client.modelBean.BoardBean" target="it.polimi.ingsw.model.Color" relationship="TO_MANY">
+      <point x="-0.0" y="-136.5" />
+      <point x="2141.0" y="7065.0" />
+      <point x="120.5" y="50.0" />
+    </edge>
+    <edge source="it.polimi.ingsw.model.statePattern.TwoMoreCalculator" target="it.polimi.ingsw.model.expertGame.InfluenceCardsCluster" relationship="TO_ONE">
+      <point x="138.0" y="0.0" />
+      <point x="5996.0" y="2255.0" />
+      <point x="-5.0" y="-119.0" />
+    </edge>
+    <edge source="it.polimi.ingsw.network.client.view.Controllers.MainController3" target="it.polimi.ingsw.network.client.view.ExpertCard_ID" relationship="TO_MANY">
+      <point x="0.0" y="-581.5" />
+      <point x="0.0" y="62.5" />
+    </edge>
+    <edge source="it.polimi.ingsw.model.expertGame.SwapStudentsCard" target="it.polimi.ingsw.model.expertGame.ExpertCard" relationship="GENERALIZATION">
+      <point x="-5.0" y="100.5" />
+      <point x="6556.0" y="6539.75" />
+      <point x="160.0" y="-55.25" />
+    </edge>
+    <edge source="it.polimi.ingsw.network.client.view.Controllers.MainController2" target="it.polimi.ingsw.network.client.view.ExpertCard_ID" relationship="TO_MANY">
+      <point x="0.0" y="489.0" />
+      <point x="0.0" y="-62.5" />
+    </edge>
+    <edge source="it.polimi.ingsw.model.expertGame.ExpertGame" target="it.polimi.ingsw.model.expertGame.SwapStudentsCard" relationship="CREATE">
+      <point x="215.5" y="200.5" />
+      <point x="6561.0" y="5635.5" />
+      <point x="-0.0" y="-100.5" />
+    </edge>
+    <edge source="it.polimi.ingsw.model.statePattern.NoTowerCalculator" target="it.polimi.ingsw.model.IslandTile" relationship="TO_ONE">
+      <point x="-0.0" y="-63.5" />
+      <point x="6901.0" y="1225.0" />
+      <point x="204.0" y="-10.0" />
+    </edge>
+    <edge source="it.polimi.ingsw.network.server.GameHandler" target="it.polimi.ingsw.model.Game" relationship="CREATE">
+      <point x="-15.0" y="-156.0" />
+      <point x="366.0" y="2108.25" />
+      <point x="-247.5" y="-386.75" />
+    </edge>
+    <edge source="it.polimi.ingsw.model.statePattern.StandardCalculator" target="it.polimi.ingsw.model.IslandTile" relationship="TO_ONE">
+      <point x="5.0" y="-63.5" />
+      <point x="5.0" y="304.0" />
+    </edge>
+    <edge source="it.polimi.ingsw.network.client.view.GUI" target="it.polimi.ingsw.model.Color" relationship="TO_MANY">
+      <point x="-39.5" y="470.5" />
+      <point x="2901.5" y="6995.0" />
+      <point x="120.5" y="-20.0" />
+    </edge>
+    <edge source="it.polimi.ingsw.model.Game" target="it.polimi.ingsw.model.Player" relationship="TO_MANY">
+      <point x="108.0" y="711.0" />
+      <point x="4169.0" y="4190.0" />
+      <point x="-189.5" y="-5.0" />
+    </edge>
+    <edge source="it.polimi.ingsw.model.expertGame.PutThreeStudentsInTheBagCard" target="it.polimi.ingsw.model.expertGame.ExpertCard" relationship="GENERALIZATION">
+      <point x="5.0" y="63.5" />
+      <point x="3886.0" y="6595.0" />
+      <point x="-160.0" y="0.0" />
+    </edge>
+    <edge source="it.polimi.ingsw.model.expertGame.PutThreeStudentsInTheBagCard" target="it.polimi.ingsw.model.expertGame.PutThreeStudentsInTheBag" relationship="TO_ONE">
+      <point x="0.0" y="-63.5" />
+      <point x="3881.0" y="4855.0" />
+      <point x="-190.5" y="0.0" />
+    </edge>
+    <edge source="it.polimi.ingsw.model.Board" target="it.polimi.ingsw.model.StudentsHandler" relationship="TO_ONE">
+      <point x="73.5" y="-526.0" />
+      <point x="7154.5" y="525.0" />
+      <point x="172.5" y="-10.0" />
+    </edge>
+    <edge source="it.polimi.ingsw.network.client.view.CLI" target="it.polimi.ingsw.network.client.AnswerHandler" relationship="CREATE">
+      <point x="-249.5" y="-6.0" />
+      <point x="1201.0" y="5469.0" />
+      <point x="-0.0" y="62.5" />
+    </edge>
+  </edges>
+  <settings layout="Compact" zoom="0.38151876496416665" showDependencies="true" x="3245.9249239138735" y="5526.645241287924" />
+  <SelectedNodes />
+  <Categories>
+    <Category>Methods</Category>
+    <Category>Properties</Category>
+  </Categories>
+  <SCOPE>Project Files</SCOPE>
+  <VISIBILITY>public</VISIBILITY>
+</Diagram>
+
