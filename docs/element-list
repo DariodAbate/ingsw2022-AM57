@@ -1,0 +1,15 @@
+it.polimi.ingsw.model
+it.polimi.ingsw.model.constantFactory
+it.polimi.ingsw.model.expertGame
+it.polimi.ingsw.model.statePattern
+it.polimi.ingsw.network.client
+it.polimi.ingsw.network.client.messages
+it.polimi.ingsw.network.client.modelBean
+it.polimi.ingsw.network.client.modelBean.ExpertCard
+it.polimi.ingsw.network.client.view
+it.polimi.ingsw.network.client.view.Controllers
+it.polimi.ingsw.network.server
+it.polimi.ingsw.network.server.answers
+it.polimi.ingsw.network.server.answers.request
+it.polimi.ingsw.network.server.answers.update
+it.polimi.ingsw.network.server.exception
