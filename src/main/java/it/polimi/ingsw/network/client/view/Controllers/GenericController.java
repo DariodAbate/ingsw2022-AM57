@@ -129,7 +129,7 @@ public class GenericController implements GUIController{
     }
 
 
-    //TODO if expert card already played don't show play card button
+
     public void selectCloudInfo(String message, boolean isExpert) {
         if (isExpert) {
             Alert alert = new Alert(Alert.AlertType.CONFIRMATION);

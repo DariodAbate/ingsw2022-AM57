@@ -145,7 +145,7 @@ public class MainController3 implements GUIController{
         characters.put(ExpertCard_ID.HOST, HOST);
     }
 
-    public void showEntranceStudents(ArrayList<Color> colors) {    //TODO gestire con un unico metodo le board con il booleano come parametro
+    public void showEntranceStudents(ArrayList<Color> colors) {
         for(ImageView entranceStudent : myEntranceStudents) {
             myBoard.getChildren().remove(entranceStudent);
         }

@@ -486,7 +486,7 @@ public class CLI  implements PropertyChangeListener, UI {
         System.out.println(ANSIConstants.UNDERLINE + "ASSISTANT CARDS");
         System.out.print(ANSIConstants.TEXT_RESET);
         System.out.flush();
-        System.out.println("Card back: " + playerBean.getHand().get(0).getCardBack());//FIXME fa crashare il gioco quando hai 0 carte assistente
+        System.out.println("Card back: " + playerBean.getHand().get(0).getCardBack());
 
 
         if(playerBean.getNickname().equals(nickname)){
