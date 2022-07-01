@@ -32,5 +32,5 @@
 
 ## How to use
 1. Open cmd
-2. For the server: java -jar "server.jar" <port number>
+2. For the server: java -jar "server.jar" <port_number>
 3. For the client: java -jar "client.jar" <GUI/CLI>
