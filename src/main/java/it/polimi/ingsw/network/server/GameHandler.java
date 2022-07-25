@@ -141,10 +141,11 @@ public class GameHandler implements PropertyChangeListener {
      * This method is used to unregister all the player of this game in the server, so a new player can choose his nickname
      */
     private void unregisterPlayersFromServer(){
+
+        server.unregisterPlayerFromReconnection(getNicknamePlayers().get(0));//only one player is needed
         for(String player: getNicknamePlayers()){
             server.unregisterPlayer(player);
         }
-        server.unregisterPlayerFromReconnection(getNicknamePlayers().get(0));//only one player is needed
     }
 
     /**

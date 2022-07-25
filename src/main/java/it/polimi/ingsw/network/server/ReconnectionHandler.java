@@ -209,12 +209,16 @@ public class ReconnectionHandler {
      */
     public void remove(String nickPlayer){
         //control over existence of mapping already done
-        int idToRemove = getIdByNickname(nickPlayer);
-        ArrayList<String> playersToRemove = getKey(nickPlayer);
+        try {
+            int idToRemove = getIdByNickname(nickPlayer);
+            ArrayList<String> playersToRemove = getKey(nickPlayer);
 
-        this.reconnectedPlayerMap.remove(idToRemove);
-        this.gameIdByUserMap.remove(playersToRemove);
-        saveParameters();//update gameIDByUserMap on disk
+            this.reconnectedPlayerMap.remove(idToRemove);
+            this.gameIdByUserMap.remove(playersToRemove);
+            saveParameters();//update gameIDByUserMap on disk
+        }catch(NullPointerException ignored){
+
+        }
     }
 
 
