@@ -1,6 +1,6 @@
 # Prova Finale Ingegneria del Software 2022
 
-[![License: MIT][license-image]][license]
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
 ![latest commit](https://img.shields.io/github/last-commit/DariodAbate/ingsw2022-AM57?color=red)
 ![latest release](https://img.shields.io/github/v/release/DariodAbate/ingsw2022-AM57?color=green)
 <img src="assets/Eriantys_scatolaFrontombra-600x600.png" width=600px height=600px align="right" />
