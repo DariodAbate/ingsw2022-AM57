@@ -65,7 +65,7 @@ The development of this project is part of the software engineering course at th
   href="https://github.com/DariodAbate/ingsw2022-AM57/blob/master/deliveries/AM57-server.jar">AM57-server.jar</a> (at least one server should be up to play!)
   </li>
   <li>To open the server you need to type <code> -java -jar AM57-server.jar [port number] 
-  </code> (this passage is optional if another server is already open)</li>
+  </code> (this passage is optional if another server is already running)</li>
   <li>Open the cmd and then type <code>-java -jar AM57-client.jar [interface] </code>  where 
   instead of interface, type CLI or GUI depending on your preferences</li>
   <li>Have fun! </li>
