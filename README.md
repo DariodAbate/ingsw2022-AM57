@@ -55,7 +55,7 @@ Teacher: Alessandro Margara
   <li>Have fun! </li>
 </ol>
   
-When using the CLI mode, we suggest to utilize [conEmu](https://conemu.github.io) on Windows, since some special characters are not correctly visualized.
+When using the CLI mode, we suggest to utilize [conEmu](https://conemu.github.io) on Windows, since some special characters are not correctly visualized.</br>
 Only Windows 32-bit and 64-bit, Linux and IOS is supported.
 
 
