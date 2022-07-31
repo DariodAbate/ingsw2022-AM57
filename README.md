@@ -61,8 +61,8 @@ The development of this project is part of the software engineering course at th
 
 <ol>
   <li>Be sure to have <a href="https://www.java.com/it/download/">Java</a> and <a 
-  href="https://www.oracle.com/java/technologies/javase/jdk17-
-  archive-downloads.html"> Java JDK</a> installed</li>
+  href="[https://www.oracle.com/java/technologies/javase/jdk17-
+  archive-downloads.html](https://www.oracle.com/java/technologies/downloads/)"> Java JDK</a> installed</li>
   <li>Download <a href="https://github.com/DariodAbate/ingsw2022-AM57/blob/master/deliveries/AM57-client.jar">AM57-client.jar</a> and <a 
   href="https://github.com/DariodAbate/ingsw2022-AM57/blob/master/deliveries/AM57-server.jar">AM57-server.jar</a> (at least one server should be up to play!)
   </li>
