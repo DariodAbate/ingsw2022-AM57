@@ -2,6 +2,8 @@
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
 ![latest commit](https://img.shields.io/github/last-commit/DariodAbate/ingsw2022-AM57?color=red)
+<img src="assets/Eriantys_scatolaFrontombra-600x600.png" width=400px height=400px align="right" />
+
 
 
 Eryantis Board Game is the final test of "Software Engineering", course of "Computer Science Engineering" held at Politecnico di Milano (2021/2022).
@@ -9,7 +11,6 @@ Eryantis Board Game is the final test of "Software Engineering", course of "Comp
 Teacher: Alessandro Margara
 
 <b> Final Score: 30/30 cum laude <b>
-<img src="assets/Eriantys_scatolaFrontombra-600x600.png" width=600px height=600px align="right" />
 
 [Link to the official game](https://craniointernational.com/products/eriantys/)
 # The Team
