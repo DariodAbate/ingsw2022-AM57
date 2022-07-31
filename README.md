@@ -54,7 +54,8 @@ Teacher: Alessandro Margara
   <li>Open the cmd and then type <code>-java -jar AM57-client.jar [interface] </code>  where instead of interface, type CLI or GUI depending on your preferences.</li>
   <li>Have fun! </li>
 </ol>
-
+  
+When using the CLI mode, we suggest to utilize [conEmu](https://conemu.github.io) on Windows, since some special characters are not correctly visualized.
 Only Windows 32-bit and 64-bit, Linux and IOS is supported.
 
 
