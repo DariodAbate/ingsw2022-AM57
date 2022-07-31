@@ -45,8 +45,14 @@ Teacher: Alessandro Margara
 | Model   | Global Package | 823/963 (85%) |
 
 ## How to use
-1. Open cmd
-2. For the server: java -jar "server.jar" <port_number>
-3. For the client: java -jar "client.jar" <GUI/CLI>
+<ol>
+  <li>Be sure to have <a href="https://www.oracle.com/java/technologies/javase/jdk17-archive-downloads.html"> Java sdk 17.0.2 </a> installed</li>
+  <li>Then download AM57-client.jar and AM57-server.jar (at least one server should be up to play)</li>
+  <li>To open the server you need to type <code> -java -jar AM57-server.jar [port number] </code> (this passage is optional if another server is already open)</li>
+  <li>Open the cmd and then type <code>-java -jar AM57-client.jar [interface] </code>  where instead of interface, type CLI or GUI depending on your preferences.</li>
+  <li>Have fun! </li>
+</ol>
+
+Only Windows 32-bit and 64-bit, Linux and IOS is supported.
 
 
