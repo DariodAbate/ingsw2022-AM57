@@ -1,5 +1,10 @@
 # Prova Finale Ingegneria del Software 2022
-<img src="assets/Eriantys_scatolaFrontombra-600x600.png" width=600px height=600px align="center" />
+
+[![License: MIT][license-image]][license]
+![latest commit](https://img.shields.io/github/last-commit/DariodAbate/ingsw2022-AM57?color=red)
+![latest release](https://img.shields.io/github/v/release/DariodAbate/ingsw2022-AM57?color=green)
+<img src="assets/Eriantys_scatolaFrontombra-600x600.png" width=600px height=600px align="right" />
+
 [Link to the official game](https://craniointernational.com/products/eriantys/)
 # Gruppo AM57
 - ### [Dario d'Abate](https://github.com/DariodAbate)<br/>dario.dabate@mail.polimi.it
