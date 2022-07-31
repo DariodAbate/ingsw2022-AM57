@@ -1,4 +1,5 @@
 # Prova Finale Ingegneria del Software 2022
+[Link to the official game](https://craniointernational.com/products/eriantys/)
 # Gruppo AM57
 - ### [Dario d'Abate](https://github.com/DariodAbate)<br/>dario.dabate@mail.polimi.it
 - ### [Lorenzo Corrado](https://github.com/Lerrylore)<br/>lorenzo.corrado@mail.polimi.it 
