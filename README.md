@@ -32,6 +32,7 @@ Teacher: Alessandro Margara
 | Resilience to disconnections |  🔴   |
 
 #### Legend
+  
 🔴 Not implemented
 🟡 Implementing
 🟢 Implemented
