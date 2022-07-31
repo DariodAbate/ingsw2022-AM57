@@ -48,7 +48,7 @@ Teacher: Alessandro Margara
 ## How to use
 
 <ol>
-  <li>Be sure to have <a href="https://www.oracle.com/java/technologies/javase/jdk17-archive-downloads.html"> Java sdk 17.0.2 </a> installed</li>
+  <li>Be sure to have Java and <a href="https://www.oracle.com/java/technologies/javase/jdk17-archive-downloads.html"> Java jdk 17.0.2 </a> installed</li>
   <li>Then download AM57-client.jar and AM57-server.jar (at least one server should be up to play)</li>
   <li>To open the server you need to type <code> -java -jar AM57-server.jar [port number] </code> (this passage is optional if another server is already open)</li>
   <li>Open the cmd and then type <code>-java -jar AM57-client.jar [interface] </code>  where instead of interface, type CLI or GUI depending on your preferences.</li>
