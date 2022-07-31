@@ -1,4 +1,5 @@
 # Prova Finale Ingegneria del Software 2022
+<img src="assets/Eriantys_scatolaFrontombra-600x600.png" width=600px height=600px align="center" />
 [Link to the official game](https://craniointernational.com/products/eriantys/)
 # Gruppo AM57
 - ### [Dario d'Abate](https://github.com/DariodAbate)<br/>dario.dabate@mail.polimi.it
